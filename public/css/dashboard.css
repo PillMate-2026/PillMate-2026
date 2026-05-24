@@ -1,0 +1,321 @@
+.app-topbar {
+  position: fixed;
+  top: 0;
+  right: 24px;
+  left: 292px;
+  z-index: 20;
+  min-height: 116px;
+  padding: 0 44px;
+}
+
+.dashboard-shell {
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+.dashboard-shell .app-sidebar {
+  position: sticky;
+  top: 0;
+  width: 292px;
+  min-width: 292px;
+  background-color: #f7f7f7;
+}
+
+.dashboard-shell .sidebar-logo {
+  padding-top: 196px;
+  font-size: 40px;
+  line-height: 0.95;
+}
+
+.dashboard-shell .sidebar-link {
+  min-height: 58px;
+  padding: 10px 16px;
+  font-size: 26px;
+  font-weight: 800;
+  color: #000000;
+}
+
+.dashboard-shell .sidebar-link.active {
+  background-color: #e5f4e5;
+  color: #000000;
+}
+
+.dashboard-shell .sidebar-icon {
+  width: 38px;
+  height: 38px;
+}
+
+.dashboard-shell .app-main {
+  padding-top: 116px;
+}
+
+.dashboard-content {
+  background-color: #ffffff;
+  padding: 32px 36px 44px;
+}
+
+.dashboard-summary {
+  display: grid;
+  grid-template-columns: minmax(220px, 310px);
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 70px;
+  padding: 0 24px;
+  border-radius: 8px;
+  color: #000000;
+}
+
+.summary-card span {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.summary-card strong {
+  font-size: 26px;
+  font-weight: 500;
+}
+
+.summary-total {
+  background-color: #c3ddfb;
+}
+
+.dashboard-controls {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) auto auto;
+  align-items: center;
+  gap: 32px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 58px;
+  padding: 0 16px;
+  border: 1px solid #d8d8d8;
+  border-radius: 8px;
+  background-color: #ffffff;
+  gap: 14px;
+}
+
+.search-icon {
+  flex: 0 0 auto;
+  color: #737373;
+  font-size: 32px;
+  line-height: 1;
+  transform: translateY(-1px) rotate(-75deg);
+  pointer-events: none;
+}
+
+.search-box input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  font-size: 18px;
+}
+
+.control-group,
+.sort-select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.control-group > span,
+.sort-select > span {
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.control-group a {
+  min-height: 44px;
+  padding: 7px 16px;
+  border: 1px solid #d6d6d6;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 19px;
+  text-decoration: none;
+}
+
+.control-group a.active {
+  background-color: #d9facb;
+  border-color: #9fdc88;
+}
+
+.sort-select select {
+  min-height: 48px;
+  padding: 0 36px 0 14px;
+  border: 1px solid #d6d6d6;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 18px;
+}
+
+.medicine-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 20px 22px;
+}
+
+.medicine-card {
+  min-height: 198px;
+  padding: 18px 20px;
+  border: 1px solid #9cdd86;
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+.medicine-card.expired {
+  border-color: #ff3b3b;
+}
+
+.medicine-card-top {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.medicine-image-placeholder {
+  width: 100px;
+  height: 74px;
+  border-radius: 8px;
+  background:
+    linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
+    linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
+    linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+  background-color: #ffffff;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+  background-size: 16px 16px;
+}
+
+.medicine-main-info {
+  min-width: 0;
+}
+
+.medicine-main-info h2 {
+  margin-bottom: 4px;
+  overflow: hidden;
+  color: #000000;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+}
+
+.medicine-main-info p {
+  margin: 0;
+  color: #b5b5b5;
+  font-size: 14px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  min-height: 30px;
+  margin-top: 8px;
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.status-pill.valid {
+  background-color: #94d47f;
+}
+
+.status-pill.expired {
+  background-color: #ee8f91;
+}
+
+.medicine-meta p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.empty-message {
+  padding: 22px;
+  border: 1px solid #d8d8d8;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #666666;
+  font-size: 18px;
+}
+
+@media (max-width: 1200px) {
+  .dashboard-controls {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .search-box {
+    width: min(420px, 100%);
+  }
+
+  .medicine-card-grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .app-topbar {
+    left: 88px;
+    right: 0;
+    min-height: 76px;
+    padding: 0 20px;
+  }
+
+  .dashboard-shell .app-main {
+    padding-top: 76px;
+  }
+
+  .dashboard-shell .app-sidebar {
+    width: 88px;
+    min-width: 88px;
+  }
+
+  .dashboard-shell .sidebar-logo {
+    padding-top: 92px;
+    font-size: 22px;
+  }
+
+  .dashboard-shell .sidebar-link {
+    min-height: 52px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 700px) {
+  .app-topbar {
+    position: static;
+  }
+
+  .dashboard-shell .app-main {
+    padding-top: 0;
+  }
+
+  .dashboard-content {
+    padding: 20px 16px 36px;
+  }
+
+  .medicine-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
