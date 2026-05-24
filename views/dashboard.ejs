@@ -1,16 +1,13 @@
-<%- include('partials/header', { title: '대시보드' }) %>
+<div class="app-wrapper">
+  <%- include('partials/sidebar') %>
 
-<div class="app-layout">
-  <%- include('partials/sidebar', { activeMenu: 'home' }) %>
+  <div class="app-main">
+    <%- include('partials/header') %>
 
-  <main class="app-main">
-    <%- include('partials/header', { pageTitle: '홈' }) %>
-    
-    <section class="page-content">
-      <h2>대시보드</h2>
-      <p>여기에 대시보드 내용이 들어갑니다.</p>
-    </section>
-  </main>
+    <main class="app-content">
+      <p>페이지 내용</p>
+    </main>
+  </div>
 </div>
 
 <%- include('partials/footer') %>
