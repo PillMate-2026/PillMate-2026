@@ -15,7 +15,10 @@
     <span class="topbar-title"><%= locals.pageTitle || '홈' %></span>
     <span class="topbar-user">ooo님, 안녕하세요</span>
   </div>
-  <button class="notification-btn" type="button">
-    <img src="/images/icons/notification.svg" alt="알림" class="topbar-bell-icon">
-  </button>
+
+ <!-- 수정: id="notification-bell-btn" 추가 -->
+<button class="notification-btn" id="notification-bell-btn">
+  <img src="/images/notification.svg" class="topbar-bell-icon" alt="알림"/>
+</button>
+
 </header>

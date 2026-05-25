@@ -18,3 +18,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`PILLMATE 서버 실행 중: http://localhost:${PORT}`);
 });
+
+// feature/notification 라우터
+const notificationRoutes = require('./routes/notificationRoutes');
+app.use('/notifications', notificationRoutes);
