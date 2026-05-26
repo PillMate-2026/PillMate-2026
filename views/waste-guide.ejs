@@ -1,0 +1,92 @@
+<%- include('partials/header', { title: title }) %>
+
+<div class="app-layout">
+  <%- include('partials/sidebar', { user: user, activePage: 'waste-guide' }) %>
+
+  <div class="app-main">
+    <%- include('partials/topbar', { user: user, pageTitle: '폐기가이드', pageIcon: '/images/map.svg' }) %>
+
+    <div class="app-content">
+      <!-- 페이지 헤더 안내문 -->
+      <div class="guide-notice-banner">
+        <div class="guide-notice-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <rect width="36" height="36" rx="8" fill="#e8f5e9"/>
+            <path d="M18 8C12.48 8 8 12.48 8 18s4.48 10 10 10 10-4.48 10-10S23.52 8 18 8zm1 15h-2v-6h2v6zm0-8h-2v-2h2v2z" fill="#2e7d32"/>
+          </svg>
+        </div>
+        <div class="guide-notice-text">
+          <strong>폐의약품은 약국/보건소 수거함에 버려야 해요</strong>
+          <ul>
+            <li>약을 변기나 싱크대에 버리면 환경오염이 발생할 수 있어요</li>
+            <li>일반 쓰레기로 버리면 어린이나 반려동물이 실수로 먹을 위험이 있어요</li>
+            <li>가까운 약국, 보건소, 행정복지센터의 폐의약품 수거함을 이용해요</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 메인 그리드: 폐기 방법 + 지도 -->
+      <div class="guide-main-grid">
+        <!-- 왼쪽: 약 종류별 폐기 방법 -->
+        <div class="guide-left-panel">
+          <h2 class="guide-section-title">약 종류별 폐기 방법</h2>
+          <div class="guide-cards-grid">
+            <% guides.forEach(function(g) { %>
+              <div class="guide-card">
+                <div class="guide-card-header">
+                  <span class="guide-card-icon"><%= g.icon %></span>
+                  <span class="guide-card-type"><%= g.type %></span>
+                </div>
+                <div class="guide-card-img-placeholder">
+                  <span class="guide-card-img-text">사진</span>
+                </div>
+                <p class="guide-card-guide"><%= g.guide %></p>
+                <p class="guide-card-detail"><%= g.detail %></p>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+
+        <!-- 오른쪽: 수거함 찾기 지도 -->
+        <div class="guide-right-panel">
+          <div class="guide-map-header">
+            <h2 class="guide-section-title">폐의약품 수거함 찾기</h2>
+            <button id="btn-find-location" class="btn-find-location">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="3" stroke="white" stroke-width="2"/>
+                <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              내 위치로 찾기
+            </button>
+          </div>
+
+          <!-- 카카오맵 -->
+          <div id="kakao-map" class="kakao-map-container"></div>
+
+          <!-- 수거함 목록 -->
+          <div id="bin-list" class="bin-list">
+            <div class="bin-list-empty">
+              <p>📍 '내 위치로 찾기' 버튼을 눌러 가까운 수거함을 확인하세요</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /app-content -->
+  </div><!-- /app-main -->
+</div><!-- /app-layout -->
+
+<!-- 카카오맵 JS SDK -->
+<!-- ⚠️ 팀원 참고: .env에 KAKAO_MAP_API_KEY를 설정하고, app.js에서 res.locals.kakaoMapKey로 전달하세요 -->
+<!-- 예시: app.use((req, res, next) => { res.locals.kakaoMapKey = process.env.KAKAO_MAP_API_KEY; next(); }); -->
+<% if (typeof kakaoMapKey !== 'undefined' && kakaoMapKey) { %>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=<%= kakaoMapKey %>&libraries=services"></script>
+<% } else { %>
+  <!-- 개발 중: 카카오맵 API 키 없으면 더미 지도 표시 -->
+  <script>
+    window.KAKAO_MAP_UNAVAILABLE = true;
+  </script>
+<% } %>
+
+<script src="/js/waste-guide.js"></script>
+
+<%- include('partials/footer') %>
