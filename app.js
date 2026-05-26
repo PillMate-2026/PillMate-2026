@@ -14,6 +14,10 @@ app.use(express.json());
 const indexRoutes = require('./routes/indexRoutes');
 app.use('/', indexRoutes);
 
+
+const medicineRoutes = require('./routes/medicineRoutes');
+app.use('/medicines', medicineRoutes);
+
 const dashboardRouter = require('./routes/dashboard');
 app.use('/dashboard', dashboardRouter);
 
