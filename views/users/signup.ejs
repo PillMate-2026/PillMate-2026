@@ -1,0 +1,99 @@
+<h1>회원가입</h1>
+
+<form action="/auth/signup" method="POST">
+
+  <input
+    type="email"
+    name="email"
+    placeholder="아이디(이메일)"
+    required
+  >
+
+  <br><br>
+
+  <input
+    type="password"
+    name="password"
+    placeholder="비밀번호"
+    required
+  >
+
+  <br><br>
+
+  <input
+    type="password"
+    name="passwordConfirm"
+    placeholder="비밀번호 확인"
+    required
+  >
+
+  <br><br>
+
+  <input
+    type="text"
+    name="name"
+    placeholder="이름"
+    required
+  >
+
+  <br><br>
+
+  <label>성별</label>
+
+  <input
+    type="radio"
+    name="gender"
+    value="남자"
+  >
+  남자
+
+  <input
+    type="radio"
+    name="gender"
+    value="여자"
+  >
+  여자
+
+  <br><br>
+
+  <label>생년월일</label>
+
+  <br><br>
+
+  <select name="birth_year" required>
+  <% for (let year = 2026; year >= 1900; year--) { %>
+    <option value="<%= year %>"><%= year %>년</option>
+  <% } %>
+</select>
+
+<select name="birth_month" required>
+  <% for (let month = 1; month <= 12; month++) { %>
+    <option value="<%= month %>"><%= month %>월</option>
+  <% } %>
+</select>
+
+<select name="birth_day" required>
+  <% for (let day = 1; day <= 31; day++) { %>
+    <option value="<%= day %>"><%= day %>일</option>
+  <% } %>
+</select>
+
+  <br><br>
+
+  <button type="submit">
+    회원가입
+  </button>
+
+</form>
+
+<br><hr><br>
+
+<a href="/auth/google">
+  Google로 회원가입
+</a>
+
+<br><br>
+
+<a href="/auth/login">
+  로그인하러 가기
+</a>
