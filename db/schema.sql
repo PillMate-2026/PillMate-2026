@@ -108,7 +108,14 @@ CREATE TABLE `MEDICINE` (
   `expiration_date` DATE NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `item_seq` VARCHAR(20) NOT NULL, --품목코드 추가
+  `entp_name` VARCHAR(100) NULL, --회사명 추가
+  `item_image` TEXT NULL, --사진 추가
+  `efficacy` TEXT NULL, --효과효능 추가
   `use_method` TEXT NULL,
+  `precaution` TEXT NULL, --주의사항 추가
+  `interaction` TEXT NULL, --상호작용 추가
+  `side_effect` TEXT NULL, --부작용 추가
   `version` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`medicine_id`),
   CONSTRAINT `fk_medicine_user`
