@@ -1,0 +1,71 @@
+<div class="app-wrapper">
+  <%- include('../partials/sidebar') %>
+
+  <div class="app-main">
+    <%- include('../partials/header') %>
+
+    <main class="app-content">
+
+      <section class="text-register-container">
+
+        <div class="page-title">
+          <h2>➕ 약 등록하기</h2>
+          <p>약장에 의약품을 추가합니다</p>
+        </div>
+
+        <form class="medicine-form">
+
+          <div class="form-group">
+            <label for="medicineName">의약품 이름</label>
+            <input
+              type="text"
+              id="medicineName"
+              name="medicineName"
+              class="form-input"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="expiryDate">유통기한</label>
+            <input
+              type="date"
+              id="expiryDate"
+              name="expiryDate"
+              class="form-input"
+            >
+          </div>
+
+          <div class="autocomplete-guide">
+            ⓘ 외부 API를 통한 자동완성을 지원합니다.
+            약 이름을 2자 이상 입력하면 후보가 표시됩니다.
+          </div>
+
+          <div class="button-group">
+
+            <button
+              type="button"
+              class="cancel-btn"
+              onclick="history.back()"
+            >
+              취소하기
+            </button>
+
+            <button
+              type="submit"
+              class="save-btn"
+            >
+              약장에 등록하기
+            </button>
+
+          </div>
+
+        </form>
+
+      </section>
+
+    </main>
+
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
