@@ -4,9 +4,10 @@ const db = require('../db/connection');
 
 router.get('/', async (req, res) => {
   try {
-    const userId = 1;
+    const userId = parseInt(req.query.userId) || 1;
+    console.log('userId:', userId);
     const scope = req.query.scope === 'family' ? 'family' : 'personal';
-    const status = req.query.status === 'expired' ? 'expired' : 'valid';
+    const status = req.query.status || 'all';
     const sort = req.query.sort === 'name' ? 'name' : 'expiry';
     const search = req.query.search ? req.query.search.trim() : '';
 
@@ -28,6 +29,7 @@ router.get('/', async (req, res) => {
           sort,
           search,
           familyId,
+          userId,
           total: 0,
         });
       }
@@ -45,9 +47,9 @@ router.get('/', async (req, res) => {
     }
 
     if (status === 'expired') {
-      where.push('expiration_date < CURDATE()');
-    } else {
-      where.push('expiration_date >= CURDATE()');
+        where.push('expiration_date < CURDATE()');
+    } else if (status === 'normal') {
+        where.push('expiration_date >= CURDATE()');
     }
 
     const orderBy = sort === 'name' ? 'name ASC' : 'expiration_date ASC';
@@ -74,6 +76,7 @@ router.get('/', async (req, res) => {
       sort,
       search,
       familyId,
+      userId,
       total: medicines.length,
     });
   } catch (err) {

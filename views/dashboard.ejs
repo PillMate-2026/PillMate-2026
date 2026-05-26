@@ -24,8 +24,14 @@
 
         <div class="control-group">
           <span>상태</span>
-          <a href="/dashboard?scope=<%= scope %>&status=valid&sort=<%= sort %>&search=<%= encodeURIComponent(search) %>" class="<%= status === 'valid' ? 'active' : '' %>">유효</a>
-          <a href="/dashboard?scope=<%= scope %>&status=expired&sort=<%= sort %>&search=<%= encodeURIComponent(search) %>" class="<%= status === 'expired' ? 'active' : '' %>">만료</a>
+          <a href="?userId=<%= userId %>&scope=<%= scope %>&status=<%= status === 'normal' ? 'all' : 'normal' %>&sort=<%= sort %>&search=<%= search %>"
+            class="filter-btn <%= status === 'normal' ? 'active' : '' %>">
+          유효
+          </a>
+          <a href="?userId=<%= userId %>&scope=<%= scope %>&status=<%= status === 'expired' ? 'all' : 'expired' %>&sort=<%= sort %>&search=<%= search %>"
+            class="filter-btn <%= status === 'expired' ? 'active' : '' %>">
+          만료
+          </a>
         </div>
 
         <label class="sort-select">
