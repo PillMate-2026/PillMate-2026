@@ -5,7 +5,6 @@ const db = require('../db/connection');
 router.get('/', async (req, res) => {
   try {
     const userId = parseInt(req.query.userId) || 1;
-    console.log('userId:', userId);
     const scope = req.query.scope === 'family' ? 'family' : 'personal';
     const status = req.query.status || 'all';
     const sort = req.query.sort === 'name' ? 'name' : 'expiry';
@@ -68,6 +67,27 @@ router.get('/', async (req, res) => {
       `,
       params
     );
+    let statsWhere, statsParams;
+if (scope === 'family') {
+  statsWhere = 'family_id = ?';
+  statsParams = [familyId];
+} else {
+  statsWhere = 'user_id = ?';
+  statsParams = [userId];
+}
+
+const [statsResult] = await db.query(`
+  SELECT
+    COUNT(*) AS total,
+    SUM(CASE WHEN expiration_date >= CURDATE() THEN 1 ELSE 0 END) AS normalCount,
+    SUM(CASE WHEN expiration_date < CURDATE() THEN 1 ELSE 0 END) AS expiredCount
+  FROM MEDICINE
+  WHERE ${statsWhere}
+`, statsParams);
+
+const total = statsResult[0].total;
+const normalCount = statsResult[0].normalCount;
+const expiredCount = statsResult[0].expiredCount;
 
     res.render('dashboard', {
       medicines,
@@ -77,7 +97,9 @@ router.get('/', async (req, res) => {
       search,
       familyId,
       userId,
-      total: medicines.length,
+      total,
+      normalCount,
+      expiredCount,
     });
   } catch (err) {
     console.error(err);
