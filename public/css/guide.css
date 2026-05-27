@@ -95,10 +95,10 @@
   color: #9e9e9e;
 }
 
-/* ★ 실제 이미지 (수정 핵심) */
+
 .guide-card-img-real {
-  width: 100px;         /* 🔥 기존 88px → 100px로 증가 */
-  height: 100px;        /* 🔥 기존 88px → 100px로 증가 */
+  width: 100px;        
+  height: 100px;        
   object-fit: contain;
   display: block;
   margin: 6px auto;

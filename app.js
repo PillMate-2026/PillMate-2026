@@ -34,10 +34,9 @@ app.use('/', indexRoutes);
 
 // feature/guide 브랜치 머지 후 적용
 const guideRoutes = require('./routes/guideRoutes');
-app.use('/guide', guideRoutes);
+app.use('/disposal-guide', guideRoutes);
 
-// → GET /guide
-// → GET /guide/nearby
+// → GET /disposal-guide
 
 // ============================================================
 // 서버 실행

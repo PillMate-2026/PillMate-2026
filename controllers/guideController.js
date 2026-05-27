@@ -8,7 +8,7 @@ const getGuidePage = (req, res) => {
   try {
     const guides = guideModel.getDisposalGuide();
     const user = req.user || null;
-    res.render('guide', { guides, user, title: '폐기가이드', kakaoMapKey: process.env.KAKAO_MAP_API_KEY });
+    res.render('guide', { guides, user, title: '폐기가이드', kakaoMapKey: process.env.KAKAO_MAP_API_KEY,activeMenu: 'disposal-guide'});
   } catch (err) {
     console.error('[guideController] getGuidePage:', err);
     res.status(500).render('error', { message: '폐기 가이드 조회 중 오류가 발생했습니다.' });
