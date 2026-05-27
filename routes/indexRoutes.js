@@ -3,7 +3,7 @@ const axios = require('axios');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.render('index', { title: 'PILLMATE — 스마트 약장 관리' });
+  res.render('login', { title: 'PILLMATE — 스마트 약장 관리' });
 });
 
 router.get('/medicine-detail', (req, res) => {
