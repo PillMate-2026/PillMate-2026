@@ -108,14 +108,14 @@ CREATE TABLE `MEDICINE` (
   `expiration_date` DATE NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `item_seq` VARCHAR(20) NOT NULL, --품목코드 추가
-  `entp_name` VARCHAR(100) NULL, --회사명 추가
-  `item_image` TEXT NULL, --사진 추가
-  `efficacy` TEXT NULL, --효과효능 추가
+  `item_seq` VARCHAR(20) NULL,
+  `entp_name` VARCHAR(100) NULL, 
+  `item_image` TEXT NULL, 
+  `efficacy` TEXT NULL,
   `use_method` TEXT NULL,
-  `precaution` TEXT NULL, --주의사항 추가
-  `interaction` TEXT NULL, --상호작용 추가
-  `side_effect` TEXT NULL, --부작용 추가
+  `precaution` TEXT NULL,
+  `interaction` TEXT NULL, 
+  `side_effect` TEXT NULL, 
   `version` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`medicine_id`),
   CONSTRAINT `fk_medicine_user`
@@ -130,29 +130,7 @@ CREATE TABLE `MEDICINE` (
     CHECK ((`user_id` IS NULL) <> (`family_id` IS NULL))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 8. MEDICINE_WARNING
-CREATE TABLE `MEDICINE_WARNING` (
-  `warning_id` INT NOT NULL AUTO_INCREMENT,
-  `medicine_id` INT NOT NULL,
-  `content` VARCHAR(255) NOT NULL,
-  `type` VARCHAR(20) NOT NULL,
-  PRIMARY KEY (`warning_id`),
-  CONSTRAINT `fk_warning_medicine`
-    FOREIGN KEY (`medicine_id`)
-    REFERENCES `MEDICINE` (`medicine_id`)
-    ON DELETE CASCADE,
-  CONSTRAINT `chk_warning_type`
-    CHECK (
-      `type` COLLATE utf8mb4_unicode_ci IN (
-        _utf8mb4'주의사항' COLLATE utf8mb4_unicode_ci,
-        _utf8mb4'상호작용' COLLATE utf8mb4_unicode_ci,
-        _utf8mb4'부작용' COLLATE utf8mb4_unicode_ci,
-        _utf8mb4'경고' COLLATE utf8mb4_unicode_ci
-      )
-    )
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- 9. NOTIFICATION
+-- 8. NOTIFICATION
 CREATE TABLE `NOTIFICATION` (
   `notification_id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
@@ -172,7 +150,7 @@ CREATE TABLE `NOTIFICATION` (
     ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 10. MEDICINE_INGREDIENT
+-- 9. MEDICINE_INGREDIENT
 CREATE TABLE `MEDICINE_INGREDIENT` (
   `medicine_id` INT NOT NULL,
   `ingredient_id` INT NOT NULL,
@@ -187,7 +165,7 @@ CREATE TABLE `MEDICINE_INGREDIENT` (
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 11. INGREDIENT_SYMPTOM
+-- 10. INGREDIENT_SYMPTOM
 CREATE TABLE `INGREDIENT_SYMPTOM` (
   `ingredient_id` INT NOT NULL,
   `symptom_id` INT NOT NULL,
