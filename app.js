@@ -21,6 +21,9 @@ app.use('/medicines', medicineRoutes);
 const dashboardRouter = require('./routes/dashboard');
 app.use('/dashboard', dashboardRouter);
 
+const medicineDetailRoutes = require('./routes/medicineDetailRoutes');
+app.use('/', medicineDetailRoutes);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`PILLMATE 서버 실행 중: http://localhost:${PORT}`);
