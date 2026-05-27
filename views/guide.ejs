@@ -1,107 +1,239 @@
-<%- include('partials/header', { title: title }) %>
+
+<%# ============================================================
+  views/guide.ejs — feature/guide 버그픽스
+  
+  수정사항:
+  1. <head>에 guide.css 직접 link (height:300px 적용되게)
+  2. 카카오맵 SDK를 footer보다 먼저 async로 로드
+  3. 이미지 경로 /images/map.svg → /images/icons/map.svg
+  4. /images/notification.svg → /images/icons/notification.svg
+  5. guideModel.js 의 imgFile 실제 출력 적용
+  ============================================================ %>
+
+<%- include('partials/header', { title: '폐기가이드' }) %>
+
+<%# ★ 수정1: guide.css를 head에서 바로 로드해야 #kakao-map height:300px 적용됨 %>
 <link rel="stylesheet" href="/css/guide.css">
 
 <div class="app-layout">
-  <%- include('partials/sidebar', { user: user, activePage: 'guide' }) %>
+  <%- include('partials/sidebar', { activeMenu: 'guide' }) %>
 
   <div class="app-main">
 
-    <!-- ── 탑바 ── -->
     <div class="app-topbar">
       <div class="topbar-left">
-        <img src="/images/map.svg" class="topbar-page-icon" alt="폐기가이드">
+
+        <%# ★ 수정3: /images/map.svg → /images/icons/map.svg %>
+        <img
+          src="/images/icons/map.svg"
+          class="topbar-page-icon"
+          alt="폐기가이드"
+        >
+
         <span class="topbar-title">폐기가이드</span>
-        <span class="topbar-subtitle">집에 남은 약은 일반 쓰레기나 하수구에 버리지 말고, 올바른 방법으로 폐기해 주세요.</span>
+
+        <span class="topbar-subtitle">
+          집에 남은 약은 일반 쓰레기나 하수구에 버리지 말고,
+          올바른 방법으로 폐기해 주세요.
+        </span>
+
       </div>
-      <% if (user) { %>
-        <button class="notification-btn" id="notification-bell-btn">
-          <img src="/images/notification.svg" class="topbar-bell-icon" alt="알림">
-        </button>
-      <% } %>
+
+      <button
+        class="notification-btn"
+        id="notification-bell-btn"
+        type="button"
+      >
+
+        <%# ★ 수정4: /images/notification.svg → /images/icons/notification.svg %>
+        <img
+          src="/images/icons/notification.svg"
+          class="topbar-bell-icon"
+          alt="알림"
+        >
+
+      </button>
     </div>
 
     <div class="app-content">
-
-      <!-- ── 2단 그리드: 왼쪽(안내+카드) / 오른쪽(지도+수거함) ── -->
       <div class="guide-grid">
 
-        <!-- ════ 왼쪽 ════ -->
+        <!-- 왼쪽: 안내배너 + 폐기 방법 카드 -->
         <div class="guide-left">
 
-          <!-- 안내 배너 -->
           <div class="guide-banner">
+
             <div class="guide-banner-icon">
               <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
                 <rect width="44" height="44" rx="10" fill="#e8f5e9"/>
-                <!-- 사람 + 통 아이콘 -->
-                <path d="M22 10a4 4 0 1 1 0 8 4 4 0 0 1 0-8z" fill="#2e7d32"/>
-                <path d="M14 34c0-6 4-10 8-10s8 4 8 10" stroke="#2e7d32" stroke-width="2" stroke-linecap="round"/>
-                <rect x="28" y="24" width="8" height="10" rx="2" fill="#2e7d32"/>
-                <path d="M27 26h10" stroke="#fff" stroke-width="1.5"/>
+
+                <path
+                  d="M22 10a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"
+                  fill="#2e7d32"
+                />
+
+                <path
+                  d="M14 34c0-6 4-10 8-10s8 4 8 10"
+                  stroke="#2e7d32"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+
+                <rect
+                  x="28"
+                  y="24"
+                  width="8"
+                  height="10"
+                  rx="2"
+                  fill="#2e7d32"
+                />
+
+                <path
+                  d="M27 26h10"
+                  stroke="#fff"
+                  stroke-width="1.5"
+                />
               </svg>
             </div>
+
             <div class="guide-banner-text">
-              <strong>폐의약품은 약국/보건소 수거함에 버려야 해요</strong>
-              <p>◎약을 변기나 싱크대에 버리면 환경오염이 발생할 수 있어요</p>
-              <p>◎일반 쓰레기로 버리면 어린이나 반려동물이 실수로 먹을 위험이 있어요</p>
-              <p>◎가까운 약국, 보건소, 행정복지센터의 폐의약품 수거함을 이용해요</p>
+              <strong>
+                폐의약품은 약국/보건소 수거함에 버려야 해요
+              </strong>
+
+              <p>
+                ◎약을 변기나 싱크대에 버리면 환경오염이 발생할 수 있어요
+              </p>
+
+              <p>
+                ◎일반 쓰레기로 버리면 어린이나 반려동물이
+                실수로 먹을 위험이 있어요
+              </p>
+
+              <p>
+                ◎가까운 약국, 보건소, 행정복지센터의
+                폐의약품 수거함을 이용해요
+              </p>
             </div>
+
           </div>
 
-          <!-- 약 종류별 폐기 방법 -->
-          <h3 class="guide-cards-title">약 종류별 폐기 방법</h3>
+          <h3 class="guide-cards-title">
+            약 종류별 폐기 방법
+          </h3>
+
           <div class="guide-cards">
+
             <% guides.forEach(function(g) { %>
+
               <div class="guide-card">
-                <div class="guide-card-label"><%= g.type %></div>
-                <div class="guide-card-img">사진</div>
-                <p class="guide-card-desc">포장지를 제거하고<br>내용물만 모아서 배출</p>
+
+                <div class="guide-card-label">
+                  <%= g.type %>
+                </div>
+
+                <%# ★ 수정5: guideModel.js 의 imgFile 실제 출력 %>
+                <img
+                  src="<%= g.imgFile %>"
+                  alt="<%= g.type %>"
+                  class="guide-card-img-real"
+                >
+
+                <p class="guide-card-desc">
+                  <%= g.guide %>
+                </p>
+
               </div>
+
             <% }) %>
+
           </div>
 
-        </div><!-- /guide-left -->
+        </div>
 
-        <!-- ════ 오른쪽 ════ -->
+        <!-- 오른쪽: 지도 + 수거함 목록 -->
         <div class="guide-right">
 
-          <!-- 헤더 -->
           <div class="guide-map-header">
-            <h3 class="guide-map-title">폐의약품 수거함 찾기</h3>
-            <button id="btn-find-location" class="btn-find-location">
+
+            <h3 class="guide-map-title">
+              폐의약품 수거함 찾기
+            </h3>
+
+            <button
+              id="btn-find-location"
+              class="btn-find-location"
+              type="button"
+            >
+
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="3" stroke="#fff" stroke-width="2.5"/>
-                <path d="M12 2v3M12 19v3M2 12h3M19 12h3"
-                      stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="3"
+                  stroke="#fff"
+                  stroke-width="2.5"
+                />
+
+                <path
+                  d="M12 2v3M12 19v3M2 12h3M19 12h3"
+                  stroke="#fff"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                />
+
               </svg>
+
               내 위치로 찾기
+
             </button>
+
           </div>
 
-          <!-- 카카오맵 -->
+          <%# ★ 핵심: #kakao-map 은 반드시 guide.css가 먼저 로드돼야 height:300px 적용됨 %>
           <div id="kakao-map" class="guide-map"></div>
 
-          <!-- 수거함 카드 4개 (거리순) -->
           <div id="bin-list" class="bin-list">
             <div class="bin-placeholder"></div>
             <div class="bin-placeholder"></div>
             <div class="bin-placeholder"></div>
           </div>
 
-        </div><!-- /guide-right -->
+        </div>
 
-      </div><!-- /guide-grid -->
-    </div><!-- /app-content -->
-  </div><!-- /app-main -->
-</div><!-- /app-layout -->
+      </div>
+    </div>
+  </div>
+</div>
 
-<!-- 카카오맵 SDK -->
-<%# ⚠️ app.js에서 res.locals.kakaoMapKey = process.env.KAKAO_MAP_API_KEY 설정 필요 %>
-<% if (typeof kakaoMapKey !== 'undefined' && kakaoMapKey) { %>
-  <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=<%= kakaoMapKey %>&libraries=services"></script>
+<%# ============================================================
+  ★ 수정2: 카카오맵 SDK 로드 순서 핵심 수정
+  
+  기존 문제:
+  footer.ejs 의 bootstrap JS 이후에 로드
+  → guide.js 실행 시점에 kakao 객체 없음
+  
+  해결:
+  guide.js 보다 앞에 callback 방식으로 로드
+  - autoload=false
+  - kakao.maps.load() 콜백 안에서 initMap() 호출
+  ============================================================ %>
+
+<% if (locals.kakaoMapKey) { %>
+
+  <%# autoload=false: SDK 로드 완료 후 직접 콜백 실행 %>
+  <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=<%= kakaoMapKey %>&autoload=false"></script>
+
 <% } else { %>
-  <script>window.KAKAO_MAP_UNAVAILABLE = true;</script>
+
+  <script>
+    window.KAKAO_MAP_UNAVAILABLE = true;
+  </script>
+
 <% } %>
 
 <script src="/js/guide.js"></script>
+
 <%- include('partials/footer') %>
+```
