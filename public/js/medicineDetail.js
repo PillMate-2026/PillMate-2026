@@ -1,3 +1,5 @@
+let currentMedicineId = null;
+
 function cleanText(text) {
   if (!text) return '-';
 
@@ -30,51 +32,67 @@ function setStatusBadge(expirationDate) {
   }
 }
 
-function openEditExpirationModal() {
+async function openEditExpirationModal() {
   alert('유통기한 수정 창을 띄울 예정입니다.');
 }
 
-function openDisposalGuide() {
+async function openDisposalGuide() {
   alert('폐기 가이드 창으로 이동할 예정입니다.');
 }
 
-function openDeleteConfirm() {
+async function openDeleteConfirm() {
   const result = confirm('정말 삭제하시겠습니까?');
 
-  if (result) {
-    alert('삭제 처리 예정입니다.');
+  if (!result) return;
+  try {
+    const response = await fetch(`/api/medicines/${currentMedicineId}`, {
+      method: 'DELETE'
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert('삭제되었습니다.');
+      location.reload();
+    } else {
+      alert(data.error || '삭제 실패');
+    }
+
+  } catch (error) {
+    console.error(error);
+    alert('서버 오류');
   }
 }
 
-window.openMedicineDetailModal = async function() {
-  const response = await fetch('/api/medicine-test');
-  const medicine = await response.json();
+window.openMedicineDetailModal = async function(id) {
+  currentMedicineId = id;
 
-  const createdAt = medicine.createdAt || '2026-05-11';
-  const expirationDate = medicine.expirationDate || '2026-06-24';
+  try {
+  const response = await fetch(`/api/medicine-detail/${currentMedicineId}`);
+  const medicine = await response.json();
 
   document.getElementById('modalMedicineImage').src =
     medicine.itemImage || '/images/logo2.png';
 
-  document.getElementById('modalMedicineName').innerText =
-    medicine.itemName || '-';
+  document.getElementById('modalMedicineName').textContent = //나중에 바꾸기
+    medicine.name || '-';
 
   document.getElementById('modalIngredient').innerText =
     medicine.ingredient || '-';
 
-  document.getElementById('modalEntpName').innerText =
-    medicine.entpName || '-';
+  document.getElementById('modalEntpName').textContent = //나중에 바꾸기
+    medicine.entp_name || '-';
 
-  document.getElementById('modalCreatedAt').innerText = createdAt;
-  document.getElementById('modalExpirationDate').innerText = expirationDate;
+  document.getElementById('modalCreatedAt').textContent = medicine.created_at; //나중에 바꾸기
+  document.getElementById('modalExpirationDate').textContent = medicine.expiration_date; //나중에 바꾸기
 
-  setStatusBadge(expirationDate);
+  setStatusBadge(medicine.expiration_date);
 
   document.getElementById('modalEfficacy').innerText =
     cleanText(medicine.efficacy);
 
-  document.getElementById('modalUseMethod').innerText =
-    cleanText(medicine.useMethod);
+  document.getElementById('modalUseMethod').textContent = //나중에 바꾸기
+    cleanText(medicine.use_method);
 
   document.getElementById('modalPrecaution').innerText =
     cleanText(medicine.precaution);
@@ -82,11 +100,16 @@ window.openMedicineDetailModal = async function() {
   document.getElementById('modalInteraction').innerText =
     cleanText(medicine.interaction);
 
-  document.getElementById('modalSideEffect').innerText =
-    cleanText(medicine.sideEffect);
+  document.getElementById('modalSideEffect').textContent = //나중에 바꾸기
+    cleanText(medicine.side_effect);
 
   document.getElementById("medicineDetailModal").style.display = "flex";
+
+  } catch (error) {
+    console.error(error);
+    alert('약 정보를 불러오지 못했습니다.');
 }
+};
 
 window.closeMedicineDetailModal = function () {
   document.getElementById("medicineDetailModal").style.display = "none";
