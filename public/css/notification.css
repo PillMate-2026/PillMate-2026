@@ -1,9 +1,4 @@
-/* public/css/notification.css */
-/* feature/notification 브랜치 담당: 알림 모달 스타일 */
-/* style.css의 공통 변수 및 레이아웃 클래스를 이어받음 */
-
-/* ===== Bell 버튼 (topbar에 위치) ===== */
-/* ⚠️ 팀원 참고: header.ejs / topbar의 Bell 버튼에 id="notification-bell-btn" 추가 필요 */
+/*⚠️ 팀원 참고: header.ejs / topbar의 Bell 버튼에 id="notification-bell-btn" 추가 필요 */
 
 #notification-bell-btn {
   position: relative; /* 배지 절대 위치 기준 */
