@@ -1,0 +1,259 @@
+/*⚠️ 팀원 참고: header.ejs / topbar의 Bell 버튼에 id="notification-bell-btn" 추가 필요 */
+
+#notification-bell-btn {
+  position: relative; /* 배지 절대 위치 기준 */
+}
+
+/* 읽지 않은 알림 개수 배지 */
+.notif-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #e53935;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* ===== 알림 모달 ===== */
+.notification-modal {
+  position: fixed;
+  /* Bell 버튼 아래 위치 — topbar 높이에 맞게 조정 */
+  top: 120px;
+  right: 44px;
+  width: 360px;
+  max-height: 520px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  /* 열릴 때 애니메이션 */
+  animation: notif-modal-in 0.2s ease;
+}
+
+.notification-modal.open {
+  display: flex;
+}
+
+@keyframes notif-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===== 모달 헤더 ===== */
+.notif-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.notif-modal-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #9e9e9e;
+  letter-spacing: 0.02em;
+}
+
+.notif-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color 0.15s;
+}
+
+.notif-modal-close:hover {
+  background-color: #f5f5f5;
+}
+
+/* ===== 모달 바디 ===== */
+.notif-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 스크롤바 스타일 */
+.notif-modal-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.notif-modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notif-modal-body::-webkit-scrollbar-thumb {
+  background: #e0e0e0;
+  border-radius: 2px;
+}
+
+/* ===== 로딩 / 빈 상태 ===== */
+.notif-loading,
+.notif-empty {
+  text-align: center;
+  padding: 32px 16px;
+  font-size: 14px;
+  color: #9e9e9e;
+}
+
+.notif-error {
+  color: #c62828;
+}
+
+/* ===== 알림 아이템 ===== */
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background-color: #ffffff;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  position: relative;
+}
+
+.notif-item:hover {
+  background-color: #f9fafb;
+}
+
+/* 읽은 알림 → 회색 배경 처리 (UI 디자인 참고 반영) */
+.notif-item--read {
+  background-color: #f5f5f5 !important;
+  border-color: #eeeeee;
+}
+
+.notif-item--read:hover {
+  background-color: #eeeeee !important;
+}
+
+/* 삭제 애니메이션 */
+.notif-item--removing {
+  animation: notif-item-out 0.3s ease forwards;
+}
+
+@keyframes notif-item-out {
+  from {
+    opacity: 1;
+    max-height: 100px;
+    margin-bottom: 0;
+  }
+  to {
+    opacity: 0;
+    max-height: 0;
+    padding: 0;
+    margin-bottom: -8px;
+    border-width: 0;
+  }
+}
+
+/* 알림 아이콘 (캡슐 SVG) */
+.notif-item-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* 알림 내용 */
+.notif-item-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notif-item-text {
+  font-size: 14px;
+  color: #1a1a1a;
+  line-height: 1.5;
+  margin: 0;
+  word-break: keep-all;
+}
+
+.notif-item--read .notif-item-text {
+  color: #757575;
+}
+
+/* 약 이름 초록색 강조 (UI 디자인 참고) */
+.notif-item-medicine {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.notif-item--read .notif-item-medicine {
+  color: #757575;
+}
+
+/* 시간 표시 */
+.notif-item-time {
+  font-size: 12px;
+  color: #9e9e9e;
+}
+
+/* 삭제 버튼 */
+.notif-item-delete {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color 0.15s;
+  opacity: 0;
+  transition: opacity 0.15s, background-color 0.15s;
+}
+
+.notif-item:hover .notif-item-delete {
+  opacity: 1;
+}
+
+.notif-item-delete:hover {
+  background-color: #ffebee;
+}
+
+.notif-item-delete:hover svg path {
+  stroke: #e53935;
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 640px) {
+  .notification-modal {
+    right: 14px;
+    left: 14px;
+    width: auto;
+    top: auto;
+    /* 모바일에서는 화면 하단에서 올라오는 방식 */
+    bottom: 70px;
+  }
+}
