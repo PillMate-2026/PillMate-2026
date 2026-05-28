@@ -17,3 +17,6 @@ Thumbs.db
 # 로그
 *.log
 npm-debug.log*
+
+# GCP Key
+config/gcp-key.json
