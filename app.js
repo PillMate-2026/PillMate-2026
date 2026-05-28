@@ -31,11 +31,14 @@ app.use((req, res, next) => {
 const indexRoutes = require('./routes/indexRoutes');
 app.use('/', indexRoutes);
 
-// feature/guide 브랜치 머지 후 적용
 const guideRoutes = require('./routes/guideRoutes');
 app.use('/disposal-guide', guideRoutes);
 
-// → GET /disposal-guide
+const medicineRoutes = require('./routes/medicineRoutes');
+app.use('/medicines', medicineRoutes);
+
+const dashboardRouter = require('./routes/dashboard');
+app.use('/dashboard', dashboardRouter);
 
 // ============================================================
 // 서버 실행

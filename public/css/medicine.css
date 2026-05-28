@@ -1,0 +1,202 @@
+.ocr-register-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.page-title h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.page-title p {
+  color: #666;
+  margin: 0;
+}
+
+.upload-box {
+  background: #ffffff;
+  border: 3px dashed #d9d9d9;
+  border-radius: 24px;
+  padding: 48px;
+  text-align: center;
+  min-height: 320px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.upload-illustration {
+  width: 180px;
+  margin: 0 auto 24px;
+}
+
+.upload-guide {
+  margin-bottom: 24px;
+  color: #555;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.file-select-btn {
+  width: 140px;
+  height: 48px;
+
+  margin: 0 auto;
+
+  border: 1px solid #4da3ff;
+  border-radius: 8px;
+
+  background: #e8f3ff;
+  color: #1d5fa7;
+
+  cursor: pointer;
+}
+
+.preview-image {
+  display: block;
+  margin: 24px auto 0;
+  max-width: 300px;
+  border-radius: 12px;
+}
+
+.register-btn {
+  width: 100%;
+  height: 56px;
+
+  margin-top: 24px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #3ea0df;
+  color: white;
+
+  font-size: 18px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.register-btn:hover {
+  opacity: 0.9;
+}
+
+.manual-btn {
+  width: 100%;
+  height: 56px;
+
+  margin-top: 16px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #d9d9d9;
+  color: #333;
+
+  font-size: 18px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.manual-btn:hover {
+  opacity: 0.9;
+}
+
+/* ===== Text Register ===== */
+
+.text-register-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.medicine-form {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 40px;
+}
+
+.form-group {
+  margin-bottom: 28px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.form-input {
+  width: 100%;
+  height: 56px;
+
+  padding: 0 16px;
+
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+
+  font-size: 16px;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #3ea0df;
+}
+
+.autocomplete-guide {
+  margin-top: 32px;
+  margin-bottom: 48px;
+
+  padding: 18px;
+
+  background: #f5f5f5;
+  border-radius: 8px;
+
+  color: #555;
+  font-size: 14px;
+}
+
+.button-group {
+  display: flex;
+  gap: 24px;
+}
+
+.cancel-btn,
+.save-btn {
+  flex: 1;
+
+  height: 60px;
+
+  border: none;
+  border-radius: 10px;
+
+  font-size: 18px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: #f2f2f2;
+  color: #333;
+}
+
+.save-btn {
+  background: #3ea0df;
+  color: white;
+}
+
+.cancel-btn:hover,
+.save-btn:hover {
+  opacity: 0.9;
+}

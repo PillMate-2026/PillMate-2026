@@ -1,0 +1,88 @@
+<div class="app-wrapper">
+  <%- include('../partials/sidebar') %>
+
+  <div class="app-main">
+    <%- include('../partials/header') %>
+
+    <main class="app-content">
+
+  <section class="ocr-register-container">
+
+    <div class="page-title">
+      <h2>➕ 약 등록하기</h2>
+      <p>약장에 의약품을 추가합니다</p>
+    </div>
+
+    <div class="upload-box">
+
+    <!--
+    <img
+    src="/images/pill-character.png"
+    alt="PillMate캐릭터"
+    class="upload-illustration"
+    >
+    -->
+
+      <p class="upload-guide">
+        '파일 선택' 버튼을 클릭하거나,
+        사진 파일을 드래그하여 업로드 영역에 놓으세요.
+      </p>
+
+      <input
+        type="file"
+        id="medicineImage"
+        accept="image/*"
+        hidden
+      >
+
+      <button
+        type="button"
+        class="file-select-btn"
+        onclick="document.getElementById('medicineImage').click()"
+      >
+        파일 선택
+      </button>
+
+      <img
+        id="previewImage"
+        class="preview-image"
+        style="display:none"
+      >
+
+    </div>
+
+    <button class="register-btn">
+      등록하기
+    </button>
+
+    <button
+        class="manual-btn"
+        onclick="location.href='/medicines/manual'"
+    >
+        텍스트로 약 등록하기
+    </button>
+
+  </section>
+
+</main>
+
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+
+<script>
+const imageInput = document.getElementById('medicineImage');
+const previewImage = document.getElementById('previewImage');
+
+imageInput.addEventListener('change', (event) => {
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  const imageUrl = URL.createObjectURL(file);
+
+  previewImage.src = imageUrl;
+  previewImage.style.display = 'block';
+});
+</script>
