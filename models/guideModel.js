@@ -5,22 +5,22 @@ const pool = require('../db/connection');
 const getDisposalGuide = () => [
   {
     type: '알약/캡슐',
-    guide: '포장지를 제거하고 내용물만 모아서 배출',
+    guide: '낱알 포장(PTP)에서 약만 꺼내 모아서 수거함에 배출해요',
     imgFile: '/images/icons/png/pill.png',
   },
   {
     type: '가루약',
-    guide: '포장지를 제거하고 내용물만 모아서 배출',
+    guide: '봉지 그대로 밀봉해서 수거함에 배출해요',
     imgFile: '/images/icons/png/powder.png',
   },
   {
     type: '물약',
-    guide: '포장지를 제거하고 내용물만 모아서 배출',
+    guide: '뚜껑을 꽉 닫아 병째로 수거함에 배출해요',
     imgFile: '/images/icons/png/liquid.png',
   },
   {
-    type: '기타',
-    guide: '포장지를 제거하고 내용물만 모아서 배출',
+    type: '연고/크림',
+    guide: '튜브나 용기째로 수거함에 배출해요',
     imgFile: '/images/icons/png/etc.png',
   },
 ];

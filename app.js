@@ -1,5 +1,4 @@
 require('dotenv').config();
-console.log('불러온 카카오 키:', process.env.KAKAO_MAP_API_KEY); // ★ 이 줄을 추가해서 확인!
 const express = require('express');
 const path = require('path');
 
