@@ -9,29 +9,6 @@ function cleanText(text) {
     .trim();
 }
 
-function isExpired(expirationDate) {
-  const today = new Date();
-  const expDate = new Date(expirationDate);
-
-  today.setHours(0, 0, 0, 0);
-  expDate.setHours(0, 0, 0, 0);
-
-  return expDate < today;
-}
-
-function setStatusBadge(expirationDate) {
-  const usableBadge = document.getElementById('modalUsableStatus');
-  const expiredBadge = document.getElementById('modalExpiredStatus');
-
-  if (isExpired(expirationDate)) {
-    usableBadge.style.display = 'none';
-    expiredBadge.style.display = 'inline-block';
-  } else {
-    usableBadge.style.display = 'inline-block';
-    expiredBadge.style.display = 'none';
-  }
-}
-
 async function openEditExpirationModal() {
   alert('유통기한 수정 창을 띄울 예정입니다.');
 }
@@ -71,8 +48,8 @@ window.openMedicineDetailModal = async function(id) {
   const response = await fetch(`/api/medicine-detail/${currentMedicineId}`);
   const medicine = await response.json();
 
-  document.getElementById('modalMedicineImage').src =
-    medicine.itemImage || '/images/logo2.png';
+  document.getElementById('modalMedicineImage').src = //나중에 바꾸기
+    medicine.item_image || '/images/logo2.png';
 
   document.getElementById('modalMedicineName').textContent = //나중에 바꾸기
     medicine.name || '-';
@@ -86,7 +63,14 @@ window.openMedicineDetailModal = async function(id) {
   document.getElementById('modalCreatedAt').textContent = medicine.created_at; //나중에 바꾸기
   document.getElementById('modalExpirationDate').textContent = medicine.expiration_date; //나중에 바꾸기
 
-  setStatusBadge(medicine.expiration_date);
+  const statusBadge = document.getElementById('modalStatusBadge');
+  if (medicine.days_left < 0) {
+    statusBadge.textContent = '폐기 필요';
+    statusBadge.className = 'status-badge expired';
+  } else {
+    statusBadge.textContent = '복용 가능';
+    statusBadge.className = 'status-badge valid';
+  }
 
   document.getElementById('modalEfficacy').innerText =
     cleanText(medicine.efficacy);
