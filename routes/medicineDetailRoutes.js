@@ -12,6 +12,7 @@ router.get('/api/medicine-detail/:id', async (req, res) => {
         entp_name,
         DATE_FORMAT(expiration_date, '%Y-%m-%d') AS expiration_date,
         DATE_FORMAT(created_at, '%Y-%m-%d') AS created_at,
+        DATEDIFF(expiration_date, CURDATE()) AS days_left,
         efficacy,
         use_method,
         precaution,
