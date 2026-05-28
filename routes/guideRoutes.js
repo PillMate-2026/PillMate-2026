@@ -1,0 +1,17 @@
+// routes/guideRoutes.js
+// feature/guide 브랜치
+
+const express = require('express');
+const router = express.Router();
+const guideController = require('../controllers/guideController');
+
+// ⚠️ authMiddleware 완성 후 주석 해제
+// const { authMiddleware } = require('../middleware/authMiddleware');
+
+/** GET /disposal-guide          → 폐기가이드 페이지 */
+router.get('/', guideController.getGuidePage);
+
+/** GET /disposal-guide/nearby   → 수거함 JSON (거리순 4개) */
+router.get('/nearby', guideController.getNearbyBins);
+
+module.exports = router;
