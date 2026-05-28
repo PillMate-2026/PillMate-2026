@@ -23,7 +23,7 @@ router.get('/api/medicine-detail/:id', async (req, res) => {
     WHERE medicine_id = ?
     `,
     [req.params.id]
-    );
+    )
 
     if (rows.length === 0) {
       return res.status(404).json({
@@ -42,7 +42,7 @@ router.get('/api/medicine-test', async (req, res) => {
     const apiUrl =
       'https://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList' +
       '?serviceKey=' + serviceKey +
-      '&itemName=' + encodeURIComponent('medicineName') +
+      '&itemName=' + encodeURIComponent(medicineName) +
       '&type=json';
 
     const response = await fetch(apiUrl);
