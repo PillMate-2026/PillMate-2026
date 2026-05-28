@@ -13,47 +13,51 @@
       <p>약장에 의약품을 추가합니다</p>
     </div>
 
+    <form
+    action="/medicines/ocr"
+    method="POST"
+    enctype="multipart/form-data"
+    >
+
     <div class="upload-box">
 
-    <!--
-    <img
-    src="/images/pill-character.png"
-    alt="PillMate캐릭터"
-    class="upload-illustration"
-    >
-    -->
-
-      <p class="upload-guide">
+        <p class="upload-guide">
         '파일 선택' 버튼을 클릭하거나,
         사진 파일을 드래그하여 업로드 영역에 놓으세요.
-      </p>
+        </p>
 
-      <input
+        <input
         type="file"
         id="medicineImage"
+        name="medicineImage"
         accept="image/*"
         hidden
-      >
+        >
 
-      <button
+        <button
         type="button"
         class="file-select-btn"
         onclick="document.getElementById('medicineImage').click()"
-      >
+        >
         파일 선택
-      </button>
+        </button>
 
-      <img
+        <img
         id="previewImage"
         class="preview-image"
         style="display:none"
-      >
+        >
 
     </div>
 
-    <button class="register-btn">
-      등록하기
+    <button
+        type="submit"
+        class="register-btn"
+    >
+        OCR 등록하기
     </button>
+
+    </form>
 
     <button
         class="manual-btn"
