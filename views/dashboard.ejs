@@ -1,16 +1,79 @@
-<%- include('partials/header', { title: '대시보드' }) %>
+<%- include('partials/header') %>
+<link rel="stylesheet" href="/css/dashboard.css" />
 
-<div class="app-layout">
+<div class="app-wrapper dashboard-shell">
   <%- include('partials/sidebar', { activeMenu: 'home' }) %>
 
-  <main class="app-main">
-    <%- include('partials/header', { pageTitle: '홈' }) %>
-    
-    <section class="page-content">
-      <h2>대시보드</h2>
-      <p>여기에 대시보드 내용이 들어갑니다.</p>
-    </section>
-  </main>
+  <div class="app-main">
+    <main class="app-content dashboard-content">
+      <section class="dashboard-summary" aria-label="약장 요약">
+        <div class="summary-card summary-total">
+          <span>전체 약</span>
+          <strong><%= total %>개</strong>
+        </div>
+      </section>
+
+      <form class="dashboard-controls" method="get" action="/dashboard">
+        <input type="hidden" name="scope" value="<%= scope %>">
+        <input type="hidden" name="status" value="<%= status %>">
+
+        <label class="search-box">
+          <span class="search-icon">⌕</span>
+          <input type="search" name="search" value="<%= search %>" aria-label="약 검색">
+        </label>
+
+        <div class="control-group">
+          <span>상태</span>
+          <a href="?userId=<%= userId %>&scope=<%= scope %>&status=<%= status === 'normal' ? 'all' : 'normal' %>&sort=<%= sort %>&search=<%= search %>"
+            class="filter-btn <%= status === 'normal' ? 'active' : '' %>">
+          유효
+          </a>
+          <a href="?userId=<%= userId %>&scope=<%= scope %>&status=<%= status === 'expired' ? 'all' : 'expired' %>&sort=<%= sort %>&search=<%= search %>"
+            class="filter-btn <%= status === 'expired' ? 'active' : '' %>">
+          만료
+          </a>
+        </div>
+
+        <label class="sort-select">
+          <span>정렬</span>
+          <select name="sort" onchange="this.form.submit()">
+            <option value="expiry" <%= sort === 'expiry' ? 'selected' : '' %>>유통기한 임박순</option>
+            <option value="name" <%= sort === 'name' ? 'selected' : '' %>>이름순</option>
+          </select>
+        </label>
+      </form>
+
+      <% if (scope === 'family' && !familyId) { %>
+        <p class="empty-message">연결된 가족 그룹이 없습니다.</p>
+      <% } else if (medicines && medicines.length > 0) { %>
+        <section class="medicine-card-grid" aria-label="약 목록">
+          <% medicines.forEach((medicine) => { %>
+            <% const isExpired = medicine.days_left < 0; %>
+            <article class="medicine-card <%= isExpired ? 'expired' : 'valid' %>">
+              <div class="medicine-card-top">
+                <div class="medicine-image-placeholder"></div>
+                <div class="medicine-main-info">
+                  <h2><%= medicine.name %></h2>
+                  <p><%= medicine.use_method || '복용 정보 없음' %></p>
+                  <% if (isExpired) { %>
+                    <span class="status-pill expired">만료</span>
+                  <% } else { %>
+                    <span class="status-pill valid">D - <%= medicine.days_left %></span>
+                  <% } %>
+                </div>
+              </div>
+              <div class="medicine-meta">
+                <p>주성분</p>
+                <p>유통기한 <%= medicine.expiration_date || '-' %></p>
+              </div>
+            </article>
+          <% }) %>
+        </section>
+      <% } else { %>
+        <p class="empty-message">조회된 약이 없습니다.</p>
+      <% } %>
+    </main>
+  </div>
 </div>
 
 <%- include('partials/footer') %>
