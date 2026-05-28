@@ -31,16 +31,16 @@
 
         <label class="search-box">
           <span class="search-icon">⌕</span>
-          <input type="search" name="search" value="<%= search %>" aria-label="약 검색">
+          <input type="search" name="keyword" value="<%= search %>" aria-label="약 검색">
         </label>
 
         <div class="control-group">
           <span>상태</span>
-          <a href="?userId=<%= userId %>&scope=<%= scope %>&status=<%= status === 'normal' ? 'all' : 'normal' %>&sort=<%= sort %>&search=<%= encodeURIComponent(search) %>"
+          <a href="?userId=<%= userId %>&scope=<%= scope %>&status=<%= status === 'normal' ? 'all' : 'normal' %>&sort=<%= sort %>&keyword=<%= encodeURIComponent(search) %>"
             class="filter-btn <%= status === 'normal' ? 'active' : '' %>">
           유효
           </a>
-          <a href="?userId=<%= userId %>&scope=<%= scope %>&status=<%= status === 'expired' ? 'all' : 'expired' %>&sort=<%= sort %>&search=<%= encodeURIComponent(search) %>"
+          <a href="?userId=<%= userId %>&scope=<%= scope %>&status=<%= status === 'expired' ? 'all' : 'expired' %>&sort=<%= sort %>&keyword=<%= encodeURIComponent(search) %>"
             class="filter-btn <%= status === 'expired' ? 'active' : '' %>">
           만료
           </a>
@@ -66,7 +66,6 @@
                 <div class="medicine-image-placeholder"></div>
                 <div class="medicine-main-info">
                   <h2><%= medicine.name %></h2>
-                  <p><%= medicine.use_method || '복용 정보 없음' %></p>
                   <% if (isExpired) { %>
                     <span class="status-pill expired">만료</span>
                   <% } else { %>
@@ -82,7 +81,7 @@
           <% }) %>
         </section>
       <% } else { %>
-        <p class="empty-message">조회된 약이 없습니다.</p>
+        <p class="empty-message"><%= search ? '검색 결과가 없습니다.' : '조회된 약이 없습니다.' %></p>
       <% } %>
     </main>
   </div>

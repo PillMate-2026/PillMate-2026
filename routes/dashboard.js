@@ -8,7 +8,12 @@ router.get('/', async (req, res) => {
     const scope = req.query.scope === 'family' ? 'family' : 'personal';
     const status = req.query.status || 'all';
     const sort = req.query.sort === 'created' ? 'created' : 'expiry';
-    const search = req.query.search ? req.query.search.trim() : '';
+    const keyword =
+      typeof req.query.keyword === 'string'
+        ? req.query.keyword.trim()
+        : typeof req.query.search === 'string'
+        ? req.query.search.trim()
+        : '';
 
     const [[user]] = await db.query(
       'SELECT family_id FROM USER WHERE user_id = ?',
@@ -26,7 +31,7 @@ router.get('/', async (req, res) => {
           scope,
           status,
           sort,
-          search,
+          search: keyword,
           familyId,
           userId,
           total: 0,
@@ -45,9 +50,9 @@ router.get('/', async (req, res) => {
     const where = [...baseWhere];
     const params = [...baseParams];
 
-    if (search) {
+    if (keyword) {
       where.push('name LIKE ?');
-      params.push(`%${search}%`);
+      params.push(`%${keyword}%`);
     }
 
     if (status === 'expired') {
@@ -67,8 +72,7 @@ router.get('/', async (req, res) => {
         medicine_id,
         name,
         DATE_FORMAT(expiration_date, '%Y-%m-%d') AS expiration_date,
-        DATEDIFF(expiration_date, CURDATE()) AS days_left,
-        use_method
+        DATEDIFF(expiration_date, CURDATE()) AS days_left
       FROM MEDICINE
       WHERE ${where.join(' AND ')}
       ORDER BY ${orderBy}
@@ -93,7 +97,7 @@ router.get('/', async (req, res) => {
       scope,
       status,
       sort,
-      search,
+      search: keyword,
       familyId,
       userId,
       total,
