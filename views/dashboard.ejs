@@ -8,28 +8,40 @@
   <div class="app-main">
     <main class="app-content dashboard-content">
       <section class="dashboard-summary" aria-label="약장 요약">
-        <div class="summary-card summary-total">
-          <span>전체 약</span>
-          <strong><%= total %>개</strong>
+        <div class="summary-row">
+          <div class="summary-card summary-total">
+            <span>전체 약</span>
+            <strong><%= total %>개</strong>
+          </div>
+          <div class="summary-card summary-normal">
+            <span>유효 약</span>
+            <strong><%= normalCount %>개</strong>
+          </div>
+          <div class="summary-card summary-expired">
+            <span>만료 약</span>
+            <strong><%= expiredCount %>개</strong>
+          </div>
         </div>
       </section>
 
+
       <form class="dashboard-controls" method="get" action="/dashboard">
+        <input type="hidden" name="userId" value="<%= userId %>">
         <input type="hidden" name="scope" value="<%= scope %>">
         <input type="hidden" name="status" value="<%= status %>">
 
         <label class="search-box">
           <span class="search-icon">⌕</span>
-          <input type="search" name="search" value="<%= search %>" aria-label="약 검색">
+          <input type="search" name="keyword" value="<%= search %>" aria-label="약 검색">
         </label>
 
         <div class="control-group">
           <span>상태</span>
-          <a href="?userId=<%= userId %>&scope=<%= scope %>&status=<%= status === 'normal' ? 'all' : 'normal' %>&sort=<%= sort %>&search=<%= search %>"
+          <a href="?userId=<%= userId %>&scope=<%= scope %>&status=<%= status === 'normal' ? 'all' : 'normal' %>&sort=<%= sort %>&keyword=<%= encodeURIComponent(search) %>"
             class="filter-btn <%= status === 'normal' ? 'active' : '' %>">
           유효
           </a>
-          <a href="?userId=<%= userId %>&scope=<%= scope %>&status=<%= status === 'expired' ? 'all' : 'expired' %>&sort=<%= sort %>&search=<%= search %>"
+          <a href="?userId=<%= userId %>&scope=<%= scope %>&status=<%= status === 'expired' ? 'all' : 'expired' %>&sort=<%= sort %>&keyword=<%= encodeURIComponent(search) %>"
             class="filter-btn <%= status === 'expired' ? 'active' : '' %>">
           만료
           </a>
@@ -39,7 +51,7 @@
           <span>정렬</span>
           <select name="sort" onchange="this.form.submit()">
             <option value="expiry" <%= sort === 'expiry' ? 'selected' : '' %>>유통기한 임박순</option>
-            <option value="name" <%= sort === 'name' ? 'selected' : '' %>>이름순</option>
+            <option value="created" <%= sort === 'created' ? 'selected' : '' %>>최신 등록순</option>
           </select>
         </label>
       </form>
@@ -55,7 +67,6 @@
                 <div class="medicine-image-placeholder"></div>
                 <div class="medicine-main-info">
                   <h2><%= medicine.name %></h2>
-                  <p><%= medicine.use_method || '복용 정보 없음' %></p>
                   <% if (isExpired) { %>
                     <span class="status-pill expired">만료</span>
                   <% } else { %>
@@ -71,7 +82,7 @@
           <% }) %>
         </section>
       <% } else { %>
-        <p class="empty-message">조회된 약이 없습니다.</p>
+        <p class="empty-message"><%= search ? '검색 결과가 없습니다.' : '조회된 약이 없습니다.' %></p>
       <% } %>
 
       <!--모달-->
