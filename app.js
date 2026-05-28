@@ -24,9 +24,14 @@ app.use(express.json());
 const indexRoutes = require('./routes/indexRoutes');
 app.use('/', indexRoutes);
 
-// feature/notification 라우터
 const notificationRoutes = require('./routes/notificationRoutes');
 app.use('/notifications', notificationRoutes);
+
+const medicineRoutes = require('./routes/medicineRoutes');
+app.use('/medicines', medicineRoutes);
+
+const dashboardRouter = require('./routes/dashboard');
+app.use('/dashboard', dashboardRouter);
 
 // =========================
 // 404 처리
