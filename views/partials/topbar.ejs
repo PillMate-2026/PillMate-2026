@@ -9,7 +9,9 @@
     <span class="topbar-user"><%= locals.pageDesc || 'ooo님, 안녕하세요' %></span>
   </div>
 
-  <button type="button" class="notification-btn" id="notification-bell-btn" aria-label="알림">
-    <img src="/images/icons/notification.svg" class="topbar-bell-icon" alt="알림"/>
-  </button>
+  <% if (locals.showNotification) { %>
+    <button type="button" class="notification-btn" id="notification-bell-btn" aria-label="알림">
+      <img src="/images/icons/notification.svg" class="topbar-bell-icon" alt="알림">
+    </button>
+  <% } %>
 </header>
