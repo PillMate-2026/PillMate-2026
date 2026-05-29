@@ -7,8 +7,13 @@ router.get('/', async (req, res) => {
     const userId = parseInt(req.query.userId) || 1;
     const scope = req.query.scope === 'family' ? 'family' : 'personal';
     const status = req.query.status || 'all';
-    const sort = req.query.sort === 'name' ? 'name' : 'expiry';
-    const search = req.query.search ? req.query.search.trim() : '';
+    const sort = req.query.sort === 'created' ? 'created' : 'expiry';
+    const keyword =
+      typeof req.query.keyword === 'string'
+        ? req.query.keyword.trim()
+        : typeof req.query.search === 'string'
+        ? req.query.search.trim()
+        : '';
 
     const [[user]] = await db.query(
       'SELECT family_id FROM USER WHERE user_id = ?',
@@ -16,8 +21,8 @@ router.get('/', async (req, res) => {
     );
 
     const familyId = user ? user.family_id : null;
-    const where = [];
-    const params = [];
+    const baseWhere = [];
+    const baseParams = [];
 
     if (scope === 'family') {
       if (!familyId) {
@@ -26,23 +31,28 @@ router.get('/', async (req, res) => {
           scope,
           status,
           sort,
-          search,
+          search: keyword,
           familyId,
           userId,
           total: 0,
+          normalCount: 0,
+          expiredCount: 0,
         });
       }
 
-      where.push('family_id = ?');
-      params.push(familyId);
+      baseWhere.push('family_id = ?');
+      baseParams.push(familyId);
     } else {
-      where.push('user_id = ?');
-      params.push(userId);
+      baseWhere.push('user_id = ?');
+      baseParams.push(userId);
     }
 
-    if (search) {
+    const where = [...baseWhere];
+    const params = [...baseParams];
+
+    if (keyword) {
       where.push('name LIKE ?');
-      params.push(`%${search}%`);
+      params.push(`%${keyword}%`);
     }
 
     if (status === 'expired') {
@@ -51,7 +61,10 @@ router.get('/', async (req, res) => {
         where.push('expiration_date >= CURDATE()');
     }
 
-    const orderBy = sort === 'name' ? 'name ASC' : 'expiration_date ASC';
+    const orderBy =
+      sort === 'created'
+        ? 'created_at DESC, medicine_id DESC'
+        : 'expiration_date ASC, medicine_id DESC';
 
     const [medicines] = await db.query(
       `
@@ -59,42 +72,32 @@ router.get('/', async (req, res) => {
         medicine_id,
         name,
         DATE_FORMAT(expiration_date, '%Y-%m-%d') AS expiration_date,
-        DATEDIFF(expiration_date, CURDATE()) AS days_left,
-        use_method
+        DATEDIFF(expiration_date, CURDATE()) AS days_left
       FROM MEDICINE
       WHERE ${where.join(' AND ')}
       ORDER BY ${orderBy}
       `,
       params
     );
-    let statsWhere, statsParams;
-if (scope === 'family') {
-  statsWhere = 'family_id = ?';
-  statsParams = [familyId];
-} else {
-  statsWhere = 'user_id = ?';
-  statsParams = [userId];
-}
+    const [statsResult] = await db.query(`
+      SELECT
+        COUNT(*) AS total,
+        SUM(CASE WHEN expiration_date >= CURDATE() THEN 1 ELSE 0 END) AS normalCount,
+        SUM(CASE WHEN expiration_date < CURDATE() THEN 1 ELSE 0 END) AS expiredCount
+      FROM MEDICINE
+      WHERE ${baseWhere.join(' AND ')}
+    `, baseParams);
 
-const [statsResult] = await db.query(`
-  SELECT
-    COUNT(*) AS total,
-    SUM(CASE WHEN expiration_date >= CURDATE() THEN 1 ELSE 0 END) AS normalCount,
-    SUM(CASE WHEN expiration_date < CURDATE() THEN 1 ELSE 0 END) AS expiredCount
-  FROM MEDICINE
-  WHERE ${statsWhere}
-`, statsParams);
-
-const total = statsResult[0].total;
-const normalCount = statsResult[0].normalCount;
-const expiredCount = statsResult[0].expiredCount;
+    const total = statsResult[0].total || 0;
+    const normalCount = statsResult[0].normalCount || 0;
+    const expiredCount = statsResult[0].expiredCount || 0;
 
     res.render('dashboard', {
       medicines,
       scope,
       status,
       sort,
-      search,
+      search: keyword,
       familyId,
       userId,
       total,

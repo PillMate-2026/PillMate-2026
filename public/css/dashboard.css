@@ -9,15 +9,20 @@
 }
 
 .dashboard-shell {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background-color: #ffffff;
 }
 
 .dashboard-shell .app-sidebar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 15;
   width: 292px;
   min-width: 292px;
+  height: 100vh;
   background-color: #f7f7f7;
 }
 
@@ -46,25 +51,33 @@
 }
 
 .dashboard-shell .app-main {
+  height: 100vh;
+  min-height: 0;
+  margin-left: 292px;
   padding-top: 116px;
+  overflow: hidden;
 }
 
 .dashboard-content {
+  height: 100%;
   background-color: #ffffff;
   padding: 32px 36px 44px;
+  overflow-y: auto;
 }
 
-.dashboard-summary {
-  display: grid;
+.dashboard-summary .summary-row{
+  display: flex;
   grid-template-columns: minmax(220px, 310px);
   margin-bottom: 20px;
+  gap: 50px;
 }
 
 .summary-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 70px;
+  min-height: 82px;
+  min-width: 296px;
   padding: 0 24px;
   border-radius: 8px;
   color: #000000;
@@ -82,6 +95,12 @@
 
 .summary-total {
   background-color: #c3ddfb;
+}
+.summary-normal {
+  background-color: #C2F7BD;
+}
+.summary-expired {
+  background-color: #ff9797;
 }
 
 .dashboard-controls {
@@ -131,6 +150,35 @@
   white-space: nowrap;
 }
 
+.sort-select select {
+  min-height: 44px;
+  padding: 0 44px 0 18px;
+  border: 2px solid #b5b5b5;
+  border-radius: 8px;
+  background-color: #f7f7f7;
+  color: #222;
+  font-size: 19px;
+  font-weight: 400;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+  box-shadow: none;
+  cursor: pointer;
+  background-image: url('/images/icons/dropdown.svg');
+  background-repeat: no-repeat;
+  background-position: right 7px center;
+  background-size: 22px 22px;
+}
+.sort-select select::-ms-expand {
+  display: none;
+}
+.sort-select select::-webkit-inner-spin-button,
+.sort-select select::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 .control-group > span,
 .sort-select > span {
   font-size: 21px;
@@ -283,6 +331,7 @@
   }
 
   .dashboard-shell .app-main {
+    margin-left: 88px;
     padding-top: 76px;
   }
 
@@ -308,7 +357,22 @@
   }
 
   .dashboard-shell .app-main {
+    height: auto;
+    margin-left: 0;
     padding-top: 0;
+    overflow: visible;
+  }
+
+  .dashboard-shell .app-sidebar {
+    position: sticky;
+    left: auto;
+    bottom: auto;
+    height: auto;
+  }
+
+  .dashboard-content {
+    height: auto;
+    overflow-y: visible;
   }
 
   .dashboard-content {
