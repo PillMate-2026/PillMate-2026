@@ -7,25 +7,22 @@ exports.findOrCreateUser = async (profile) => {
     const name = profile.displayName;
     const profileImage = profile.photos[0].value;
 
-    // 기존 사용자 조회
     const findUserQuery =
-      "SELECT * FROM users WHERE google_id = ?";
+      "SELECT * FROM `USER` WHERE google_id = ?";
 
     db.query(findUserQuery, [googleId], (err, results) => {
       if (err) {
         return reject(err);
       }
 
-      // 이미 존재하는 사용자
       if (results.length > 0) {
         return resolve(results[0]);
       }
 
-      // 새 사용자 생성
       const insertUserQuery = `
-        INSERT INTO users
-        (google_id, email, name, profile_image)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO \`USER\`
+        (google_id, email, name, profile_image, provider)
+        VALUES (?, ?, ?, ?, 'google')
       `;
 
       db.query(
@@ -37,11 +34,12 @@ exports.findOrCreateUser = async (profile) => {
           }
 
           resolve({
-            id: result.insertId,
+            user_id: result.insertId,
             google_id: googleId,
             email,
             name,
             profile_image: profileImage,
+            provider: "google",
           });
         }
       );

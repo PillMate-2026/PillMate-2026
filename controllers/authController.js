@@ -41,7 +41,7 @@ exports.signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const query = `
-      INSERT INTO users
+      INSERT INTO \`USER\`
       (
         email,
         password,
@@ -75,7 +75,7 @@ exports.signup = async (req, res) => {
 exports.login = (req, res) => {
   const { email, password } = req.body;
 
-  const query = "SELECT * FROM users WHERE email = ?";
+  const query = "SELECT * FROM `USER` WHERE email = ?";
 
   db.query(query, [email], async (err, results) => {
     if (err) {
@@ -102,6 +102,6 @@ exports.login = (req, res) => {
       }
 
       return res.redirect("/auth/mypage");
-    });
+    });rs
   });
 };

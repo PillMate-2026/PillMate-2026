@@ -1,99 +1,89 @@
-<h1>회원가입</h1>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원가입</title>
+  <link rel="stylesheet" href="/css/signup.css?v=1004">
+</head>
 
-<form action="/auth/signup" method="POST">
+<body>
+  <div class="signup-page">
+    <section class="left-section">
+      <img
+        src="/images/logo.png"
+        alt="PillMate Logo"
+        class="logo-image"
+      />
+      <p>
+        우리집 약장 관리를<br>
+        손쉽게 해보세요!
+      </p>
+    </section>
 
-  <input
-    type="email"
-    name="email"
-    placeholder="아이디(이메일)"
-    required
-  >
+    <section class="right-section">
+      <div class="signup-form">
+        <h2>
+          <a href="/auth/login" class="back-btn">‹</a>
+          회원가입
+        </h2>
 
-  <br><br>
+        <form action="/auth/signup" method="POST">
+          <div class="form-row">
+            <label>아이디</label>
+            <input type="email" name="email" required>
+          </div>
 
-  <input
-    type="password"
-    name="password"
-    placeholder="비밀번호"
-    required
-  >
+          <div class="form-row">
+            <label>비밀번호</label>
+            <input type="password" name="password" required>
+          </div>
 
-  <br><br>
+          <div class="form-row">
+            <label>비밀번호 확인</label>
+            <input type="password" name="passwordConfirm" required>
+          </div>
 
-  <input
-    type="password"
-    name="passwordConfirm"
-    placeholder="비밀번호 확인"
-    required
-  >
+          <div class="form-row">
+            <label>이름</label>
+            <input type="text" name="name" required>
+          </div>
 
-  <br><br>
+          <div class="form-row">
+            <label>성별(선택)</label>
+            <div class="gender-group">
+              <label class="gender-btn">
+                <input type="radio" name="gender" value="남자">
+                <span>남자</span>
+              </label>
 
-  <input
-    type="text"
-    name="name"
-    placeholder="이름"
-    required
-  >
+              <label class="gender-btn">
+                <input type="radio" name="gender" value="여자">
+                <span>여자</span>
+              </label>
+            </div>
+          </div>
 
-  <br><br>
+          <div class="form-row">
+            <label>나이(선택)</label>
+            <select name="birth_year">
+              <% for (let year = 2026; year >= 1900; year--) { %>
+                <option value="<%= year %>" <%= year === 1990 ? "selected" : "" %>>
+                  <%= year %>
+                </option>
+              <% } %>
+            </select>
+          </div>
 
-  <label>성별</label>
+          <input type="hidden" name="birth_month" value="1">
+          <input type="hidden" name="birth_day" value="1">
 
-  <input
-    type="radio"
-    name="gender"
-    value="남자"
-  >
-  남자
-
-  <input
-    type="radio"
-    name="gender"
-    value="여자"
-  >
-  여자
-
-  <br><br>
-
-  <label>생년월일</label>
-
-  <br><br>
-
-  <select name="birth_year" required>
-  <% for (let year = 2026; year >= 1900; year--) { %>
-    <option value="<%= year %>"><%= year %>년</option>
-  <% } %>
-</select>
-
-<select name="birth_month" required>
-  <% for (let month = 1; month <= 12; month++) { %>
-    <option value="<%= month %>"><%= month %>월</option>
-  <% } %>
-</select>
-
-<select name="birth_day" required>
-  <% for (let day = 1; day <= 31; day++) { %>
-    <option value="<%= day %>"><%= day %>일</option>
-  <% } %>
-</select>
-
-  <br><br>
-
-  <button type="submit">
-    회원가입
-  </button>
-
-</form>
-
-<br><hr><br>
-
-<a href="/auth/google">
-  Google로 회원가입
-</a>
-
-<br><br>
-
-<a href="/auth/login">
-  로그인하러 가기
-</a>
+          <button type="submit" class="signup-btn">
+            회원가입
+          </button>
+        </form>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

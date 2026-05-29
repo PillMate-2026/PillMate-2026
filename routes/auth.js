@@ -1,39 +1,22 @@
 const express = require("express");
-
 const router = express.Router();
-
 const passport = require("passport");
 
-const authController =
-  require("../controllers/authController");
-
+const authController = require("../controllers/authController");
 
 // 로그인 페이지
-router.get(
-  "/login",
-  authController.renderLoginPage
-);
+router.get("/login", authController.renderLoginPage);
 
-router.post(
-  "/login",
-  authController.login
-);
+// 일반 로그인 처리
+router.post("/login", authController.login);
 
 // 회원가입 페이지
-router.get(
-  "/signup",
-  authController.renderSignupPage
-);
-
+router.get("/signup", authController.renderSignupPage);
 
 // 회원가입 처리
-router.post(
-  "/signup",
-  authController.signup
-);
+router.post("/signup", authController.signup);
 
-
-// 구글 로그인
+// 구글 로그인 시작
 router.get(
   "/google",
   passport.authenticate("google", {
@@ -41,8 +24,7 @@ router.get(
   })
 );
 
-
-// 구글 콜백
+// 구글 로그인 콜백
 router.get(
   "/google/callback",
   passport.authenticate("google", {
@@ -53,12 +35,7 @@ router.get(
   }
 );
 
-
 // 마이페이지
-router.get(
-  "/mypage",
-  authController.renderMyPage
-);
-
+router.get("/mypage", authController.renderMyPage);
 
 module.exports = router;
