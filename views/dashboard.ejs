@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="/css/dashboard.css" />
 
 <div class="app-wrapper dashboard-shell">
-  <%- include('partials/sidebar', { activeMenu: 'home' }) %>
+  <%- include('partials/sidebar', { activeMenu: 'home', user: typeof user !== 'undefined' ? user : null }) %>
 
   <div class="app-main">
     <main class="app-content dashboard-content">
@@ -23,10 +23,8 @@
         </div>
       </section>
 
-
       <form class="dashboard-controls" method="get" action="/dashboard">
         <input type="hidden" name="userId" value="<%= userId %>">
-        <input type="hidden" name="scope" value="<%= scope %>">
         <input type="hidden" name="status" value="<%= status %>">
 
         <label class="search-box">
@@ -36,13 +34,13 @@
 
         <div class="control-group">
           <span>상태</span>
-          <a href="?userId=<%= userId %>&scope=<%= scope %>&status=<%= status === 'normal' ? 'all' : 'normal' %>&sort=<%= sort %>&keyword=<%= encodeURIComponent(search) %>"
+          <a href="?userId=<%= userId %>&status=<%= status === 'normal' ? 'all' : 'normal' %>&sort=<%= sort %>&keyword=<%= encodeURIComponent(search) %>"
             class="filter-btn <%= status === 'normal' ? 'active' : '' %>">
-          유효
+            유효
           </a>
-          <a href="?userId=<%= userId %>&scope=<%= scope %>&status=<%= status === 'expired' ? 'all' : 'expired' %>&sort=<%= sort %>&keyword=<%= encodeURIComponent(search) %>"
+          <a href="?userId=<%= userId %>&status=<%= status === 'expired' ? 'all' : 'expired' %>&sort=<%= sort %>&keyword=<%= encodeURIComponent(search) %>"
             class="filter-btn <%= status === 'expired' ? 'active' : '' %>">
-          만료
+            만료
           </a>
         </div>
 
@@ -55,9 +53,7 @@
         </label>
       </form>
 
-      <% if (scope === 'family' && !familyId) { %>
-        <p class="empty-message">연결된 가족 그룹이 없습니다.</p>
-      <% } else if (medicines && medicines.length > 0) { %>
+      <% if (medicines && medicines.length > 0) { %>
         <section class="medicine-card-grid" aria-label="약 목록">
           <% medicines.forEach((medicine) => { %>
             <% const isExpired = medicine.days_left < 0; %>
