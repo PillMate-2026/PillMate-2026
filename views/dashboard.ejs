@@ -1,11 +1,19 @@
-<%- include('partials/header') %>
-<link rel="stylesheet" href="/css/dashboard.css" />
+<%- include('partials/header', {
+  title: '홈',
+  pageCss: 'dashboard'
+}) %>
 <link rel="stylesheet" href="/css/medicineDetail.css">
 
-<div class="app-wrapper dashboard-shell">
+<div class="app-layout dashboard-shell">
   <%- include('partials/sidebar', { activeMenu: 'home', user: typeof user !== 'undefined' ? user : null }) %>
 
   <div class="app-main">
+    <%- include('partials/topbar', {
+      pageTitle: '홈',
+      pageDesc: `${user?.name || '사용자'}님, 안녕하세요`,
+      pageIcon: '/images/icons/home.svg'
+    }) %>
+    
     <main class="app-content dashboard-content">
       <section class="dashboard-summary" aria-label="약장 요약">
         <div class="summary-row">
