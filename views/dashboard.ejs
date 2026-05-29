@@ -112,22 +112,22 @@
             <div class="medicine-info-grid">
               <div class="medicine-info-box">
                 <span>주성분</span>
-                <strong id="modalIngredient">정보 없음</strong>
+                <strong id="modalIngredient"></strong>
               </div>
 
               <div class="medicine-info-box">
                 <span>등록일자</span>
-                <strong id="modalCreatedAt">2026-05-11</strong>
+                <strong id="modalCreatedAt"></strong>
               </div>
 
               <div class="medicine-info-box">
                 <span>업체명</span>
-                <strong id="modalEntpName">정보 없음</strong>
+                <strong id="modalEntpName"></strong>
               </div>
 
               <div class="medicine-info-box">
                 <span>유통기한</span>
-                <strong id="modalExpirationDate">2027-03-01</strong>
+                <strong id="modalExpirationDate"></strong>
               </div>
             </div>
           </div>
@@ -165,12 +165,36 @@
       </div>
 
       <div class="medicine-modal-footer">
-        <button type="button" onclick="openEditExpirationModal()">수정하기</button>
+        <button type="button" onclick="openEditExpirationModal()">유통기한 수정하기</button>
         <button type="button" onclick="openDisposalGuide()">폐기 안내 보러가기</button>
         <button type="button" onclick="openDeleteConfirm()">삭제하기</button>
       </div>
     </div>
   </div>
+
+  <!--수정 모달-->
+  <div id="expirationEditModal" class="edit-modal">
+  <div class="edit-modal-box">
+    <button type="button" class="edit-modal-close" onclick="closeEditExpirationModal()">×</button>
+
+    <div class="edit-modal-logo">
+      <img src="/images/icons/pill.svg" alt="PillMate">
+      <span>
+        <b class="logo-pill">Pill</b><b class="logo-mate">Mate</b>
+      </span>
+    </div>
+
+    <h2>새로운 유통기한을 선택해주세요</h2>
+
+    <input type="date" id="editExpirationDateInput">
+
+    <button type="button" class="edit-confirm-btn" onclick="submitEditExpiration()">
+      수정하기
+    </button>
+  </div>
+</div>
+
+
 
     </main>
   </div>
