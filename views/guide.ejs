@@ -1,40 +1,21 @@
-<%- include('partials/header', { title: title }) %>
-
-<link rel="stylesheet" href="/css/guide.css">
+<%- include('partials/header', {
+  title: title,
+  pageCss: 'guide'
+}) %>
 
 <div class="app-layout">
-
   <%- include('partials/sidebar', { user: user, activeMenu: 'disposal-guide' }) %>
-
-  <div class="app-main">
-
+ 
     <!-- 상단바 -->
-    <div class="app-topbar">
-
-      <div class="topbar-left">
-
-        <img
-          src="/images/icons/map.svg"
-          class="topbar-page-icon"
-          alt="폐기가이드"
-        >
-
-        <span class="topbar-title">
-          폐기가이드
-        </span>
-
-        <span class="topbar-subtitle">
-          집에 남은 약은 일반 쓰레기나 하수구에 버리지 말고,
-          올바른 방법으로 폐기해 주세요.
-        </span>
-
-      </div>
-
-
-    </div>
+    <div class="app-main">
+    <%- include('partials/topbar', {
+      pageTitle: '폐기가이드',
+      pageDesc: '집에 남은 약은 일반 쓰레기나 하수구에 버리지 말고, 올바른 방법으로 폐기해 주세요',
+      pageIcon: '/images/icons/map.svg'
+    }) %>
 
     <!-- 메인 -->
-    <div class="app-content">
+    <main class="app-content">
 
       <!-- 안내 배너 -->
       <div class="guide-banner">
@@ -212,7 +193,9 @@
 
       </div>
 
-    </div>
+
+      </div>
+    </main>
 
   </div>
 
