@@ -35,12 +35,52 @@ body {
   padding-top: 0;
 }
 
+.sidebar-user {
+  position: absolute;
+  top: 30px;
+  left: 38px;
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-avatar {
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+}
+
+.sidebar-username {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
 .sidebar-logo {
-  padding: 196px 24px 24px;
-  font-size: 40px;
-  font-weight: 700;
-  color: #1a1a1a;
+  padding: 196px 20px 24px;
+  font-size: 48px;
+  font-weight: 900;
   line-height: 0.95;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.sidebar-logo span {
+  display: inline;
+}
+
+.logo-pill {
+  color: #35ABE9;
+}
+
+.logo-mate {
+  color: #5CB665;
 }
 
 .sidebar-nav {
@@ -166,6 +206,18 @@ body {
     min-width: 88px;
   }
 
+  .sidebar-user {
+    top: 24px;
+    left: 18px;
+    width: 52px;
+    height: 52px;
+  }
+
+  .sidebar-avatar {
+    width: 52px;
+    height: 52px;
+  }
+
   .sidebar-logo {
     font-size: 22px;
     padding: 92px 12px 20px;
@@ -227,6 +279,10 @@ body {
   }
 
   .sidebar-logo {
+    display: none;
+  }
+
+  .sidebar-user {
     display: none;
   }
 
