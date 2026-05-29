@@ -11,7 +11,8 @@
     <%- include('partials/topbar', {
       pageTitle: '홈',
       pageDesc: `${user?.name || '사용자'}님, 안녕하세요`,
-      pageIcon: '/images/icons/home.svg'
+      pageIcon: '/images/icons/home.svg',
+      showNotification: true
     }) %>
     
     <main class="app-content dashboard-content">
