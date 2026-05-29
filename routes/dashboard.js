@@ -72,7 +72,14 @@ router.get('/', async (req, res) => {
         medicine_id,
         name,
         DATE_FORMAT(expiration_date, '%Y-%m-%d') AS expiration_date,
-        DATEDIFF(expiration_date, CURDATE()) AS days_left
+        DATEDIFF(expiration_date, CURDATE()) AS days_left,
+        DATE_FORMAT(created_at, '%Y-%m-%d') AS created_at,
+        entp_name,
+        efficacy,
+        use_method,
+        precaution,
+        interaction,
+        side_effect        
       FROM MEDICINE
       WHERE ${where.join(' AND ')}
       ORDER BY ${orderBy}

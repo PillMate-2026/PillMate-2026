@@ -48,6 +48,9 @@ app.use('/medicines', medicineRoutes);
 const dashboardRouter = require('./routes/dashboard');
 app.use('/dashboard', dashboardRouter);
 
+const medicineDetailRoutes = require('./routes/medicineDetailRoutes');
+app.use('/', medicineDetailRoutes);
+
 // ============================================================
 // 404 처리
 // ============================================================
