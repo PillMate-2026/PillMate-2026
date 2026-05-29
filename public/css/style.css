@@ -118,7 +118,7 @@ body {
 }
 
 .topbar-user {
-  font-size: clamp(14px, 2.2vw, 30px);
+  font-size: clamp(14px, 2.2vw, 25px);
   padding: 0;
   color: #000000;
   white-space: nowrap;
