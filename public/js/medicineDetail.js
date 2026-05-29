@@ -1,4 +1,5 @@
 let currentMedicineId = null;
+let currentMedicineVersion = null;
 
 function cleanText(text) {
   if (!text) return '-';
@@ -9,15 +10,76 @@ function cleanText(text) {
     .trim();
 }
 
-function openEditExpirationModal() {
-  alert('유통기한 수정 창을 띄울 예정입니다.');
+//수정모달 열기
+window.openEditExpirationModal = function() {
+  if (!currentMedicineId) {
+    alert('수정할 약 정보가 없습니다.');
+    return;
+  }
+
+  const currentExpirationDate =
+    document.getElementById('modalExpirationDate').textContent.trim().slice(0, 10);
+
+  document.getElementById('editExpirationDateInput').value = currentExpirationDate;
+  document.getElementById('expirationEditModal').style.display = 'flex';
+};
+
+//수정모달 닫기
+window.closeEditExpirationModal = function() {
+  document.getElementById('expirationEditModal').style.display = 'none';
+};
+
+//수정모달 수정완료
+window.submitEditExpiration = async function() {
+  const newExpirationDate =
+    document.getElementById('editExpirationDateInput').value;
+
+  if (!newExpirationDate) {
+    alert('유통기한을 선택해주세요.');
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/medicine-detail/${currentMedicineId}/expiration`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        expirationDate: newExpirationDate,
+        version: currentMedicineVersion
+      })
+    });
+
+    const data = await response.json();
+
+    if (response.status === 409) {
+      alert(data.error);
+      closeEditExpirationModal();
+      await openMedicineDetailModal(currentMedicineId);
+      return;
+    }
+
+    if (!response.ok) {
+      alert(data.error || '수정에 실패했습니다.');
+      return;
+    }
+
+    alert('유통기한이 수정되었습니다.');
+    location.reload();
+
+  } catch (err) {
+    console.error(err);
+    alert('서버 오류가 발생했습니다.');
+  }
+};
+
+
+window.openDisposalGuide = async function() {
+  location.href = '/disposal-guide';
 }
 
-async function openDisposalGuide() {
-  alert('폐기 가이드 창으로 이동할 예정입니다.');
-}
-
-async function openDeleteConfirm() {
+window.openDeleteConfirm = async function() {
   const result = confirm('정말 삭제하시겠습니까?');
 
   if (!result) return;
@@ -47,6 +109,8 @@ window.openMedicineDetailModal = async function(id) {
   try {
   const response = await fetch(`/api/medicine-detail/${currentMedicineId}`);
   const medicine = await response.json();
+
+  currentMedicineVersion = medicine.version;
 
   document.getElementById('modalMedicineImage').src =  //나중에 바꾸기
     medicine.item_image || '/images/logo2.png';
