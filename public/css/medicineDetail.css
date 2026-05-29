@@ -43,7 +43,7 @@
 
 .medicine-image-box {
   width: 100%;
-  height: 380px;
+  height: 360px;
   border-radius: 18px;
   overflow: hidden;
   background-color: #dfe8f7;
@@ -188,4 +188,91 @@
 
 .medicine-modal-footer button:hover {
   background: #ebeaea;
+}
+
+.edit-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit-modal-box {
+  width: 500px;
+  min-height: auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px 33px 18px;
+  position: relative;
+  text-align: center;
+}
+
+.edit-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  border: none;
+  background: none;
+  font-size: 34px;
+  color: #777;
+  cursor: pointer;
+}
+
+.edit-modal-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 34px;
+  padding-bottom: 6px;
+  border-bottom: 3px solid #e8e8e8;
+  margin-bottom: 12px;
+}
+
+.edit-modal-logo img {
+  width: 29px;
+  height: 29px;
+}
+
+.logo-pill {
+  color: #35abe9;
+  font-weight: 600;
+}
+
+.logo-mate {
+  color: #5cb665;
+  font-weight: 600;
+}
+
+.edit-modal-box h2 {
+  color: rgb(255, 29, 29);
+  font-size: 27px;
+  margin-bottom: 13px;
+}
+
+#editExpirationDateInput {
+  width: 280px;
+  height: 47px;
+  font-size: 24px;
+  text-align: center;
+  padding: 0 14px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.edit-confirm-btn {
+  display: block;
+  margin: 0 auto;
+  width: 150px;
+  height: 50px;
+  border: none;
+  border-radius: 14px;
+  background: #63ae58;
+  color: white;
+  font-size: 25px;
+  font-weight: 500;
+  cursor: pointer;
 }
