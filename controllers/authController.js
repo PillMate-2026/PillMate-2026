@@ -20,22 +20,11 @@ exports.renderMyPage = (req, res) => {
 
 // 회원가입 처리
 exports.signup = async (req, res) => {
-  const {
-    email,
-    password,
-    passwordConfirm,
-    name,
-    gender,
-    birth_year,
-    birth_month,
-    birth_day,
-  } = req.body;
+  const { login_id, password, passwordConfirm, name, age, gender } = req.body;
 
   if (password !== passwordConfirm) {
     return res.send("비밀번호가 일치하지 않습니다.");
   }
-
-  const birth_date = `${birth_year}-${birth_month}-${birth_day}`;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -43,11 +32,11 @@ exports.signup = async (req, res) => {
     const query = `
       INSERT INTO \`USER\`
       (
-        email,
+        login_id,
         password,
         name,
+        age,
         gender,
-        birth_date,
         provider
       )
       VALUES (?, ?, ?, ?, ?, 'local')
@@ -55,8 +44,8 @@ exports.signup = async (req, res) => {
 
     db.query(
       query,
-      [email, hashedPassword, name, gender, birth_date],
-      (err, result) => {
+      [login_id, hashedPassword, name, age || null, gender || null],
+      (err) => {
         if (err) {
           console.log(err);
           return res.send("회원가입 실패");
@@ -73,18 +62,18 @@ exports.signup = async (req, res) => {
 
 // 일반 로그인 처리
 exports.login = (req, res) => {
-  const { email, password } = req.body;
+  const { login_id, password } = req.body;
 
-  const query = "SELECT * FROM `USER` WHERE email = ?";
+  const query = "SELECT * FROM `USER` WHERE login_id = ?";
 
-  db.query(query, [email], async (err, results) => {
+  db.query(query, [login_id], async (err, results) => {
     if (err) {
       console.log(err);
       return res.send("로그인 실패");
     }
 
     if (results.length === 0) {
-      return res.send("존재하지 않는 이메일입니다.");
+      return res.send("존재하지 않는 아이디입니다.");
     }
 
     const user = results[0];
@@ -102,6 +91,6 @@ exports.login = (req, res) => {
       }
 
       return res.redirect("/auth/mypage");
-    });rs
+    });
   });
 };
