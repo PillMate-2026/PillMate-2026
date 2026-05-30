@@ -236,12 +236,12 @@
   height: 29px;
 }
 
-.logo-pill {
+.edit-modal-logo .logo-pill {
   color: #35abe9;
   font-weight: 600;
 }
 
-.logo-mate {
+.edit-modal-logo .logo-mate {
   color: #5cb665;
   font-weight: 600;
 }
