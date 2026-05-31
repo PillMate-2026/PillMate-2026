@@ -1,68 +1,218 @@
 .family-container {
-  padding: 40px;
+  width: 100%;
+  min-height: 100vh;
+  padding: 48px 56px;
+  background: #ffffff;
+}
+
+.family-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 .family-header h2 {
-  font-size: 32px;
-  margin-bottom: 10px;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.family-header p {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 6px 0 0 0;
 }
 
 .family-description {
-  margin-top: 30px;
+  margin-top: 34px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.family-description p {
+  margin: 0;
 }
 
 .family-card-wrapper {
-  margin-top: 80px;
-
+  margin-top: 90px;
   display: flex;
   justify-content: center;
-  gap: 80px;
+  gap: 110px;
 }
 
 .family-card {
-  width: 320px;
-  height: 420px;
-
+  width: 270px;
+  height: 360px;
   border: 2px solid #65A85A;
-  border-radius: 10px;
+  border-radius: 7px;
+  box-shadow: 2px 2px 5px rgba(101, 168, 90, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
 
+.family-card h3 {
+  margin: 48px 0 0 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.family-card p {
+  margin: 58px 0 0 0;
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.family-card form {
+  margin-top: auto;
+  margin-bottom: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.family-card h3 {
-  margin-top: 50px;
-  font-size: 32px;
-}
-
-.family-card p {
-  margin-top: 70px;
-
-  text-align: center;
-  line-height: 1.5;
-  font-size: 22px;
-}
-
 .family-card input {
   width: 180px;
-  height: 40px;
-
-  margin-top: 20px;
+  height: 38px;
+  border: 1px solid #cacaca;
+  border-radius: 7px;
+  margin-bottom: 16px;
+  padding: 0 10px;
+  font-size: 18px;
+  text-align: center;
 }
 
 .family-card button {
-  margin-top: auto;
-  margin-bottom: 40px;
-
-  width: 140px;
-  height: 50px;
-
+  width: 124px;
+  height: 48px;
+  border: none;
+  border-radius: 7px;
   background: #65A85A;
   color: white;
+  font-size: 21px;
+  font-weight: 700;
+  cursor: pointer;
+}
 
+.family-card button:hover {
+  background: #5c9d51;
+}
+
+/* 가족그룹 있음 화면 */
+.invite-box {
+  margin-top: 48px;
+  width: 100%;
+  min-height: 92px;
+  background: #65A85A;
+  border-radius: 7px;
+  color: #ffffff;
+  padding: 16px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.invite-title {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.invite-title strong {
+  font-size: 30px;
+  margin-left: 8px;
+  letter-spacing: 2px;
+}
+
+.invite-title span {
+  font-size: 14px;
+  font-weight: 400;
+  margin-left: 12px;
+}
+
+.invite-main p {
+  font-size: 13px;
+  margin: 8px 0 0 0;
+}
+
+.copy-btn {
+  width: 122px;
+  height: 48px;
   border: none;
-  border-radius: 8px;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #65A85A;
+  font-size: 21px;
+  font-weight: 700;
+  cursor: pointer;
+}
 
+.member-section {
+  margin-top: 32px;
+}
+
+.member-count {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(190px, 1fr));
+  gap: 14px;
+}
+
+.member-card {
+  height: 74px;
+  background: #F3FFF0;
+  border: 1px solid #D4EBCD;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 22px;
+}
+
+.member-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26px;
+}
+
+.member-card span {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.leave-area {
+  margin-top: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+}
+
+.leave-area::before,
+.leave-area::after {
+  content: "";
+  width: 150px;
+  height: 1px;
+  background: #e37d7d;
+}
+
+.leave-area button {
+  width: 142px;
+  height: 46px;
+  border: 1px solid #e37d7d;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #d95353;
+  font-size: 18px;
   cursor: pointer;
 }
