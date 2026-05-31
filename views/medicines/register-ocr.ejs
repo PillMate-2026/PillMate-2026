@@ -1,17 +1,23 @@
-<div class="app-wrapper">
-  <%- include('../partials/sidebar') %>
+<%- include('../partials/header', {
+  title: '약 등록하기',
+  pageCss: 'medicine'
+}) %>
 
-  <div class="app-main">
-    <%- include('../partials/header') %>
+  <div class="app-layout">
+     <%- include('../partials/sidebar', { activeMenu: 'add', user: typeof user !== 'undefined' ? user : null }) %>
+      
+      <div class="app-main">
+          <%- include('../partials/topbar', {
+            pageTitle: '약 등록하기',
+            pageDesc: '약장에 의약품을 추가합니다',
+            pageIcon: '/images/icons/plus.svg',
+            showNotification: false
+          }) %>
+
 
     <main class="app-content">
 
-  <section class="ocr-register-container">
-
-    <div class="page-title">
-      <h2>➕ 약 등록하기</h2>
-      <p>약장에 의약품을 추가합니다</p>
-    </div>
+    <section class="ocr-register-container">
 
     <form
     action="/medicines/ocr"
@@ -73,8 +79,6 @@
   </div>
 </div>
 
-<%- include('../partials/footer') %>
-
 <script>
 const imageInput = document.getElementById('medicineImage');
 const previewImage = document.getElementById('previewImage');
@@ -90,3 +94,5 @@ imageInput.addEventListener('change', (event) => {
   previewImage.style.display = 'block';
 });
 </script>
+
+<%- include('../partials/footer') %>

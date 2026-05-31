@@ -1,5 +1,25 @@
 <aside class="app-sidebar">
-  <div class="sidebar-logo">Pill Mate</div>
+  <div class="sidebar-user">
+    <%
+      const sidebarUser = locals.user || { name: 'user', gender: null };
+      let avatarSrc;
+
+      if (sidebarUser.gender === '\uC5EC\uC131') {
+        avatarSrc = '/images/icons/female.svg';
+      } else if (sidebarUser.gender === '\uB0A8\uC131') {
+        avatarSrc = '/images/icons/male.svg';
+      } else {
+        avatarSrc = '/images/icons/profile.svg';
+      }
+    %>
+    <img src="<%= avatarSrc %>" alt="profile" class="sidebar-avatar">
+    <span class="sidebar-username"><%= sidebarUser.name %></span>
+  </div>
+
+  <div class="sidebar-logo">
+    <span class="logo-pill">Pill</span>
+    <span class="logo-mate">Mate</span>
+  </div>
 
   <nav class="sidebar-nav">
     <a href="/dashboard" class="sidebar-link <%= locals.activeMenu === 'home' ? 'active' : '' %>">
@@ -15,8 +35,8 @@
       <span>가족 그룹</span>
     </a>
     <a href="/guide" class="sidebar-link <%= locals.activeMenu === 'guide' ? 'active' : '' %>">
-      <img src="/images/icons/pill.svg" alt="복약가이드 AI" class="sidebar-icon">
-      <span>복약가이드 AI</span>
+      <img src="/images/icons/pill.svg" alt="AI 복약 도우미" class="sidebar-icon">
+      <span>AI 복약 도우미</span>
     </a>
     <a href="/disposal-guide" class="sidebar-link <%= locals.activeMenu === 'disposal-guide' ? 'active' : '' %>">
       <img src="/images/icons/map.svg" alt="폐기가이드" class="sidebar-icon">
