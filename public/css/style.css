@@ -47,6 +47,12 @@ body {
   justify-content: center;
 }
 
+.sidebar-user-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
 .sidebar-avatar {
   width: 76px;
   height: 76px;

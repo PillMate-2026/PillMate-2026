@@ -1,7 +1,149 @@
-<h1>마이페이지</h1>
+<%- include('../partials/header') %>
+<link rel="stylesheet" href="/css/mypage.css">
 
-<img src="<%= user.profile_image %>" width="100">
+<div class="app-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'mypage' }) %>
 
-<h2><%= user.name %></h2>
+  <div class="app-main">
+    <main class="mypage-container">
+      <h2 class="mypage-title">프로필</h2>
 
-<p><%= user.email %></p>
+      <section class="profile-card">
+        <div class="profile-avatar">
+          <%= user.gender === "여성" ? "가" : "가" %>
+        </div>
+
+        <div class="profile-info">
+          <h3><%= user.name %></h3>
+          <p>
+            @<%= user.login_id || "google_user" %>
+            ·
+            <%= user.gender || "성별 미입력" %>
+            ·
+            <%= user.age ? user.age + "세" : "나이 미입력" %>
+          </p>
+
+          <% if (user.family_id) { %>
+            <span class="family-badge active">가족그룹 활성</span>
+          <% } else { %>
+            <span class="family-badge">가족그룹 없음</span>
+          <% } %>
+        </div>
+      </section>
+
+      <section class="medicine-status-card">
+        <h3>약장 현황</h3>
+
+        <div class="medicine-status-grid">
+          <div>
+            <strong class="green"><%= medicineStatus?.valid || 0 %></strong>
+            <span>복용 가능</span>
+          </div>
+
+          <div>
+            <strong class="red"><%= medicineStatus?.expired || 0 %></strong>
+            <span>기한 만료</span>
+          </div>
+
+          <div>
+            <strong><%= medicineStatus?.total || 0 %></strong>
+            <span>전체</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="menu-list">
+        <button
+          type="button"
+          class="menu-item"
+          onclick="openPasswordModal()"
+        >
+          <span>비밀번호 변경</span>
+          <span>›</span>
+        </button>
+
+        <button type="button" class="menu-item">
+          <span>알림 설정</span>
+          <span class="toggle-off"></span>
+        </button>
+      </section>
+
+      <section class="menu-list bottom-menu">
+        <form action="/auth/logout" method="POST">
+          <button type="submit" class="menu-item">
+            <span>로그아웃</span>
+            <span>›</span>
+          </button>
+        </form>
+
+<form action="/auth/delete" method="POST">
+  <button
+    type="submit"
+    class="menu-item danger"
+    onclick="return confirm('정말 회원 탈퇴하시겠습니까? 모든 정보가 삭제됩니다.');"
+  >
+    <span>회원 탈퇴</span>
+    <span>›</span>
+  </button>
+</form>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div id="passwordModal" class="delete-modal">
+  <div class="delete-modal-content">
+    <button
+      type="button"
+      class="delete-close-btn"
+      onclick="closePasswordModal()"
+    >
+      ✕
+    </button>
+
+    <h3>비밀번호 변경</h3>
+    <p>새 비밀번호를 입력해주세요</p>
+
+    <form action="/auth/password" method="POST">
+      <input
+        type="password"
+        name="currentPassword"
+        placeholder="현재 비밀번호"
+        required
+        class="modal-input"
+      >
+
+      <input
+        type="password"
+        name="newPassword"
+        placeholder="새 비밀번호"
+        required
+        class="modal-input"
+      >
+
+      <input
+        type="password"
+        name="newPasswordConfirm"
+        placeholder="새 비밀번호 확인"
+        required
+        class="modal-input"
+      >
+
+      <button type="submit" class="delete-confirm-btn">
+        변경하기
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openPasswordModal() {
+    document.getElementById("passwordModal").style.display = "flex";
+  }
+
+  function closePasswordModal() {
+    document.getElementById("passwordModal").style.display = "none";
+  }
+</script>
+
+<%- include('../partials/footer') %>
