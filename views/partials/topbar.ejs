@@ -1,0 +1,17 @@
+<header class="app-topbar">
+  <div class="topbar-left">
+    <img 
+      src="<%= locals.pageIcon || '/images/icons/home.svg' %>" 
+      alt="현재 페이지" 
+      class="topbar-page-icon"
+    >
+    <span class="topbar-title"><%= locals.pageTitle || '홈' %></span>
+    <span class="topbar-user"><%= locals.pageDesc || 'ooo님, 안녕하세요' %></span>
+  </div>
+
+  <% if (locals.showNotification) { %>
+    <button type="button" class="notification-btn" id="notification-bell-btn" aria-label="알림">
+      <img src="/images/icons/notification.svg" class="topbar-bell-icon" alt="알림">
+    </button>
+  <% } %>
+</header>
