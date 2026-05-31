@@ -1,0 +1,56 @@
+
+<%- include('../partials/header') %>
+
+<link rel="stylesheet" href="/css/family.css">
+
+<div class="app-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'family' }) %>
+
+  <div class="app-main">
+    <main class="family-container">
+
+      <div class="family-header">
+        <h2>👥 가족 그룹</h2>
+        <p>가족과 함께 약장을 공유하고 약 정보를 함께 관리하세요</p>
+      </div>
+
+      <div class="family-description">
+        <p>아직 참여 중인 가족그룹이 없어요</p>
+        <p>가족그룹을 만들거나 초대코드를 입력해 가족 약장을 함께 관리해보세요.</p>
+      </div>
+
+      <div class="family-card-wrapper">
+
+        <div class="family-card">
+          <h3>가족그룹 생성하기</h3>
+
+          <p>
+            새로운 가족 약장을<br>
+            만들고 구성원을<br>
+            초대할 수 있어요
+          </p>
+
+          <button>생성하기</button>
+        </div>
+
+        <div class="family-card">
+          <h3>초대코드 입력하기</h3>
+
+          <p>
+            가족에게 받은<br>
+            초대코드를 입력해<br>
+            가족그룹에 참여하세요
+          </p>
+
+          <input type="text">
+
+          <button>참여하기</button>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

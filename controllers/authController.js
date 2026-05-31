@@ -3,12 +3,12 @@ const db = require("../config/db");
 
 // 로그인 페이지
 exports.renderLoginPage = (req, res) => {
-  res.render("users/login");
+  res.render("users/login-page");
 };
 
 // 회원가입 페이지
 exports.renderSignupPage = (req, res) => {
-  res.render("users/signup");
+  res.render("users/signup-page");
 };
 
 // 마이페이지
