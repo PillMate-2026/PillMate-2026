@@ -1,0 +1,262 @@
+.mypage-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px 48px;
+  background: #ffffff;
+}
+
+.mypage-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 28px;
+}
+
+.profile-card,
+.medicine-status-card,
+.menu-list {
+  width: 900px;
+  max-width: calc(100vw - 380px);
+  border: 1px solid #d6d6d6;
+  border-radius: 7px;
+  background: #ffffff;
+}
+
+.profile-card {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  gap: 22px;
+}
+
+.profile-avatar {
+  width: 90px;
+  height: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-avatar img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+}
+
+.profile-info h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.profile-info p {
+  margin: 0 0 6px 0;
+  font-size: 12px;
+  color: #555;
+}
+
+.family-badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 5px;
+  background: #cccccc;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.family-badge.active {
+  background: #65A85A;
+}
+
+.medicine-status-card {
+  height: 190px;
+  margin-top: 14px;
+  padding: 16px 18px;
+}
+
+.medicine-status-card h3 {
+  margin: 0 0 24px 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.medicine-status-grid {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.medicine-status-grid strong {
+  display: block;
+  font-size: 38px;
+  line-height: 1;
+  margin-bottom: 18px;
+}
+
+.medicine-status-grid span {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.green {
+  color: #65A85A;
+}
+
+.red {
+  color: #ef3d4f;
+}
+
+.menu-list {
+  margin-top: 14px;
+  overflow: hidden;
+}
+
+.menu-list form {
+  margin: 0;
+}
+
+.menu-item {
+  width: 100%;
+  height: 42px;
+  border: none;
+  border-bottom: 1px solid #d6d6d6;
+  background: #ffffff;
+  padding: 0 16px;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.menu-list .menu-item:last-child {
+  border-bottom: none;
+}
+
+.toggle-off {
+  width: 22px;
+  height: 12px;
+  border: 1px solid #333;
+  border-radius: 999px;
+  position: relative;
+}
+
+.toggle-on {
+  width: 22px;
+  height: 12px;
+  border: 1px solid #65A85A;
+  border-radius: 999px;
+  background: #65A85A;
+  position: relative;
+}
+
+.toggle-on::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: #ffffff;
+  border-radius: 50%;
+  position: absolute;
+  right: 2px;
+  top: 2px;
+}
+
+.toggle-off::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: #ffffff;
+  border: 1px solid #333;
+  border-radius: 50%;
+  position: absolute;
+  left: 1px;
+  top: 1px;
+}
+
+.danger {
+  color: #111;
+}
+
+/* 회원탈퇴 모달 */
+
+.delete-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: 999;
+}
+
+.delete-modal-content {
+  position: absolute;
+  top: 30px;
+  right: 80px;
+
+  width: 260px;
+  height: 130px;
+
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 18px 20px;
+  text-align: center;
+
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.delete-modal-content::before {
+  content: "💊 PillMate";
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  font-size: 11px;
+  color: #65A85A;
+}
+
+.delete-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border: none;
+  background: none;
+  font-size: 16px;
+  color: #555;
+  cursor: pointer;
+}
+
+.delete-modal-content h3 {
+  margin-top: 24px;
+  margin-bottom: 4px;
+  color: #e14b4b;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.delete-modal-content p {
+  color: #666;
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+
+.delete-confirm-btn {
+  width: 110px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: #65A85A;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal-input {
+  width: 100%;
+  height: 42px;
+  border: 1px solid #cacaca;
+  border-radius: 7px;
+  padding: 0 12px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
