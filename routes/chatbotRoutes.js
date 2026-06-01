@@ -47,6 +47,7 @@ router.post('/chatbot/recommend', async (req, res) => {
       JOIN MEDICINE m 
         ON mi.medicine_id = m.medicine_id
       WHERE s.name IN (?)
+         AND m.user_id = 1
       GROUP BY 
         m.medicine_id,
         m.name,
