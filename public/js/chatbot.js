@@ -1,3 +1,5 @@
+
+//증상 키워드 추출
 function extractSymptoms(text) {
   const symptoms = [];
 
@@ -24,17 +26,24 @@ function extractSymptoms(text) {
   return symptoms;
 }
 
+//메세지 추가
 function addMessage(type, message) {
   const chatMessages = document.getElementById('chatMessages');
 
-  const messageDiv = document.createElement('div');
-  messageDiv.className = type === 'user' ? 'user-message' : 'bot-message';
-  messageDiv.innerHTML = message;
+  const row = document.createElement('div');
+  row.className = type === 'user' ? 'message-row user' : 'message-row bot';
 
-  chatMessages.appendChild(messageDiv);
+  const bubble = document.createElement('div');
+  bubble.className = type === 'user' ? 'user-message' : 'bot-message';
+  bubble.innerHTML = message;
+
+  row.appendChild(bubble);
+  chatMessages.appendChild(row);
+
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
+//응답 메세지 설정
 async function sendChatMessage() {
   const input = document.getElementById('chatInput');
   const userText = input.value.trim();
