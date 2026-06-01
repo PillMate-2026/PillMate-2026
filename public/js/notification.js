@@ -1,5 +1,3 @@
-// header.ejs / topbar 부분에 <script src="/js/notification.js"></script> 추가 필요
-
 (function () {
   'use strict';
 
