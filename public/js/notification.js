@@ -1,24 +1,16 @@
-// public/js/notification.js
-// feature/notification 브랜치 담당: 알림 모달 프론트엔드 로직
 // header.ejs / topbar 부분에 <script src="/js/notification.js"></script> 추가 필요
 
 (function () {
   'use strict';
 
-  // ──────────────────────────────────────────
-  // 초기화
-  // ──────────────────────────────────────────
   function init() {
-    // Bell 버튼
     const bellBtn = document.getElementById('notification-bell-btn');
     if (!bellBtn) return; // 로그인 전 페이지에서는 Bell 없음
 
     bellBtn.addEventListener('click', handleBellClick);
 
-    // 모달 생성 및 삽입
     createNotificationModal();
 
-    // 모달 닫기: 외부 클릭
     document.addEventListener('click', function (e) {
       const modal = document.getElementById('notification-modal');
       if (modal && modal.classList.contains('open')) {
@@ -28,18 +20,13 @@
       }
     });
 
-    // ESC 키로 닫기
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closeModal();
     });
 
-    // 페이지 로드 시 읽지 않은 알림 개수 배지 갱신
     fetchUnreadBadge();
   }
 
-  // ──────────────────────────────────────────
-  // 모달 DOM 생성
-  // ──────────────────────────────────────────
   function createNotificationModal() {
     if (document.getElementById('notification-modal')) return;
 
@@ -68,9 +55,6 @@
     document.getElementById('notif-modal-close-btn').addEventListener('click', closeModal);
   }
 
-  // ──────────────────────────────────────────
-  // Bell 클릭 → 모달 열기 + 알림 로드
-  // ──────────────────────────────────────────
   function handleBellClick(e) {
     e.stopPropagation();
     const modal = document.getElementById('notification-modal');
@@ -94,9 +78,6 @@
     if (modal) modal.classList.remove('open');
   }
 
-  // ──────────────────────────────────────────
-  // 알림 목록 API 호출
-  // ──────────────────────────────────────────
   async function loadNotifications() {
     const body = document.getElementById('notif-modal-body');
     if (!body) return;
@@ -127,9 +108,6 @@
     }
   }
 
-  // ──────────────────────────────────────────
-  // 알림 목록 렌더링
-  // ──────────────────────────────────────────
   function renderNotifications(notifications) {
     const body = document.getElementById('notif-modal-body');
     if (!body) return;
@@ -163,15 +141,13 @@
         </button>
       `;
 
-      // 클릭 시 읽음 처리
       item.addEventListener('click', function (e) {
-        if (e.target.closest('.notif-item-delete')) return; // 삭제 버튼 클릭은 제외
+        if (e.target.closest('.notif-item-delete')) return;
         if (!notif.isRead) {
           handleMarkAsRead(notif.notificationId, item);
         }
       });
 
-      // 삭제 버튼
       item.querySelector('.notif-item-delete').addEventListener('click', function (e) {
         e.stopPropagation();
         handleDelete(notif.notificationId, item);
@@ -181,9 +157,6 @@
     });
   }
 
-  // ──────────────────────────────────────────
-  // 읽음 처리
-  // ──────────────────────────────────────────
   async function handleMarkAsRead(notificationId, itemEl) {
     try {
       const res = await fetch(`/notifications/${notificationId}/read`, {
@@ -194,7 +167,6 @@
       const data = await res.json();
 
       if (data.ok) {
-        // 읽음 → 회색 배경 처리 (UI 디자인 반영)
         itemEl.classList.add('notif-item--read');
         decrementBadge();
       }
@@ -203,9 +175,6 @@
     }
   }
 
-  // ──────────────────────────────────────────
-  // 알림 삭제
-  // ──────────────────────────────────────────
   async function handleDelete(notificationId, itemEl) {
     try {
       const res = await fetch(`/notifications/${notificationId}`, {
@@ -216,15 +185,12 @@
       const data = await res.json();
 
       if (data.ok) {
-        // 읽지 않은 알림이면 배지 감소
         if (!itemEl.classList.contains('notif-item--read')) {
           decrementBadge();
         }
-        // 슬라이드 아웃 애니메이션 후 제거
         itemEl.classList.add('notif-item--removing');
         setTimeout(function () {
           itemEl.remove();
-          // 알림이 하나도 없으면 빈 상태 표시
           const body = document.getElementById('notif-modal-body');
           if (body && body.querySelectorAll('.notif-item').length === 0) {
             body.innerHTML = '<div class="notif-empty">새로운 알림이 없어요 🎉</div>';
@@ -236,13 +202,8 @@
     }
   }
 
-  // ──────────────────────────────────────────
-  // 읽지 않은 알림 배지 (페이지 로드 시)
-  // ──────────────────────────────────────────
   async function fetchUnreadBadge() {
-    // ⚠️ 팀원 참고:
-    //   /notifications API를 통해 is_read=false 개수를 계산합니다.
-    //   별도 badge API 없이 목록 API로 계산합니다.
+    // ⚠️ 팀원 참고: 별도 badge API 없이 목록 API(/notifications)로 unread 개수 계산
     try {
       const res = await fetch('/notifications', {
         credentials: 'same-origin',

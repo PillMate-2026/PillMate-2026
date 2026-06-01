@@ -1,13 +1,7 @@
-// models/notificationModel.js
-// feature/notification 브랜치 담당: 알림 조회/읽음/삭제
-
 const pool = require('../db/connection');
 
 /**
- * 사용자 알림 목록 조회 (최신순)
- * API: GET /notifications
- * 
- *  팀원 참고:
+ * 팀원 참고:
  *   - NOTIFICATION 테이블을 조회합니다.
  *   - req.user.userId (authMiddleware 주입)로 필터링합니다.
  */
@@ -43,10 +37,6 @@ const getUnreadCount = async (userId) => {
   return rows[0].unread_count;
 };
 
-/**
- * 알림 읽음 처리
- * API: PATCH /notifications/:notificationId/read
- */
 const markAsRead = async (notificationId, userId) => {
   const sql = `
     UPDATE NOTIFICATION
@@ -57,10 +47,6 @@ const markAsRead = async (notificationId, userId) => {
   return result.affectedRows > 0;
 };
 
-/**
- * 알림 삭제
- * API: DELETE /notifications/:notificationId
- */
 const deleteNotification = async (notificationId, userId) => {
   const sql = `
     DELETE FROM NOTIFICATION
