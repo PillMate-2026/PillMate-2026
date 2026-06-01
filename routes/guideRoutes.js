@@ -1,6 +1,3 @@
-// routes/guideRoutes.js
-// feature/guide 브랜치
-
 const express = require('express');
 const router = express.Router();
 const guideController = require('../controllers/guideController');
