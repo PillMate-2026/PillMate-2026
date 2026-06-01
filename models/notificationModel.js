@@ -24,19 +24,6 @@ const getNotificationsByUserId = async (userId) => {
   return rows;
 };
 
-/**
- * 읽지 않은 알림 개수 조회 (Bell 아이콘 배지용)
- */
-const getUnreadCount = async (userId) => {
-  const sql = `
-    SELECT COUNT(*) AS unread_count
-    FROM NOTIFICATION
-    WHERE user_id = ? AND is_read = FALSE
-  `;
-  const [rows] = await pool.query(sql, [userId]);
-  return rows[0].unread_count;
-};
-
 const markAsRead = async (notificationId, userId) => {
   const sql = `
     UPDATE NOTIFICATION
@@ -74,7 +61,6 @@ const createNotification = async ({ userId, medicineId, medicineName, content })
 
 module.exports = {
   getNotificationsByUserId,
-  getUnreadCount,
   markAsRead,
   deleteNotification,
   createNotification,
