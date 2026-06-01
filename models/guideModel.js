@@ -1,5 +1,3 @@
-// models/guideModel.js — feature/guide 버그픽스
-
 const pool = require('../db/connection');
 
 const getDisposalGuide = () => [
