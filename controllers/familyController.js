@@ -7,6 +7,21 @@ function generateInviteCode() {
   return Math.random().toString(36).substring(2, 8).toUpperCase();
 }
 
+function getInviteExpireText(createdAt) {
+  const createdTime = new Date(createdAt).getTime();
+  const expireTime = createdTime + 24 * 60 * 60 * 1000;
+  const diff = expireTime - Date.now();
+
+  if (diff <= 0) {
+    return "만료되었습니다";
+  }
+
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}동안 유효합니다`;
+}
+
 exports.renderFamilyPage = async (req, res) => {
   try {
     if (!req.user) {
@@ -22,26 +37,41 @@ exports.renderFamilyPage = async (req, res) => {
       return res.render("family/family-group", {
         hasFamily: false,
         inviteCode: null,
+        inviteExpireText: null,
         members: [],
       });
     }
 
     const familyId = currentUser.family_id;
 
-    const inviteCodes = await query(
+    let inviteCodes = await query(
       "SELECT * FROM INVITE_CODE WHERE family_id = ? ORDER BY created_at DESC LIMIT 1",
       [familyId]
     );
 
     let inviteCode = inviteCodes[0]?.code;
+    let inviteCreatedAt = inviteCodes[0]?.created_at;
 
-    if (!inviteCode) {
+    const isExpired =
+      inviteCreatedAt &&
+      Date.now() - new Date(inviteCreatedAt).getTime() >= 24 * 60 * 60 * 1000;
+
+    if (!inviteCode || isExpired) {
+      await query("DELETE FROM INVITE_CODE WHERE family_id = ?", [familyId]);
+
       inviteCode = generateInviteCode();
 
       await query(
         "INSERT INTO INVITE_CODE (code, family_id) VALUES (?, ?)",
         [inviteCode, familyId]
       );
+
+      inviteCodes = await query(
+        "SELECT * FROM INVITE_CODE WHERE family_id = ? ORDER BY created_at DESC LIMIT 1",
+        [familyId]
+      );
+
+      inviteCreatedAt = inviteCodes[0].created_at;
     }
 
     const members = await query(
@@ -52,6 +82,8 @@ exports.renderFamilyPage = async (req, res) => {
     res.render("family/family-group", {
       hasFamily: true,
       inviteCode,
+      inviteExpireText: getInviteExpireText(inviteCreatedAt),
+      inviteExpireAt: new Date(new Date(inviteCreatedAt).getTime() + 24 * 60 * 60 * 1000).toISOString(),
       members,
     });
   } catch (err) {
@@ -115,6 +147,14 @@ exports.joinFamily = async (req, res) => {
       return res.send("유효하지 않은 초대코드입니다.");
     }
 
+    const createdAt = codes[0].created_at;
+    const isExpired =
+      Date.now() - new Date(createdAt).getTime() >= 24 * 60 * 60 * 1000;
+
+    if (isExpired) {
+      return res.send("만료된 초대코드입니다.");
+    }
+
     const familyId = codes[0].family_id;
 
     await query(
@@ -146,5 +186,39 @@ exports.leaveFamily = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("가족그룹 탈퇴 실패");
+  }
+};
+
+exports.refreshInviteCode = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.redirect("/auth/login");
+    }
+
+    const userId = req.user.user_id;
+
+    const users = await query("SELECT * FROM `USER` WHERE user_id = ?", [userId]);
+    const currentUser = users[0];
+
+    if (!currentUser || !currentUser.family_id) {
+      return res.redirect("/family");
+    }
+
+    const familyId = currentUser.family_id;
+    const newCode = generateInviteCode();
+
+    
+
+    await query("DELETE FROM INVITE_CODE WHERE family_id = ?", [familyId]);
+
+    await query(
+      "INSERT INTO INVITE_CODE (code, family_id) VALUES (?, ?)",
+      [newCode, familyId]
+    );
+
+    res.redirect("/family");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("초대코드 새로고침 실패");
   }
 };

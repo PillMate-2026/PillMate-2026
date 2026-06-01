@@ -1,7 +1,8 @@
 .mypage-container {
-  padding: 36px 52px;
-  background: #ffffff;
+  width: 100%;
   min-height: 100vh;
+  padding: 40px 48px;
+  background: #ffffff;
 }
 
 .mypage-title {
@@ -13,35 +14,39 @@
 .profile-card,
 .medicine-status-card,
 .menu-list {
-  width: 620px;
+  width: 900px;
+  max-width: calc(100vw - 380px);
   border: 1px solid #d6d6d6;
   border-radius: 7px;
   background: #ffffff;
 }
 
 .profile-card {
-  height: 100px;
+  height: 120px;
   display: flex;
   align-items: center;
-  padding: 0 18px;
-  gap: 20px;
+  padding: 0 22px;
+  gap: 22px;
 }
 
 .profile-avatar {
-  width: 68px;
-  height: 68px;
-  border-radius: 50%;
-  background: #ff8d9a;
+  width: 90px;
+  height: 90px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 38px;
-  font-weight: 700;
+}
+
+.profile-avatar img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
 }
 
 .profile-info h3 {
-  margin: 0 0 6px 0;
+  margin: 0 0 4px 0;
   font-size: 18px;
+  font-weight: 700;
 }
 
 .profile-info p {
@@ -57,6 +62,7 @@
   background: #cccccc;
   color: #ffffff;
   font-size: 12px;
+  font-weight: 600;
 }
 
 .family-badge.active {
@@ -64,13 +70,15 @@
 }
 
 .medicine-status-card {
+  height: 190px;
   margin-top: 14px;
-  padding: 18px;
+  padding: 16px 18px;
 }
 
 .medicine-status-card h3 {
-  margin: 0 0 22px 0;
+  margin: 0 0 24px 0;
   font-size: 16px;
+  font-weight: 700;
 }
 
 .medicine-status-grid {
@@ -81,13 +89,14 @@
 
 .medicine-status-grid strong {
   display: block;
-  font-size: 34px;
-  margin-bottom: 12px;
+  font-size: 38px;
+  line-height: 1;
+  margin-bottom: 18px;
 }
 
 .medicine-status-grid span {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .green {
@@ -115,6 +124,7 @@
   background: #ffffff;
   padding: 0 16px;
   font-size: 15px;
+  font-weight: 600;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -133,6 +143,26 @@
   position: relative;
 }
 
+.toggle-on {
+  width: 22px;
+  height: 12px;
+  border: 1px solid #65A85A;
+  border-radius: 999px;
+  background: #65A85A;
+  position: relative;
+}
+
+.toggle-on::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: #ffffff;
+  border-radius: 50%;
+  position: absolute;
+  right: 2px;
+  top: 2px;
+}
+
 .toggle-off::before {
   content: "";
   width: 8px;
@@ -148,45 +178,40 @@
 .danger {
   color: #111;
 }
+
+/* 회원탈퇴 모달 */
+
 .delete-modal {
   display: none;
   position: fixed;
   inset: 0;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0,0,0,0.2);
+  background: transparent;
   z-index: 999;
 }
 
 .delete-modal-content {
-  width: 280px;
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  position: relative;
+  position: absolute;
+  top: 30px;
+  right: 80px;
+
+  width: 260px;
+  height: 130px;
+
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 18px 20px;
   text-align: center;
+
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
-.delete-modal-content h3 {
-  color: #d95353;
-  font-size: 18px;
-  margin-bottom: 8px;
-}
-
-.delete-modal-content p {
-  color: #666;
-  font-size: 13px;
-  margin-bottom: 18px;
-}
-
-.delete-confirm-btn {
-  width: 150px;
-  height: 40px;
-  border: none;
-  border-radius: 6px;
-  background: #65A85A;
-  color: white;
-  cursor: pointer;
+.delete-modal-content::before {
+  content: "💊 PillMate";
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  font-size: 11px;
+  color: #65A85A;
 }
 
 .delete-close-btn {
@@ -195,9 +220,37 @@
   right: 12px;
   border: none;
   background: none;
-  font-size: 18px;
+  font-size: 16px;
+  color: #555;
   cursor: pointer;
 }
+
+.delete-modal-content h3 {
+  margin-top: 24px;
+  margin-bottom: 4px;
+  color: #e14b4b;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.delete-modal-content p {
+  color: #666;
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+
+.delete-confirm-btn {
+  width: 110px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: #65A85A;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .modal-input {
   width: 100%;
   height: 42px;

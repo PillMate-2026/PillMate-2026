@@ -38,14 +38,13 @@ router.get(
 // 마이페이지
 router.get("/mypage", authController.renderMyPage);
 
-
-//로그아웃
+// 로그아웃
 router.post("/logout", authController.logout);
 
-//회원탈퇴
+// 회원탈퇴
 router.post("/delete", authController.deleteAccount);
 
-//비밀번호
+// 비밀번호 변경
 router.post("/password", authController.changePassword);
 
 module.exports = router;

@@ -1,13 +1,13 @@
-<%- include('../partials/header') %>
-
-<link rel="stylesheet" href="/css/family.css">
+<%- include('../partials/header', {
+  title: '가족 그룹',
+  pageCss: 'family'
+}) %>
 
 <div class="app-wrapper">
   <%- include('../partials/sidebar', { activeMenu: 'family' }) %>
 
   <div class="app-main">
     <main class="family-container">
-
       <div class="family-header">
         <h2>👥 가족 그룹</h2>
         <p>가족과 함께 약장을 공유하고 약 정보를 함께 관리하세요</p>
@@ -44,7 +44,12 @@
             </p>
 
             <form action="/family/join" method="POST">
-              <input type="text" name="inviteCode" maxlength="6" required>
+              <input
+                type="text"
+                name="inviteCode"
+                maxlength="6"
+                required
+              >
               <button type="submit">참여하기</button>
             </form>
           </div>
@@ -53,13 +58,32 @@
         <section class="invite-box">
           <div class="invite-main">
             <div class="invite-title">
-              ⏱ 초대코드 <strong><%= inviteCode %></strong>
-              <span>가족에게 공유하세요</span>
+              <button
+                type="button"
+                class="refresh-icon"
+                aria-label="초대코드 새로고침"
+                onclick="refreshInviteCode()"
+              >
+                ↻
+              </button>
+
+              <span class="invite-code-text">
+                초대코드 <strong><%= inviteCode %></strong>
+              </span>
+
+              <span id="inviteTimer" class="invite-time">
+                <%= inviteExpireText || "24:00:00동안 유효합니다" %>
+              </span>
             </div>
+
             <p>이 코드를 가족에게 공유하면 같은 약장을 함께 관리할 수 있어요.</p>
           </div>
 
-          <button type="button" class="copy-btn" onclick="navigator.clipboard.writeText('<%= inviteCode %>')">
+          <button
+            type="button"
+            class="copy-btn"
+            onclick="navigator.clipboard.writeText('<%= inviteCode %>')"
+          >
             복사하기
           </button>
         </section>
@@ -69,23 +93,72 @@
 
           <div class="member-grid">
             <% members.forEach((member) => { %>
+              <%
+                let memberProfileIcon = '/images/icons/profile.svg';
+
+                if (member.gender === '여성') {
+                  memberProfileIcon = '/images/icons/female.svg';
+                } else if (member.gender === '남성') {
+                  memberProfileIcon = '/images/icons/male.svg';
+                }
+              %>
+
               <article class="member-card">
                 <div class="member-icon">
-                  <%= member.gender === "여성" ? "👩" : "👤" %>
+                  <img src="<%= memberProfileIcon %>" alt="profile">
                 </div>
+
                 <span><%= member.name %></span>
               </article>
             <% }) %>
           </div>
         </section>
 
-        <form action="/family/leave" method="POST" class="leave-area">
-          <button type="submit">그룹 탈퇴하기</button>
-        </form>
+        <div class="leave-area">
+          <form action="/family/leave" method="POST">
+            <button type="submit">그룹 탈퇴하기</button>
+          </form>
+        </div>
       <% } %>
-
     </main>
   </div>
 </div>
+
+<% if (hasFamily && typeof inviteExpireAt !== "undefined" && inviteExpireAt) { %>
+  <script>
+    function refreshInviteCode() {
+      fetch("/family/refresh-code", {
+        method: "POST",
+        credentials: "same-origin"
+      }).then(() => {
+        window.location.href = "/family";
+      });
+    }
+
+    const inviteExpireAt = new Date("<%= inviteExpireAt %>").getTime();
+    const timerElement = document.getElementById("inviteTimer");
+
+    function updateInviteTimer() {
+      if (!timerElement) return;
+
+      const diff = inviteExpireAt - Date.now();
+
+      if (diff <= 0) {
+        timerElement.innerText = "만료되었습니다";
+        return;
+      }
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      timerElement.innerText =
+        `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}동안 유효합니다`;
+    }
+
+    updateInviteTimer();
+    setInterval(updateInviteTimer, 1000);
+  </script>
+<% } %>
 
 <%- include('../partials/footer') %>

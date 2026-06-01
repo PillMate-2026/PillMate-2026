@@ -3,12 +3,22 @@ const db = require("../config/db");
 
 // 로그인 페이지
 exports.renderLoginPage = (req, res) => {
-  res.render("users/login-page");
+  res.render("users/login-page", {
+    title: "로그인",
+    pageCss: "login",
+    error: null,
+    login_id: "",
+  });
 };
 
 // 회원가입 페이지
 exports.renderSignupPage = (req, res) => {
-  res.render("users/signup-page");
+  res.render("users/signup-page", {
+    title: "회원가입",
+    pageCss: "signup",
+    error: null,
+    formData: {},
+  });
 };
 
 // 마이페이지
@@ -35,6 +45,8 @@ exports.renderMyPage = (req, res) => {
       console.log(err);
 
       return res.render("users/mypage", {
+        title: "마이페이지",
+        pageCss: "mypage",
         user: req.user,
         medicineStatus: {
           valid: 0,
@@ -47,6 +59,8 @@ exports.renderMyPage = (req, res) => {
     const status = results[0];
 
     res.render("users/mypage", {
+      title: "마이페이지",
+      pageCss: "mypage",
       user: req.user,
       medicineStatus: {
         valid: status.valid || 0,
@@ -56,12 +70,25 @@ exports.renderMyPage = (req, res) => {
     });
   });
 };
+
 // 회원가입 처리
 exports.signup = async (req, res) => {
-  const { login_id, password, passwordConfirm, name, age, gender } = req.body;
+  const { login_id, password, passwordConfirm, name, birthYear, gender } = req.body;
 
   if (password !== passwordConfirm) {
-    return res.send("비밀번호가 일치하지 않습니다.");
+    return res.render("users/signup-page", {
+      title: "회원가입",
+      pageCss: "signup",
+      error: "비밀번호가 일치하지 않습니다.",
+      formData: { login_id, name, birthYear, gender },
+    });
+  }
+
+  let age = null;
+
+  if (birthYear) {
+    const currentYear = new Date().getFullYear();
+    age = currentYear - Number(birthYear);
   }
 
   try {
@@ -82,11 +109,26 @@ exports.signup = async (req, res) => {
 
     db.query(
       query,
-      [login_id, hashedPassword, name, age || null, gender || null],
+      [login_id, hashedPassword, name, age, gender || null],
       (err) => {
         if (err) {
           console.log(err);
-          return res.send("회원가입 실패");
+
+          if (err.code === "ER_DUP_ENTRY") {
+            return res.render("users/signup-page", {
+              title: "회원가입",
+              pageCss: "signup",
+              error: "이미 사용 중인 아이디입니다.",
+              formData: { login_id, name, birthYear, gender },
+            });
+          }
+
+          return res.render("users/signup-page", {
+            title: "회원가입",
+            pageCss: "signup",
+            error: "회원가입 중 오류가 발생했습니다.",
+            formData: { login_id, name, birthYear, gender },
+          });
         }
 
         res.redirect("/auth/login");
@@ -94,7 +136,13 @@ exports.signup = async (req, res) => {
     );
   } catch (err) {
     console.log(err);
-    res.send("에러 발생");
+
+    res.render("users/signup-page", {
+      title: "회원가입",
+      pageCss: "signup",
+      error: "회원가입 중 오류가 발생했습니다.",
+      formData: { login_id, name, birthYear, gender },
+    });
   }
 };
 
@@ -107,11 +155,22 @@ exports.login = (req, res) => {
   db.query(query, [login_id], async (err, results) => {
     if (err) {
       console.log(err);
-      return res.send("로그인 실패");
+
+      return res.render("users/login-page", {
+        title: "로그인",
+        pageCss: "login",
+        error: "로그인 중 오류가 발생했습니다.",
+        login_id,
+      });
     }
 
     if (results.length === 0) {
-      return res.send("존재하지 않는 아이디입니다.");
+      return res.render("users/login-page", {
+        title: "로그인",
+        pageCss: "login",
+        error: "아이디 또는 비밀번호가 올바르지 않습니다.",
+        login_id,
+      });
     }
 
     const user = results[0];
@@ -119,13 +178,24 @@ exports.login = (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.send("비밀번호가 틀렸습니다.");
+      return res.render("users/login-page", {
+        title: "로그인",
+        pageCss: "login",
+        error: "아이디 또는 비밀번호가 올바르지 않습니다.",
+        login_id,
+      });
     }
 
     req.login(user, (err) => {
       if (err) {
         console.log(err);
-        return res.send("로그인 실패");
+
+        return res.render("users/login-page", {
+          title: "로그인",
+          pageCss: "login",
+          error: "로그인 중 오류가 발생했습니다.",
+          login_id,
+        });
       }
 
       return res.redirect("/auth/mypage");
@@ -138,7 +208,7 @@ exports.logout = (req, res) => {
   req.logout((err) => {
     if (err) {
       console.log(err);
-      return res.send("로그아웃 실패");
+      return res.redirect("/auth/mypage");
     }
 
     req.session.destroy(() => {
@@ -160,13 +230,13 @@ exports.deleteAccount = (req, res) => {
   db.query(query, [userId], (err) => {
     if (err) {
       console.log(err);
-      return res.send("회원 탈퇴 실패");
+      return res.redirect("/auth/mypage");
     }
 
     req.logout((err) => {
       if (err) {
         console.log(err);
-        return res.send("회원 탈퇴 후 로그아웃 실패");
+        return res.redirect("/auth/login");
       }
 
       req.session.destroy(() => {
@@ -185,7 +255,7 @@ exports.changePassword = async (req, res) => {
   }
 
   if (newPassword !== newPasswordConfirm) {
-    return res.send("새 비밀번호가 일치하지 않습니다.");
+    return res.redirect("/auth/mypage");
   }
 
   try {
@@ -195,11 +265,11 @@ exports.changePassword = async (req, res) => {
       async (err, results) => {
         if (err) {
           console.log(err);
-          return res.send("오류 발생");
+          return res.redirect("/auth/mypage");
         }
 
         if (results.length === 0) {
-          return res.send("사용자를 찾을 수 없습니다.");
+          return res.redirect("/auth/login");
         }
 
         const user = results[0];
@@ -207,7 +277,7 @@ exports.changePassword = async (req, res) => {
         const isMatch = await bcrypt.compare(currentPassword, user.password);
 
         if (!isMatch) {
-          return res.send("현재 비밀번호가 올바르지 않습니다.");
+          return res.redirect("/auth/mypage");
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -218,7 +288,7 @@ exports.changePassword = async (req, res) => {
           (err) => {
             if (err) {
               console.log(err);
-              return res.send("비밀번호 변경 실패");
+              return res.redirect("/auth/mypage");
             }
 
             res.redirect("/auth/mypage");
@@ -228,6 +298,6 @@ exports.changePassword = async (req, res) => {
     );
   } catch (err) {
     console.log(err);
-    res.send("오류 발생");
+    res.redirect("/auth/mypage");
   }
 };

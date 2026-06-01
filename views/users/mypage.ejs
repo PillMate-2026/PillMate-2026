@@ -1,5 +1,7 @@
-<%- include('../partials/header') %>
-<link rel="stylesheet" href="/css/mypage.css">
+<%- include('../partials/header', {
+  title: '마이페이지',
+  pageCss: 'mypage'
+}) %>
 
 <div class="app-wrapper">
   <%- include('../partials/sidebar', { activeMenu: 'mypage' }) %>
@@ -9,12 +11,23 @@
       <h2 class="mypage-title">프로필</h2>
 
       <section class="profile-card">
+        <%
+          let profileIcon = '/images/icons/profile.svg';
+
+          if (user.gender === '여성') {
+            profileIcon = '/images/icons/female.svg';
+          } else if (user.gender === '남성') {
+            profileIcon = '/images/icons/male.svg';
+          }
+        %>
+
         <div class="profile-avatar">
-          <%= user.gender === "여성" ? "가" : "가" %>
+          <img src="<%= profileIcon %>" alt="profile">
         </div>
 
         <div class="profile-info">
           <h3><%= user.name %></h3>
+
           <p>
             @<%= user.login_id || "google_user" %>
             ·
@@ -62,10 +75,17 @@
           <span>›</span>
         </button>
 
-        <button type="button" class="menu-item">
-          <span>알림 설정</span>
-          <span class="toggle-off"></span>
-        </button>
+        <form action="/auth/notification-toggle" method="POST">
+          <button type="submit" class="menu-item">
+            <span>알림 설정</span>
+
+            <% if (user.notification_enabled) { %>
+              <span class="toggle-on"></span>
+            <% } else { %>
+              <span class="toggle-off"></span>
+            <% } %>
+          </button>
+        </form>
       </section>
 
       <section class="menu-list bottom-menu">
@@ -76,23 +96,21 @@
           </button>
         </form>
 
-<form action="/auth/delete" method="POST">
-  <button
-    type="submit"
-    class="menu-item danger"
-    onclick="return confirm('정말 회원 탈퇴하시겠습니까? 모든 정보가 삭제됩니다.');"
-  >
-    <span>회원 탈퇴</span>
-    <span>›</span>
-  </button>
-</form>
+        <button
+          type="button"
+          class="menu-item danger"
+          onclick="openDeleteModal()"
+        >
+          <span>회원 탈퇴</span>
+          <span>›</span>
+        </button>
       </section>
     </main>
   </div>
 </div>
 
 <div id="passwordModal" class="delete-modal">
-  <div class="delete-modal-content">
+  <div class="delete-modal-content password-modal-content">
     <button
       type="button"
       class="delete-close-btn"
@@ -136,6 +154,27 @@
   </div>
 </div>
 
+<div id="deleteModal" class="delete-modal">
+  <div class="delete-modal-content">
+    <button
+      type="button"
+      class="delete-close-btn"
+      onclick="closeDeleteModal()"
+    >
+      ✕
+    </button>
+
+    <h3>회원을 탈퇴하시겠습니까?</h3>
+    <p>모든 정보가 초기화됩니다</p>
+
+    <form action="/auth/delete" method="POST">
+      <button type="submit" class="delete-confirm-btn">
+        탈퇴하겠습니다
+      </button>
+    </form>
+  </div>
+</div>
+
 <script>
   function openPasswordModal() {
     document.getElementById("passwordModal").style.display = "flex";
@@ -143,6 +182,14 @@
 
   function closePasswordModal() {
     document.getElementById("passwordModal").style.display = "none";
+  }
+
+  function openDeleteModal() {
+    document.getElementById("deleteModal").style.display = "flex";
+  }
+
+  function closeDeleteModal() {
+    document.getElementById("deleteModal").style.display = "none";
   }
 </script>
 
