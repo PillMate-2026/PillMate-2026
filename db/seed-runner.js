@@ -14,7 +14,7 @@ const path = require('path');
   });
 
   const seedFiles = [
-    'seed.sql',
+    'seed_waste_bins.sql',
     'seed_chatbot.sql'
   ];
 
