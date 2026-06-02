@@ -80,8 +80,6 @@ app.use('/', medicineDetailRoutes);
 const chatbotRoutes = require('./routes/chatbotRoutes');
 app.use('/', chatbotRoutes);
 
-const familyRoutes = require('./routes/familyRoutes');
-app.use('/family', familyRoutes);
 
 // ============================================================
 // 404 처리

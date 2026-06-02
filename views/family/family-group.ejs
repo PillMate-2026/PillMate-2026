@@ -9,7 +9,10 @@
   <div class="app-main">
     <main class="family-container">
       <div class="family-header">
-        <h2>👥 가족 그룹</h2>
+        <h2 class="family-title">
+          <img src="/images/icons/people.svg" alt="family">
+          가족그룹
+        </h2>
         <p>가족과 함께 약장을 공유하고 약 정보를 함께 관리하세요</p>
       </div>
 
@@ -95,10 +98,11 @@
             <% members.forEach((member) => { %>
               <%
                 let memberProfileIcon = '/images/icons/profile.svg';
+                const gender = member.gender;
 
-                if (member.gender === '여성') {
+                if (gender === '여성' || gender === 'female' || gender === 'F') {
                   memberProfileIcon = '/images/icons/female.svg';
-                } else if (member.gender === '남성') {
+                } else if (gender === '남성' || gender === 'male' || gender === 'M') {
                   memberProfileIcon = '/images/icons/male.svg';
                 }
               %>
@@ -115,14 +119,44 @@
         </section>
 
         <div class="leave-area">
-          <form action="/family/leave" method="POST">
-            <button type="submit">그룹 탈퇴하기</button>
-          </form>
+          <button type="button" onclick="openFamilyLeaveModal()">
+            그룹 탈퇴하기
+          </button>
         </div>
       <% } %>
     </main>
   </div>
 </div>
+
+<% if (hasFamily) { %>
+  <div id="familyLeaveModal" class="family-leave-modal">
+    <div class="family-leave-modal-content">
+      <div class="modal-logo">
+        <img src="/images/icons/pill.svg?v=1" alt="PillMate">
+        <div class="modal-logo-text">
+          <span class="pill-blue">Pill</span><span class="pill-green">Mate</span>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="family-leave-close-btn"
+        onclick="closeFamilyLeaveModal()"
+      >
+        ×
+      </button>
+
+      <h3>가족 그룹을 탈퇴하겠습니까?</h3>
+      <p>자신의 약 목록이 초기화됩니다</p>
+
+      <form action="/family/leave" method="POST">
+        <button type="submit" class="family-leave-confirm-btn">
+          탈퇴하겠습니다
+        </button>
+      </form>
+    </div>
+  </div>
+<% } %>
 
 <% if (hasFamily && typeof inviteExpireAt !== "undefined" && inviteExpireAt) { %>
   <script>
@@ -161,4 +195,24 @@
   </script>
 <% } %>
 
+<script>
+  window.openFamilyLeaveModal = function () {
+    const modal = document.getElementById("familyLeaveModal");
+
+    if (!modal) {
+      alert("가족그룹 탈퇴 모달을 찾을 수 없습니다.");
+      return;
+    }
+
+    modal.style.display = "flex";
+  };
+
+  window.closeFamilyLeaveModal = function () {
+    const modal = document.getElementById("familyLeaveModal");
+
+    if (!modal) return;
+
+    modal.style.display = "none";
+  };
+</script>
 <%- include('../partials/footer') %>

@@ -66,11 +66,7 @@
       </section>
 
       <section class="menu-list">
-        <button
-          type="button"
-          class="menu-item"
-          onclick="openPasswordModal()"
-        >
+        <button type="button" class="menu-item" onclick="openPasswordModal()">
           <span>비밀번호 변경</span>
           <span>›</span>
         </button>
@@ -96,11 +92,7 @@
           </button>
         </form>
 
-        <button
-          type="button"
-          class="menu-item danger"
-          onclick="openDeleteModal()"
-        >
+        <button type="button" class="menu-item danger" onclick="openDeleteModal()">
           <span>회원 탈퇴</span>
           <span>›</span>
         </button>
@@ -111,66 +103,44 @@
 
 <div id="passwordModal" class="delete-modal">
   <div class="delete-modal-content password-modal-content">
-    <button
-      type="button"
-      class="delete-close-btn"
-      onclick="closePasswordModal()"
-    >
-      ✕
-    </button>
+    <div class="modal-logo">
+      <img src="/images/icons/pill.svg?v=1" alt="PillMate">
+      <div class="modal-logo-text">
+        <span class="pill-blue">Pill</span><span class="pill-green">Mate</span>
+      </div>
+    </div>
+
+    <button type="button" class="delete-close-btn" onclick="closePasswordModal()">×</button>
 
     <h3>비밀번호 변경</h3>
     <p>새 비밀번호를 입력해주세요</p>
 
     <form action="/auth/password" method="POST">
-      <input
-        type="password"
-        name="currentPassword"
-        placeholder="현재 비밀번호"
-        required
-        class="modal-input"
-      >
+      <input type="password" name="currentPassword" placeholder="현재 비밀번호" required class="modal-input">
+      <input type="password" name="newPassword" placeholder="새 비밀번호" required class="modal-input">
+      <input type="password" name="newPasswordConfirm" placeholder="새 비밀번호 확인" required class="modal-input">
 
-      <input
-        type="password"
-        name="newPassword"
-        placeholder="새 비밀번호"
-        required
-        class="modal-input"
-      >
-
-      <input
-        type="password"
-        name="newPasswordConfirm"
-        placeholder="새 비밀번호 확인"
-        required
-        class="modal-input"
-      >
-
-      <button type="submit" class="delete-confirm-btn">
-        변경하기
-      </button>
+      <button type="submit" class="delete-confirm-btn">변경하기</button>
     </form>
   </div>
 </div>
 
 <div id="deleteModal" class="delete-modal">
-  <div class="delete-modal-content">
-    <button
-      type="button"
-      class="delete-close-btn"
-      onclick="closeDeleteModal()"
-    >
-      ✕
-    </button>
+  <div class="delete-modal-content delete-account-modal-content">
+    <div class="modal-logo">
+      <img src="/images/icons/pill.svg?v=1" alt="PillMate">
+      <div class="modal-logo-text">
+        <span class="pill-blue">Pill</span><span class="pill-green">Mate</span>
+      </div>
+    </div>
+
+    <button type="button" class="delete-close-btn" onclick="closeDeleteModal()">×</button>
 
     <h3>회원을 탈퇴하시겠습니까?</h3>
     <p>모든 정보가 초기화됩니다</p>
 
     <form action="/auth/delete" method="POST">
-      <button type="submit" class="delete-confirm-btn">
-        탈퇴하겠습니다
-      </button>
+      <button type="submit" class="delete-confirm-btn">탈퇴하겠습니다</button>
     </form>
   </div>
 </div>
