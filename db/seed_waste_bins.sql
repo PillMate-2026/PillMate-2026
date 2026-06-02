@@ -1,7 +1,7 @@
 USE pillmate_db;
 
 -- 공공데이터 전국폐의약품수거함표준데이터 기반 (6622개)
-TRUNCATE TABLE MEDICINE_WASTE_BIN;
+DELETE FROM MEDICINE_WASTE_BIN;
 
 INSERT INTO MEDICINE_WASTE_BIN (name, address, latitude, longitude) VALUES
 ('수호온누리약국', '경기도 평택시 중앙2로 16, 104호 (평택동)', 36.991486, 127.0885957),
