@@ -1,4 +1,8 @@
 const {
+  searchMedicine
+} = require('../services/medicineApiService');
+
+const {
   extractTextFromImage
 } = require('../services/ocrService');
 
@@ -35,7 +39,9 @@ router.get('/manual', (req, res) => {
     activeMenu: 'add',
     pageTitle: '약 등록하기',
     pageIcon: 'plus',
-    pageCss: 'medicine'
+    pageCss: 'medicine',
+    medicineName: '',
+    medicineCandidates: []
   });
 });
 
@@ -73,19 +79,44 @@ router.post(
 
       });
 
-      console.log('후보군:', candidates);
+    console.log('후보군:', candidates);
 
-      const medicineName = candidates[0] || '';
+    let medicineName = candidates[0] || '';
+    let medicineCandidates = [];
 
-        res.render('medicines/register-text', {
-          activeMenu: 'add',
-          pageTitle: '약 등록하기',
-          pageIcon: 'plus',
-          pageCss: 'medicine',
 
-          medicineName
-        });
+      for (const candidate of candidates) {
 
+        const normalizedCandidate =
+          candidate.replace(/\s/g, '');
+
+        const result =
+          await searchMedicine(normalizedCandidate);
+
+        console.log(
+          normalizedCandidate,
+          result.body.totalCount
+        );
+
+        if (result.body.totalCount > 0) {
+
+          medicineName = normalizedCandidate;
+
+          medicineCandidates =
+            result.body.items;
+
+          break;
+        }
+      }
+
+      res.render('medicines/register-text', {
+        activeMenu: 'add',
+        pageTitle: '약 등록하기',
+        pageIcon: 'plus',
+        pageCss: 'medicine',
+        medicineName,
+        medicineCandidates
+      });
     } catch (error) {
 
       console.error(error);
