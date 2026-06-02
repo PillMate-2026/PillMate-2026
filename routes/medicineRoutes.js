@@ -53,10 +53,38 @@ router.post(
 
       console.log(extractedText);
 
-      res.send(`
-        <h2>OCR 결과</h2>
-        <pre>${extractedText}</pre>
-      `);
+      /* OCR 결과 줄 단위 분리 */
+      const lines = extractedText
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line);
+
+      /* 약 이름 후보 찾기 */
+      const candidates = lines.filter(line => {
+
+        return (
+          line.length <= 15 &&
+          line.split(' ').length <= 2 &&
+          !/\d/.test(line) &&
+          !line.includes('밀리그람') &&
+          !line.includes('주의') &&
+          !line.includes('일반의약품')
+        );
+
+      });
+
+      console.log('후보군:', candidates);
+
+      const medicineName = candidates[0] || '';
+
+        res.render('medicines/register-text', {
+          activeMenu: 'add',
+          pageTitle: '약 등록하기',
+          pageIcon: 'plus',
+          pageCss: 'medicine',
+
+          medicineName
+        });
 
     } catch (error) {
 
