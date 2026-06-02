@@ -88,3 +88,69 @@
 .message-row.bot {
   justify-content: flex-start;
 }
+
+.medicine-card {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  border-left: 6px solid #dcdcdc;
+  line-height: 1.6;
+}
+
+.medicine-card.valid {
+  border-left-color: #5caf7a;
+}
+
+.medicine-card.expired {
+  border-left-color: #e57373;
+}
+
+.medicine-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.medicine-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #333;
+}
+
+.status-badge {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-badge.valid {
+  background: #dff4e7;
+  color: #2f7d4d;
+}
+
+.status-badge.expired {
+  background: #ffe1e1;
+  color: #c0392b;
+}
+
+.expired-text {
+  margin-bottom: 6px;
+  color: #c0392b;
+  font-weight: 600;
+}
+
+.medicine-info {
+  color: #444;
+}
+
+.medicine-message {
+  display: block;
+  width: 100%;
+  max-width: 750px;
+}
