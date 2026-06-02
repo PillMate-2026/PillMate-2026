@@ -1,9 +1,14 @@
 require('dotenv').config();
+require('./config/passport');
+require('./config/db');
 
 const express = require('express');
 const path = require('path');
+const session = require('express-session');
+const passport = require('passport');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 // ============================================================
 // 기본 설정
@@ -17,8 +22,23 @@ app.set('views', path.join(__dirname, 'views'));
 // ============================================================
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// ============================================================
+// 세션 / Passport
+// ============================================================
+
+app.use(
+  session({
+    secret: 'pillmate-secret',
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // ============================================================
 // 카카오맵 API 키 전역 전달
@@ -35,6 +55,12 @@ app.use((req, res, next) => {
 
 const indexRoutes = require('./routes/indexRoutes');
 app.use('/', indexRoutes);
+
+const authRoutes = require('./routes/auth');
+app.use('/auth', authRoutes);
+
+const familyRoutes = require('./routes/familyRoutes');
+app.use('/family', familyRoutes);
 
 const guideRoutes = require('./routes/guideRoutes');
 app.use('/disposal-guide', guideRoutes);
@@ -54,6 +80,7 @@ app.use('/', medicineDetailRoutes);
 const chatbotRoutes = require('./routes/chatbotRoutes');
 app.use('/', chatbotRoutes);
 
+
 // ============================================================
 // 404 처리
 // ============================================================
@@ -65,8 +92,6 @@ app.use((req, res) => {
 // ============================================================
 // 서버 실행
 // ============================================================
-
-const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`PILLMATE 서버 실행 중: http://localhost:${PORT}`);
