@@ -1,6 +1,3 @@
-// controllers/guideController.js
-// feature/guide 브랜치
-
 const guideModel = require('../models/guideModel');
 
 /** GET /guide → views/guide.ejs */

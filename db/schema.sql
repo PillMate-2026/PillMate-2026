@@ -38,14 +38,16 @@ CREATE TABLE `FAMILY` (
 CREATE TABLE `SYMPTOM` (
   `symptom_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(20) NOT NULL,
-  PRIMARY KEY (`symptom_id`)
+  PRIMARY KEY (`symptom_id`),
+  UNIQUE KEY `uq_symptom_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 3. INGREDIENT
 CREATE TABLE `INGREDIENT` (
   `ingredient_id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(20) NOT NULL,
-  PRIMARY KEY (`ingredient_id`)
+  `name` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`ingredient_id`),
+  UNIQUE KEY `uq_ingredient_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 4. MEDICINE_WASTE_BIN
