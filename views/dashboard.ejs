@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="/css/medicineDetail.css">
 
 <div class="app-layout dashboard-shell">
-  <%- include('partials/sidebar', { activeMenu: 'home', user: typeof user !== 'undefined' ? user : null }) %>
+  <%- include('partials/sidebar', { activeMenu: 'home' }) %>
 
   <div class="app-main">
     <%- include('partials/topbar', {
@@ -34,7 +34,6 @@
       </section>
 
       <form class="dashboard-controls" method="get" action="/dashboard">
-        <input type="hidden" name="userId" value="<%= userId %>">
         <input type="hidden" name="status" value="<%= status %>">
 
         <label class="search-box">
@@ -44,11 +43,11 @@
 
         <div class="control-group">
           <span>상태</span>
-          <a href="?userId=<%= userId %>&status=<%= status === 'normal' ? 'all' : 'normal' %>&sort=<%= sort %>&keyword=<%= encodeURIComponent(search) %>"
+          <a href="?status=<%= status === 'normal' ? 'all' : 'normal' %>&sort=<%= sort %>&keyword=<%= encodeURIComponent(search) %>"
             class="filter-btn <%= status === 'normal' ? 'active' : '' %>">
             유효
           </a>
-          <a href="?userId=<%= userId %>&status=<%= status === 'expired' ? 'all' : 'expired' %>&sort=<%= sort %>&keyword=<%= encodeURIComponent(search) %>"
+          <a href="?status=<%= status === 'expired' ? 'all' : 'expired' %>&sort=<%= sort %>&keyword=<%= encodeURIComponent(search) %>"
             class="filter-btn <%= status === 'expired' ? 'active' : '' %>">
             만료
           </a>
