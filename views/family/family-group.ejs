@@ -1,0 +1,218 @@
+<%- include('../partials/header', {
+  title: '가족 그룹',
+  pageCss: 'family'
+}) %>
+
+<div class="app-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'family' }) %>
+
+  <div class="app-main">
+    <main class="family-container">
+      <div class="family-header">
+        <h2 class="family-title">
+          <img src="/images/icons/people.svg" alt="family">
+          가족그룹
+        </h2>
+        <p>가족과 함께 약장을 공유하고 약 정보를 함께 관리하세요</p>
+      </div>
+
+      <% if (!hasFamily) { %>
+        <div class="family-description">
+          <p>아직 참여 중인 가족그룹이 없어요</p>
+          <p>가족그룹을 만들거나 초대코드를 입력해 가족 약장을 함께 관리해보세요.</p>
+        </div>
+
+        <div class="family-card-wrapper">
+          <div class="family-card">
+            <h3>가족그룹 생성하기</h3>
+
+            <p>
+              새로운 가족 약장을<br>
+              만들고 구성원을<br>
+              초대할 수 있어요
+            </p>
+
+            <form action="/family/create" method="POST">
+              <button type="submit">생성하기</button>
+            </form>
+          </div>
+
+          <div class="family-card">
+            <h3>초대코드 입력하기</h3>
+
+            <p>
+              가족에게 받은<br>
+              초대코드를 입력해<br>
+              가족그룹에 참여하세요
+            </p>
+
+            <form action="/family/join" method="POST">
+              <input
+                type="text"
+                name="inviteCode"
+                maxlength="6"
+                required
+              >
+              <button type="submit">참여하기</button>
+            </form>
+          </div>
+        </div>
+      <% } else { %>
+        <section class="invite-box">
+          <div class="invite-main">
+            <div class="invite-title">
+              <button
+                type="button"
+                class="refresh-icon"
+                aria-label="초대코드 새로고침"
+                onclick="refreshInviteCode()"
+              >
+                ↻
+              </button>
+
+              <span class="invite-code-text">
+                초대코드 <strong><%= inviteCode %></strong>
+              </span>
+
+              <span id="inviteTimer" class="invite-time">
+                <%= inviteExpireText || "24:00:00동안 유효합니다" %>
+              </span>
+            </div>
+
+            <p>이 코드를 가족에게 공유하면 같은 약장을 함께 관리할 수 있어요.</p>
+          </div>
+
+          <button
+            type="button"
+            class="copy-btn"
+            onclick="navigator.clipboard.writeText('<%= inviteCode %>')"
+          >
+            복사하기
+          </button>
+        </section>
+
+        <section class="member-section">
+          <p class="member-count">구성원 <%= members.length %>명</p>
+
+          <div class="member-grid">
+            <% members.forEach((member) => { %>
+              <%
+                let memberProfileIcon = '/images/icons/profile.svg';
+                const gender = member.gender;
+
+                if (gender === '여성' || gender === 'female' || gender === 'F') {
+                  memberProfileIcon = '/images/icons/female.svg';
+                } else if (gender === '남성' || gender === 'male' || gender === 'M') {
+                  memberProfileIcon = '/images/icons/male.svg';
+                }
+              %>
+
+              <article class="member-card">
+                <div class="member-icon">
+                  <img src="<%= memberProfileIcon %>" alt="profile">
+                </div>
+
+                <span><%= member.name %></span>
+              </article>
+            <% }) %>
+          </div>
+        </section>
+
+        <div class="leave-area">
+          <button type="button" onclick="openFamilyLeaveModal()">
+            그룹 탈퇴하기
+          </button>
+        </div>
+      <% } %>
+    </main>
+  </div>
+</div>
+
+<% if (hasFamily) { %>
+  <div id="familyLeaveModal" class="family-leave-modal">
+    <div class="family-leave-modal-content">
+      <div class="modal-logo">
+        <img src="/images/icons/pill.svg?v=1" alt="PillMate">
+        <div class="modal-logo-text">
+          <span class="pill-blue">Pill</span><span class="pill-green">Mate</span>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="family-leave-close-btn"
+        onclick="closeFamilyLeaveModal()"
+      >
+        ×
+      </button>
+
+      <h3>가족 그룹을 탈퇴하겠습니까?</h3>
+      <p>자신의 약 목록이 초기화됩니다</p>
+
+      <form action="/family/leave" method="POST">
+        <button type="submit" class="family-leave-confirm-btn">
+          탈퇴하겠습니다
+        </button>
+      </form>
+    </div>
+  </div>
+<% } %>
+
+<% if (hasFamily && typeof inviteExpireAt !== "undefined" && inviteExpireAt) { %>
+  <script>
+    function refreshInviteCode() {
+      fetch("/family/refresh-code", {
+        method: "POST",
+        credentials: "same-origin"
+      }).then(() => {
+        window.location.href = "/family";
+      });
+    }
+
+    const inviteExpireAt = new Date("<%= inviteExpireAt %>").getTime();
+    const timerElement = document.getElementById("inviteTimer");
+
+    function updateInviteTimer() {
+      if (!timerElement) return;
+
+      const diff = inviteExpireAt - Date.now();
+
+      if (diff <= 0) {
+        timerElement.innerText = "만료되었습니다";
+        return;
+      }
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      timerElement.innerText =
+        `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}동안 유효합니다`;
+    }
+
+    updateInviteTimer();
+    setInterval(updateInviteTimer, 1000);
+  </script>
+<% } %>
+
+<script>
+  window.openFamilyLeaveModal = function () {
+    const modal = document.getElementById("familyLeaveModal");
+
+    if (!modal) {
+      alert("가족그룹 탈퇴 모달을 찾을 수 없습니다.");
+      return;
+    }
+
+    modal.style.display = "flex";
+  };
+
+  window.closeFamilyLeaveModal = function () {
+    const modal = document.getElementById("familyLeaveModal");
+
+    if (!modal) return;
+
+    modal.style.display = "none";
+  };
+</script>
+<%- include('../partials/footer') %>
