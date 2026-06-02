@@ -4,22 +4,22 @@ const getDisposalGuide = () => [
   {
     type: '알약/캡슐',
     guide: '낱알 포장(PTP)에서 약만 꺼내 모아서 수거함에 배출해요',
-    imgFile: '/images/icons/png/pill.png',
+    imgFile: '/images/png/pill.png',
   },
   {
     type: '가루약',
     guide: '봉지 그대로 밀봉해서 수거함에 배출해요',
-    imgFile: '/images/icons/png/powder.png',
+    imgFile: '/images/png/powder.png',
   },
   {
     type: '물약',
     guide: '뚜껑을 꽉 닫아 병째로 수거함에 배출해요',
-    imgFile: '/images/icons/png/liquid.png',
+    imgFile: '/images/png/liquid.png',
   },
   {
     type: '연고/크림',
     guide: '튜브나 용기째로 수거함에 배출해요',
-    imgFile: '/images/icons/png/etc.png',
+    imgFile: '/images/png/etc.png',
   },
 ];
 
