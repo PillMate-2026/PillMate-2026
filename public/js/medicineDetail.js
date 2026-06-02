@@ -113,7 +113,7 @@ window.openMedicineDetailModal = async function(id) {
   currentMedicineVersion = medicine.version;
 
   document.getElementById('modalMedicineImage').src =  //나중에 바꾸기
-    medicine.item_image || '/images/logo2.png';
+    medicine.item_image || '/images/png/logo2.png';
 
   document.getElementById('modalMedicineName').textContent = //나중에 바꾸기
     medicine.name || '-';
