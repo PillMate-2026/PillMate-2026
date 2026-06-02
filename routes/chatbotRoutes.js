@@ -188,8 +188,6 @@ router.post("/chatbot/recommend", async (req, res) => {
             ELSE false
         END AS is_expired,
         m.efficacy,
-        m.use_method,
-        m.precaution,
         GROUP_CONCAT(DISTINCT i.name SEPARATOR ', ') AS ingredients
       FROM SYMPTOM s
       JOIN INGREDIENT_SYMPTOM ins 
@@ -206,9 +204,7 @@ router.post("/chatbot/recommend", async (req, res) => {
         m.medicine_id,
         m.name,
         m.expiration_date,
-        m.efficacy,
-        m.use_method,
-        m.precaution
+        m.efficacy
       ORDER BY m.expiration_date ASC
       LIMIT 5
       `,
