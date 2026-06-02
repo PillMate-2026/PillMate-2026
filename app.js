@@ -97,4 +97,5 @@ app.use((req, res) => {
 
 app.listen(PORT, () => {
   console.log(`PILLMATE 서버 실행 중: http://localhost:${PORT}`);
+  require('./services/notificationScheduler');
 });
