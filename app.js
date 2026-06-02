@@ -42,7 +42,7 @@ const authRoutes = require('./routes/auth');
 app.use('/auth', authRoutes);
 
 const familyRoutes = require('./routes/familyRoutes');
-app.use('/family', authMiddleware, familyRoutes);
+app.use('/family', familyRoutes);
 
 const guideRoutes = require('./routes/guideRoutes');
 app.use('/disposal-guide', authMiddleware, guideRoutes);
