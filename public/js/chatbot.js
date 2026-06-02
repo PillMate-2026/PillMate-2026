@@ -1,99 +1,112 @@
-function extractSymptoms(text) {
-  const symptoms = [];
-
-  if (text.includes('두통') || text.includes('머리')) {
-    symptoms.push('두통');
-  }
-
-  if (text.includes('열') || text.includes('발열')) {
-    symptoms.push('발열');
-  }
-
-  if (text.includes('콧물')) {
-    symptoms.push('콧물');
-  }
-
-  if (text.includes('코막힘') || text.includes('코가 막')) {
-    symptoms.push('코막힘');
-  }
-
-  if (text.includes('근육통') || text.includes('몸살')) {
-    symptoms.push('근육통');
-  }
-
-  return symptoms;
-}
-
+//메세지 추가
 function addMessage(type, message) {
-  const chatMessages = document.getElementById('chatMessages');
+  const chatMessages = document.getElementById("chatMessages");
 
-  const messageDiv = document.createElement('div');
-  messageDiv.className = type === 'user' ? 'user-message' : 'bot-message';
-  messageDiv.innerHTML = message;
+  const row = document.createElement("div");
+  row.className = type === "user" ? "message-row user" : "message-row bot";
 
-  chatMessages.appendChild(messageDiv);
+  const bubble = document.createElement("div");
+  bubble.className = type === "user" ? "user-message" : "bot-message";
+  if (type === "medicine") {
+    bubble.className = "medicine-message";
+  }
+  bubble.innerHTML = message;
+
+  row.appendChild(bubble);
+  chatMessages.appendChild(row);
+
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
+//응답 메세지 설정
 async function sendChatMessage() {
-  const input = document.getElementById('chatInput');
+  const input = document.getElementById("chatInput");
   const userText = input.value.trim();
 
   if (!userText) return;
 
-  addMessage('user', userText);
-  input.value = '';
-
-  const symptoms = extractSymptoms(userText);
-
-  if (symptoms.length === 0) {
-    addMessage('bot', '증상을 잘 찾지 못했어요. 예: 두통, 발열, 콧물처럼 입력해 주세요.');
-    return;
-  }
+  addMessage("user", userText);
+  input.value = "";
 
   try {
-    const response = await fetch('/chatbot/recommend', {
-      method: 'POST',
+    const response = await fetch("/chatbot/recommend", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ symptoms })
+      body: JSON.stringify({ userText }),
     });
 
     const data = await response.json();
 
-    if (data.count === 0) {
-      addMessage('bot', `입력하신 증상(${symptoms.join(', ')})과 관련된 약을 약장에서 찾지 못했어요.`);
+    if (!response.ok) {
+      addMessage("bot", data.message || "약 추천 중 오류가 발생했습니다.");
       return;
     }
 
-    let resultMessage = `입력하신 증상: ${symptoms.join(', ')}<br><br>`;
+    if (data.messages && Array.isArray(data.messages)) {
+      addMessage("bot", data.messages[0].replace(/\n/g, "<br>"));
 
-    data.medicines.forEach((medicine, index) => {
-      resultMessage += `<strong>${index + 1}. ${medicine.name}</strong><br>`;
-      resultMessage += `성분: ${medicine.ingredients}<br>`;
-      resultMessage += `효능: ${medicine.efficacy}<br>`;
+      if (data.medicines && data.medicines.length > 0) {
+        data.medicines.forEach((medicine, index) => {
+          const isExpired =
+            medicine.is_expired === 1 || medicine.is_expired === true;
 
-      if (medicine.is_expired === 1) {
-        resultMessage += `<span class="expired-warning">이 약은 유통기한이 지났습니다. 복용하지 말고 폐기해 주세요.</span><br>`;
+          const cardClass = isExpired
+            ? "medicine-card expired"
+            : "medicine-card valid";
+          const badgeText = isExpired ? "만료" : "복용 가능";
+          const badgeClass = isExpired
+            ? "status-badge expired"
+            : "status-badge valid";
+
+          const expirationDate = medicine.expiration_date || "정보 없음";
+
+          const effect = medicine.efficacy
+            ? medicine.efficacy
+                .replace("이 약은 ", "")
+                .replace("에 사용합니다.", "")
+            : "정보 없음";
+
+          const medicineHtml = `
+                    <div class="${cardClass}">
+                    <div class="medicine-card-header">
+                    <div class="medicine-name">${index + 1}. ${medicine.name}</div>
+                    <span class="${badgeClass}">${badgeText}</span>
+                    </div>
+
+          ${isExpired ? '<div class="expired-text">유통기한이 만료된 약입니다.</div>' : ""}
+
+          <div class="medicine-info"><strong>성분</strong>: ${medicine.ingredients || "정보 없음"}</div>
+          <div class="medicine-info"><strong>효능</strong>: ${effect}</div>
+          <div class="medicine-info"><strong>유통기한</strong>: ${expirationDate}</div>
+        </div>
+      `;
+
+          addMessage("medicine", medicineHtml);
+        });
       }
 
-      resultMessage += `<br>`;
-    });
-
-    addMessage('bot', resultMessage);
-
+      if (data.messages.length > 1) {
+        addMessage(
+          "bot",
+          data.messages[data.messages.length - 1].replace(/\n/g, "<br>"),
+        );
+      }
+    } else {
+      addMessage("bot", "응답을 불러오지 못했습니다.");
+    }
   } catch (err) {
     console.error(err);
-    addMessage('bot', '약 추천 중 오류가 발생했습니다.');
+    addMessage("bot", "약 추천 중 오류가 발생했습니다.");
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const input = document.getElementById('chatInput');
+document.addEventListener("DOMContentLoaded", () => {
+  const input = document.getElementById("chatInput");
 
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
       sendChatMessage();
     }
   });

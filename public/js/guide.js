@@ -1,6 +1,3 @@
-// public/js/guide.js
-// feature/guide 브랜치
-
 (function () {
   'use strict';
 
@@ -9,9 +6,6 @@
   let markers    = [];
   let myOverlay  = null;
 
-  // ─────────────────────────────────────────
-  // 초기화
-  // ─────────────────────────────────────────
   function init() {
     const btn = document.getElementById('btn-find-location');
 
@@ -19,13 +13,11 @@
       btn.addEventListener('click', handleFindLocation);
     }
 
-    // 카카오맵 SDK 체크
     if (window.KAKAO_MAP_UNAVAILABLE) {
       renderMapUnavailable();
       return;
     }
 
-    // ★ 최소 수정 핵심
     // autoload=false 대응
     if (window.kakao && window.kakao.maps) {
       kakao.maps.load(function () {
@@ -44,9 +36,6 @@
     }
   }
 
-  // ─────────────────────────────────────────
-  // 카카오맵 초기화
-  // ─────────────────────────────────────────
   function initMap() {
     const container = document.getElementById('kakao-map');
 
@@ -60,7 +49,6 @@
       level: 6,
     });
 
-    // 확대/축소 컨트롤
     kakaoMap.addControl(
       new kakao.maps.ZoomControl(),
       kakao.maps.ControlPosition.RIGHT
@@ -73,9 +61,6 @@
     console.log('카카오맵 로드 성공');
   }
 
-  // ─────────────────────────────────────────
-  // 지도 불러오기 실패
-  // ─────────────────────────────────────────
   function renderMapUnavailable() {
     const el = document.getElementById('kakao-map');
 
@@ -93,9 +78,6 @@
     `;
   }
 
-  // ─────────────────────────────────────────
-  // 내 위치 찾기
-  // ─────────────────────────────────────────
   function handleFindLocation() {
     if (!navigator.geolocation) {
       showBinStatus(
@@ -165,9 +147,6 @@
       `;
   }
 
-  // ─────────────────────────────────────────
-  // 내 위치 이동
-  // ─────────────────────────────────────────
   function moveMapToUser(lat, lng) {
     if (!kakaoMap) return;
 
@@ -189,14 +168,10 @@
     myOverlay.setMap(kakaoMap);
   }
 
-  // ─────────────────────────────────────────
-  // 주변 수거함 조회
-  // ─────────────────────────────────────────
   async function fetchBins(lat, lng) {
     showBinLoading();
 
     try {
-      // 🌟 바로 여기! 주소를 /disposal-guide/nearby 로 바꿨습니다! 🌟
       const res = await fetch(
         `/disposal-guide/nearby?latitude=${lat}&longitude=${lng}`
       );
@@ -229,9 +204,6 @@
     }
   }
 
-  // ─────────────────────────────────────────
-  // 카드 렌더링
-  // ─────────────────────────────────────────
   function renderBinCards(bins) {
     const list = document.getElementById('bin-list');
 
@@ -301,9 +273,6 @@
     });
   }
 
-  // ─────────────────────────────────────────
-  // 마커 렌더링
-  // ─────────────────────────────────────────
   function renderMapMarkers(bins) {
     if (!kakaoMap) return;
 
@@ -364,9 +333,6 @@
     }
   }
 
-  // ─────────────────────────────────────────
-  // 상태 표시
-  // ─────────────────────────────────────────
   function showBinLoading() {
     const list = document.getElementById('bin-list');
 
@@ -392,9 +358,6 @@
     `;
   }
 
-  // ─────────────────────────────────────────
-  // XSS 방지
-  // ─────────────────────────────────────────
   function esc(s) {
     return String(s || '')
       .replace(/&/g, '&amp;')
@@ -404,9 +367,6 @@
       .replace(/'/g, '&#039;');
   }
 
-  // ─────────────────────────────────────────
-  // 실행
-  // ─────────────────────────────────────────
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {

@@ -1,13 +1,5 @@
-// controllers/notificationController.js — feature/notification 버그픽스
-//
-// ★ 핵심 수정: req.user 없을 때 처리 방식 변경
-//   기존: req.user 없으면 바로 401 → 시뮬레이션 불가
-//   수정: session.user도 확인, 없으면 개발용 userId=1 사용 (개발 중에만)
-//         authMiddleware merge 후엔 자동으로 실제 userId 사용됨
-
 const notificationModel = require('../models/notificationModel');
 
-// ── 공통: userId 추출 헬퍼 ──
 // auth 브랜치 merge 전까지 세션 or 개발용 더미 ID 사용
 function getUserId(req) {
   // 우선순위: passport req.user → session.user → 개발용 더미 1
