@@ -1,12 +1,12 @@
 <aside class="app-sidebar">
-  <div class="sidebar-user">
+  <a href="/auth/mypage" class="sidebar-user sidebar-user-link">
     <%
       const sidebarUser = locals.user || { name: 'user', gender: null };
       let avatarSrc;
 
-      if (sidebarUser.gender === '\uC5EC\uC131') {
+      if (sidebarUser.gender === '여성') {
         avatarSrc = '/images/icons/female.svg';
-      } else if (sidebarUser.gender === '\uB0A8\uC131') {
+      } else if (sidebarUser.gender === '남성') {
         avatarSrc = '/images/icons/male.svg';
       } else {
         avatarSrc = '/images/icons/profile.svg';
@@ -14,7 +14,7 @@
     %>
     <img src="<%= avatarSrc %>" alt="profile" class="sidebar-avatar">
     <span class="sidebar-username"><%= sidebarUser.name %></span>
-  </div>
+  </a>
 
   <div class="sidebar-logo">
     <span class="logo-pill">Pill</span>
