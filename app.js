@@ -6,6 +6,7 @@ const express = require('express');
 const path = require('path');
 const session = require('express-session');
 const passport = require('passport');
+const userPool = require('./db/connection');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -41,11 +42,34 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // ============================================================
-// 카카오맵 API 키 전역 전달
+// 공통 템플릿 데이터 전달
 // ============================================================
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   res.locals.kakaoMapKey = process.env.KAKAO_MAP_API_KEY || '';
+
+  if (!req.user) {
+    res.locals.currentUser = null;
+    return next();
+  }
+
+  try {
+    const [[user]] = await userPool.query(
+      'SELECT user_id, family_id, name, gender, age, login_id, google_id, provider, notification_enabled FROM USER WHERE user_id = ?',
+      [req.user.user_id]
+    );
+
+    if (user) {
+      req.user = { ...req.user, ...user };
+      res.locals.currentUser = user;
+    } else {
+      res.locals.currentUser = req.user;
+    }
+  } catch (err) {
+    console.error('[app] currentUser 조회 실패:', err);
+    res.locals.currentUser = req.user;
+  }
+
   next();
 });
 
