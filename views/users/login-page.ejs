@@ -1,0 +1,104 @@
+<%- include('../partials/header', {
+  title: '로그인',
+  pageCss: 'login'
+}) %>
+
+<div class="login-page">
+  <section class="left-section">
+    <img src="/images/png/logo.png?v=4" alt="PillMate Logo" class="logo-image">
+
+    <p>
+      우리집 약장 관리를<br>
+      손쉽게 해보세요!
+    </p>
+  </section>
+
+  <section class="right-section">
+    <div class="login-form">
+      <h2>로그인</h2>
+
+      <form action="/auth/login" method="POST">
+        <label for="login_id">아이디</label>
+
+        <input
+          id="login_id"
+          type="text"
+          name="login_id"
+          placeholder="아이디를 입력하세요"
+          value="<%= typeof login_id !== 'undefined' ? login_id : '' %>"
+          required
+        >
+
+        <label for="password">비밀번호</label>
+
+        <div class="password-wrapper">
+          <input
+            id="password"
+            type="password"
+            name="password"
+            placeholder="비밀번호를 입력하세요"
+            required
+          >
+
+          <button
+            type="button"
+            id="togglePassword"
+            class="toggle-password"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+
+        <% if (typeof error !== "undefined" && error) { %>
+          <p class="error-message"><%= error %></p>
+        <% } %>
+
+        <button type="submit" class="login-btn">
+          로그인
+        </button>
+      </form>
+
+      <div class="divider">또는</div>
+
+      <a href="/auth/google" class="google-link">
+        <button type="button" class="google-btn">
+          <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="google"
+            class="google-logo"
+          >
+
+          <span>Google로 로그인</span>
+        </button>
+      </a>
+
+      <div class="signup-link">
+        <a href="/auth/signup">회원가입</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  const passwordInput = document.getElementById("password");
+  const togglePassword = document.getElementById("togglePassword");
+
+  togglePassword.addEventListener("click", () => {
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+    } else {
+      passwordInput.type = "password";
+    }
+  });
+</script>
+
+<%- include('../partials/footer') %>
