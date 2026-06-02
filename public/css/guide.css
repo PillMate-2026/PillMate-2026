@@ -35,14 +35,14 @@
 
 .guide-banner-text strong {
   display: block;
-  font-size: 13px;
+  font-size: 17px;
   font-weight: 700;
   color: #1b5e20;
   margin-bottom: 6px;
 }
 
 .guide-banner-text p {
-  font-size: 12px;
+  font-size: 14px;
   color: #2e7d32;
   line-height: 1.8;
   margin: 0;
@@ -67,7 +67,7 @@
   background: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 10px;
-  padding: 14px 12px 16px;
+  padding: 20px 16px 22px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -76,7 +76,7 @@
 
 /* 카드 제목 */
 .guide-card-label {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: #1a1a1a;
   text-align: center;
@@ -97,7 +97,7 @@
 
 
 .guide-card-img-real {
-  height: 100px;
+  height: 130px;
   width: auto;
   max-width: 100%;
   object-fit: contain;
@@ -107,7 +107,7 @@
 
 /* 설명 */
 .guide-card-desc {
-  font-size: 12px;
+  font-size: 14px;
   color: #333;
   line-height: 1.6;
   text-align: center;
