@@ -1,7 +1,10 @@
 <aside class="app-sidebar">
   <a href="/auth/mypage" class="sidebar-user sidebar-user-link">
     <%
-      const sidebarUser = locals.user || { name: 'user', gender: null };
+      const sidebarUser =
+        locals.user ||
+        (typeof currentUser !== 'undefined' ? currentUser : null) ||
+        { name: 'user', gender: null };
       let avatarSrc;
 
       if (sidebarUser.gender === '여성') {

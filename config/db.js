@@ -1,13 +1,15 @@
+require("dotenv").config({ override: true });
+
 const mysql = require("mysql2");
 
 console.log("db.js 실행됨");
 
 const db = mysql.createConnection({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
+  host: process.env.DB_HOST?.trim() || "localhost",
+  user: process.env.DB_USER?.trim() || "root",
   password: process.env.DB_PASSWORD || "1234",
-  database: process.env.DB_NAME || "PillMate_2026",
-  port: process.env.DB_PORT || 3306,
+  database: process.env.DB_NAME?.trim() || "PillMate_2026",
+  port: Number(process.env.DB_PORT || 3306),
 });
 
 db.connect((err) => {
