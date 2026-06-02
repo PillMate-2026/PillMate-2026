@@ -4,7 +4,11 @@ const db = require('../db/connection');
 
 router.get('/', async (req, res) => {
   try {
-    const userId = parseInt(req.query.userId, 10) || 1;
+    if (!req.user) {
+      return res.redirect('/auth/login');
+    }
+
+    const userId = req.user.user_id;
     const status = req.query.status || 'all';
     const sort = req.query.sort === 'created' ? 'created' : 'expiry';
     const keyword =
@@ -15,16 +19,18 @@ router.get('/', async (req, res) => {
         : '';
 
     const [[user]] = await db.query(
-      'SELECT user_id, family_id, name, gender FROM USER WHERE user_id = ?',
+      'SELECT user_id, family_id, name, gender, provider, google_id, login_id FROM USER WHERE user_id = ?',
       [userId]
     );
 
-    const currentUser = user || {
-      user_id: userId,
-      family_id: null,
-      name: 'user',
-      gender: null,
-    };
+    if (!user) {
+      req.logout(() => {
+        res.redirect('/auth/login');
+      });
+      return;
+    }
+
+    const currentUser = user;
 
     const familyId = currentUser.family_id;
     const scope = familyId ? 'family' : 'personal';
