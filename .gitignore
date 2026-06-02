@@ -20,3 +20,6 @@ npm-debug.log*
 
 # GCP Key
 config/gcp-key.json
+
+#ocr약 등록 임시 파일
+uploads/
