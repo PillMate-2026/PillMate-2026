@@ -1,0 +1,369 @@
+.family-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 48px 56px;
+  background: #ffffff;
+}
+
+.family-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.family-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.family-title img {
+  width: 24px;
+  height: 24px;
+}
+
+.family-header p {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 6px 0 0 0;
+}
+
+.family-description {
+  margin-top: 34px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.family-description p {
+  margin: 0;
+}
+
+.family-card-wrapper {
+  margin-top: 90px;
+  display: flex;
+  justify-content: center;
+  gap: 110px;
+}
+
+.family-card {
+  width: 270px;
+  height: 360px;
+  border: 2px solid #65A85A;
+  border-radius: 7px;
+  box-shadow: 2px 2px 5px rgba(101, 168, 90, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.family-card h3 {
+  margin: 48px 0 0 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.family-card p {
+  margin: 58px 0 0 0;
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.family-card form {
+  margin-top: auto;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.family-card input {
+  width: 180px;
+  height: 38px;
+  border: 1px solid #cacaca;
+  border-radius: 7px;
+  margin-bottom: 16px;
+  padding: 0 10px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.family-card button {
+  width: 124px;
+  height: 48px;
+  border: none;
+  border-radius: 7px;
+  background: #65A85A;
+  color: white;
+  font-size: 21px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.family-card button:hover {
+  background: #5c9d51;
+}
+
+.invite-box {
+  margin-top: 48px;
+  width: 100%;
+  min-height: 88px;
+  background: #65A85A;
+  border-radius: 7px;
+  color: #ffffff;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.invite-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.invite-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.refresh-code-form {
+  margin: 0;
+  padding: 0;
+}
+
+.refresh-icon {
+  width: 28px;
+  height: 28px;
+  border: 2px solid #ffffff;
+  border-radius: 7px;
+  background: transparent;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  margin-right: 4px;
+}
+
+.refresh-icon:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.invite-code-text {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.invite-code-text strong {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-left: 6px;
+}
+
+.invite-time {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+  margin-left: 6px;
+}
+
+.invite-main p {
+  font-size: 12px;
+  font-weight: 500;
+  margin: 8px 0 0 0;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.copy-btn {
+  width: 118px;
+  height: 44px;
+  border: none;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #65A85A;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.member-section {
+  margin-top: 32px;
+}
+
+.member-count {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(190px, 1fr));
+  gap: 14px;
+}
+
+.member-card {
+  height: 74px;
+  background: #F3FFF0;
+  border: 1px solid #D4EBCD;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 22px;
+}
+
+.member-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.member-icon img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+}
+
+.member-card span {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.leave-area {
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+}
+
+.leave-area::before,
+.leave-area::after {
+  content: "";
+  width: 180px;
+  height: 1px;
+  background: #f0b8b8;
+}
+
+.leave-area button {
+  width: 160px;
+  height: 44px;
+  border: 1px solid #f0b8b8;
+  border-radius: 10px;
+  background: white;
+  color: #d96c6c;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* 가족그룹 탈퇴 모달 */
+.family-leave-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.18);
+  z-index: 999;
+  justify-content: center;
+  align-items: center;
+}
+
+.family-leave-modal-content {
+  position: relative;
+  width: 340px;
+  min-height: 220px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  text-align: center;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+}
+
+.modal-logo {
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modal-logo img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.modal-logo-text {
+  display: flex;
+  align-items: center;
+}
+
+.modal-logo-text span {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.pill-blue {
+  color: #2AA7E8;
+}
+
+.pill-green {
+  color: #65A85A;
+}
+
+.family-leave-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  border: none;
+  background: none;
+  font-size: 22px;
+  color: #666666;
+  cursor: pointer;
+}
+
+.family-leave-modal-content h3 {
+  margin: 60px 0 8px 0;
+  color: #e14b4b;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.family-leave-modal-content p {
+  margin: 0 0 20px 0;
+  color: #666666;
+  font-size: 13px;
+}
+
+.family-leave-confirm-btn {
+  width: 180px;
+  height: 42px;
+  border: none;
+  border-radius: 8px;
+  background: #65A85A;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
