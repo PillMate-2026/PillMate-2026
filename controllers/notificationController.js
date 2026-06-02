@@ -1,14 +1,9 @@
 const notificationModel = require('../models/notificationModel');
 
-// auth 브랜치 merge 전까지 세션 or 개발용 더미 ID 사용
 function getUserId(req) {
-  // 우선순위: passport req.user → session.user → 개발용 더미 1
-  if (req.user && req.user.userId) return req.user.userId;
   if (req.user && req.user.user_id) return req.user.user_id;
-  if (req.session && req.session.user) return req.session.user.userId || req.session.user.user_id;
-  // ★ 개발/시뮬레이션용: authMiddleware 없을 때 userId=1 로 동작
-  //   실제 배포 전에 아래 줄 삭제하고 401 반환으로 교체
-  return 1;
+  if (req.user && req.user.userId) return req.user.userId;
+  return null;
 }
 
 /** GET /notifications */

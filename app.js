@@ -53,6 +53,8 @@ app.use((req, res, next) => {
 // 라우터 등록
 // ============================================================
 
+const { authMiddleware } = require('./middleware/authMiddleware');
+
 const indexRoutes = require('./routes/indexRoutes');
 app.use('/', indexRoutes);
 
@@ -63,22 +65,22 @@ const familyRoutes = require('./routes/familyRoutes');
 app.use('/family', familyRoutes);
 
 const guideRoutes = require('./routes/guideRoutes');
-app.use('/disposal-guide', guideRoutes);
+app.use('/disposal-guide', authMiddleware, guideRoutes);
 
 const notificationRoutes = require('./routes/notificationRoutes');
-app.use('/notifications', notificationRoutes);
+app.use('/notifications', authMiddleware, notificationRoutes);
 
 const medicineRoutes = require('./routes/medicineRoutes');
-app.use('/medicines', medicineRoutes);
+app.use('/medicines', authMiddleware, medicineRoutes);
 
 const dashboardRouter = require('./routes/dashboard');
-app.use('/dashboard', dashboardRouter);
+app.use('/dashboard', authMiddleware, dashboardRouter);
 
 const medicineDetailRoutes = require('./routes/medicineDetailRoutes');
-app.use('/', medicineDetailRoutes);
+app.use('/', authMiddleware, medicineDetailRoutes);
 
 const chatbotRoutes = require('./routes/chatbotRoutes');
-app.use('/', chatbotRoutes);
+app.use('/', authMiddleware, chatbotRoutes);
 
 
 // ============================================================
