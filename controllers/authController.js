@@ -301,3 +301,30 @@ exports.changePassword = async (req, res) => {
     res.redirect("/auth/mypage");
   }
 };
+
+// 알림 설정 변경
+exports.toggleNotification = (req, res) => {
+  if (!req.user) {
+    return res.redirect("/auth/login");
+  }
+
+  const userId = req.user.user_id;
+  const currentValue = req.user.notification_enabled ? 1 : 0;
+  const newValue = currentValue ? 0 : 1;
+
+  const query = `
+    UPDATE \`USER\`
+    SET notification_enabled = ?
+    WHERE user_id = ?
+  `;
+
+  db.query(query, [newValue, userId], (err) => {
+    if (err) {
+      console.log(err);
+      return res.redirect("/auth/mypage");
+    }
+
+    req.user.notification_enabled = newValue;
+    res.redirect("/auth/mypage");
+  });
+};

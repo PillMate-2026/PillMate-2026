@@ -73,6 +73,7 @@ CREATE TABLE `USER` (
   `password` VARCHAR(255) NOT NULL,
   `age` INT NULL,
   `gender` VARCHAR(10) NULL,
+  `notification_enabled` BOOLEAN NOT NULL DEFAULT TRUE,
   PRIMARY KEY (`user_id`),
   CONSTRAINT `fk_user_family`
     FOREIGN KEY (`family_id`)

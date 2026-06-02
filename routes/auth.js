@@ -47,4 +47,6 @@ router.post("/delete", authController.deleteAccount);
 // 비밀번호 변경
 router.post("/password", authController.changePassword);
 
+// 알림 설정 변경
+router.post("/notification-toggle", authController.toggleNotification);
 module.exports = router;
