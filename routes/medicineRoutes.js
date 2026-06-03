@@ -13,6 +13,29 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 
+router.get('/autocomplete', async (req, res) => {
+
+  try {
+
+    const keyword = req.query.keyword;
+
+    const result =
+      await searchMedicine(keyword);
+
+    res.json(
+      result.body.items || []
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.json([]);
+
+  }
+
+});
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
@@ -68,18 +91,16 @@ router.post(
         .filter(line => line);
 
       /* 약 이름 후보 찾기 */
-      const candidates = lines.filter(line => {
+    const candidates = lines.filter(line => {
 
-        return (
-          line.length <= 15 &&
-          line.split(' ').length <= 2 &&
-          !/\d/.test(line) &&
-          !line.includes('밀리그람') &&
-          !line.includes('주의') &&
-          !line.includes('일반의약품')
-        );
+      return (
+        line.length >= 2 &&
+        !line.includes('주의') &&
+        !line.includes('일반의약품') &&
+        !line.includes('품목기준코드')
+      );
 
-      });
+    });
 
     console.log('후보군:', candidates);
 
