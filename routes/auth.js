@@ -16,6 +16,9 @@ router.get("/signup", authController.renderSignupPage);
 // 회원가입 처리
 router.post("/signup", authController.signup);
 
+// 아이디 중복 확인
+router.get("/check-id", authController.checkLoginId);
+
 // 구글 로그인 시작
 router.get(
   "/google",
@@ -31,7 +34,7 @@ router.get(
     failureRedirect: "/auth/login",
   }),
   (req, res) => {
-    res.redirect("/auth/mypage");
+    res.redirect("/dashboard");
   }
 );
 
@@ -47,6 +50,12 @@ router.post("/delete", authController.deleteAccount);
 // 비밀번호 변경
 router.post("/password", authController.changePassword);
 
+//성별에 따른 프로필 변경
+router.post("/profile", authController.updateProfile);
+
 // 알림 설정 변경
 router.post("/notification-toggle", authController.toggleNotification);
+
+
+
 module.exports = router;
