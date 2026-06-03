@@ -77,58 +77,63 @@
                 medicines.forEach(item => {
 
                   list.innerHTML += `
-                  <div
-                    class="autocomplete-item"
-                    data-name="${item.itemName}"
-                    data-itemseq="${item.itemSeq || ''}"
-                    data-entp="${item.entpName || ''}"
-                    data-image="${item.itemImage || ''}"
-                    data-efficacy="${item.efcyQesitm || ''}"
-                    data-usemethod="${item.useMethodQesitm || ''}"
-                    data-precaution="${item.atpnWarnQesitm || ''}"
-                    data-interaction="${item.intrcQesitm || ''}"
-                    data-sideeffect="${item.seQesitm || ''}"
-                  >
-                    ${item.itemName}
-                  </div>
-                `;
+                    <div
+                      class="autocomplete-item"
+                      data-name="${item.itemName}"
+                      data-itemseq="${item.itemSeq || ''}"
+                      data-entp="${item.entpName || ''}"
+                      data-image="${item.itemImage || ''}"
+                      data-efficacy="${item.efcyQesitm || ''}"
+                      data-usemethod="${item.useMethodQesitm || ''}"
+                      data-precaution="${item.atpnWarnQesitm || ''}"
+                      data-interaction="${item.intrcQesitm || ''}"
+                      data-sideeffect="${item.seQesitm || ''}"
+                    >
+                      ${item.itemName}
+                    </div>
+                  `;
+
+                });
 
                 document
                   .querySelectorAll('.autocomplete-item')
                   .forEach(item => {
 
-                item.addEventListener('click', () => {
+                    item.addEventListener('click', () => {
 
-                  document.getElementById('medicineName').value =
-                    item.dataset.name;
+                      document.getElementById('medicineName').value =
+                        item.dataset.name;
 
-                  document.getElementById('itemSeq').value =
-                    item.dataset.itemseq;
+                      document.getElementById('itemSeq').value =
+                        item.dataset.itemseq;
 
-                  document.getElementById('entpName').value =
-                    item.dataset.entp;
+                      document.getElementById('entpName').value =
+                        item.dataset.entp;
 
-                  document.getElementById('itemImage').value =
-                    item.dataset.image;
+                      document.getElementById('itemImage').value =
+                        item.dataset.image;
 
-                  document.getElementById('efficacy').value =
-                    item.dataset.efficacy;
+                      document.getElementById('efficacy').value =
+                        item.dataset.efficacy;
 
-                  document.getElementById('useMethod').value =
-                    item.dataset.usemethod;
+                      document.getElementById('useMethod').value =
+                        item.dataset.usemethod;
 
-                  document.getElementById('precaution').value =
-                    item.dataset.precaution;
+                      document.getElementById('precaution').value =
+                        item.dataset.precaution;
 
-                  document.getElementById('interaction').value =
-                    item.dataset.interaction;
+                      document.getElementById('interaction').value =
+                        item.dataset.interaction;
 
-                  document.getElementById('sideEffect').value =
-                    item.dataset.sideeffect;
+                      document.getElementById('sideEffect').value =
+                        item.dataset.sideeffect;
 
-                  document.getElementById('autocompleteList').innerHTML = '';
+                      document.getElementById('autocompleteList').innerHTML = '';
 
-                });
+                    });
+
+                  });
+              });
             </script>
             <% if (medicineCandidates.length > 0) { %>
 
