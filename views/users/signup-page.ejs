@@ -24,53 +24,81 @@
         회원가입
       </h2>
 
-      <form action="/auth/signup" method="POST">
-
-        <% if (typeof error !== "undefined" && error) { %>
-          <p class="error-message"><%= error %></p>
-        <% } %>
-
+      <form action="/auth/signup" method="POST" onsubmit="return validateSignupForm()">
         <div class="form-row">
-          <label for="login_id">아이디</label>
-          <input
-            id="login_id"
-            type="text"
-            name="login_id"
-            placeholder="아이디를 입력하세요"
-            value="<%= formData?.login_id || '' %>"
-            required
-          >
+          <label for="login_id">
+            아이디 <span class="required">*</span>
+          </label>
+
+          <div class="id-wrapper">
+            <div class="id-check-row">
+              <input
+                id="login_id"
+                type="text"
+                name="login_id"
+                placeholder="아이디 입력(6~20자)"
+                value="<%= formData?.login_id || '' %>"
+                minlength="6"
+                maxlength="20"
+                required
+                oninput="resetIdCheck()"
+              >
+
+              <button
+                type="button"
+                class="id-check-btn"
+                onclick="checkLoginId()"
+              >
+                중복 확인
+              </button>
+            </div>
+
+            <p id="idCheckMessage" class="id-check-message"></p>
+          </div>
         </div>
 
         <div class="form-row">
-          <label for="password">비밀번호</label>
+          <label for="password">
+            비밀번호 <span class="required">*</span>
+          </label>
+
           <input
             id="password"
             type="password"
             name="password"
-            placeholder="비밀번호를 입력하세요"
+            placeholder="비밀번호 입력(영문, 숫자 포함 6~20자)"
+            minlength="6"
+            maxlength="20"
             required
           >
         </div>
 
         <div class="form-row">
-          <label for="passwordConfirm">비밀번호 확인</label>
+          <label for="passwordConfirm">
+            비밀번호 확인 <span class="required">*</span>
+          </label>
+
           <input
             id="passwordConfirm"
             type="password"
             name="passwordConfirm"
-            placeholder="비밀번호를 다시 입력하세요"
+            placeholder="비밀번호 재입력"
+            minlength="6"
+            maxlength="20"
             required
           >
         </div>
 
         <div class="form-row">
-          <label for="name">이름</label>
+          <label for="name">
+            이름 <span class="required">*</span>
+          </label>
+
           <input
             id="name"
             type="text"
             name="name"
-            placeholder="이름을 입력하세요"
+            placeholder="이름을 입력해주세요"
             value="<%= formData?.name || '' %>"
             required
           >
@@ -126,5 +154,80 @@
     </div>
   </section>
 </div>
+
+<script>
+  let isIdChecked = false;
+  let checkedLoginId = "";
+
+  function resetIdCheck() {
+    isIdChecked = false;
+    checkedLoginId = "";
+
+    const message = document.getElementById("idCheckMessage");
+    message.innerText = "";
+    message.className = "id-check-message";
+  }
+
+  function checkLoginId() {
+    const loginIdInput = document.getElementById("login_id");
+    const message = document.getElementById("idCheckMessage");
+    const loginId = loginIdInput.value.trim();
+    const loginIdRegex = /^[A-Za-z0-9]{6,20}$/;
+
+    isIdChecked = false;
+    checkedLoginId = "";
+
+    if (!loginId) {
+      message.innerText = "아이디를 입력해주세요.";
+      message.className = "id-check-message error";
+      return;
+    }
+
+    if (!loginIdRegex.test(loginId)) {
+      message.innerText = "아이디는 영문, 숫자 포함 6~20자로 입력해주세요.";
+      message.className = "id-check-message error";
+      return;
+    }
+
+    fetch(`/auth/check-id?login_id=${encodeURIComponent(loginId)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        message.innerText = data.message;
+        message.className = data.available
+          ? "id-check-message success"
+          : "id-check-message error";
+
+        if (data.available) {
+          isIdChecked = true;
+          checkedLoginId = loginId;
+        }
+      })
+      .catch(() => {
+        message.innerText = "중복 확인 중 오류가 발생했습니다.";
+        message.className = "id-check-message error";
+      });
+  }
+
+function validateSignupForm() {
+  const loginId = document.getElementById("login_id").value.trim();
+  const message = document.getElementById("idCheckMessage");
+
+  const password = document.getElementById("password").value;
+  const passwordConfirm = document.getElementById("passwordConfirm").value;
+
+  if (!isIdChecked || checkedLoginId !== loginId) {
+    message.innerText = "아이디 중복을 확인해주세요.";
+    message.className = "id-check-message error";
+    return false;
+  }
+
+  if (password !== passwordConfirm) {
+    alert("비밀번호를 다시 확인해주세요.");
+    return false;
+  }
+
+  return true;
+}
+</script>
 
 <%- include('../partials/footer') %>

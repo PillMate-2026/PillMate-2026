@@ -329,3 +329,17 @@
   border-radius: 8px;
   font-size: 14px;
 }
+/* 설정 변경 모달 */
+.profile-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-edit-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0;
+}
