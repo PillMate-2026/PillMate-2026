@@ -33,6 +33,72 @@
               class="form-input"
               value="<%= medicineName || '' %>"
             >
+            <div id="autocompleteList"></div>
+            <script>
+
+            document
+              .getElementById('medicineName')
+              .addEventListener('input', async (event) => {
+
+                const keyword = event.target.value;
+
+                if (keyword.length < 2) {
+
+                  document.getElementById(
+                    'autocompleteList'
+                  ).innerHTML = '';
+
+                  return;
+                }
+
+                const response =
+                  await fetch(
+                    `/medicines/autocomplete?keyword=${keyword}`
+                  );
+
+                const medicines =
+                  await response.json();
+
+                const list =
+                  document.getElementById(
+                    'autocompleteList'
+                  );
+
+                list.innerHTML = '';
+
+                medicines.forEach(item => {
+
+                  list.innerHTML += `
+                    <div
+                      class="autocomplete-item"
+                      data-name="${item.itemName}"
+                    >
+                      ${item.itemName}
+                    </div>
+                  `;
+
+                });
+                document
+                  .querySelectorAll('.autocomplete-item')
+                  .forEach(item => {
+
+                    item.addEventListener('click', () => {
+
+                      document.getElementById(
+                        'medicineName'
+                      ).value =
+                        item.dataset.name;
+
+                      document.getElementById(
+                        'autocompleteList'
+                      ).innerHTML = '';
+
+                    });
+
+                  });
+
+              });
+            </script>
             <% if (medicineCandidates.length > 0) { %>
 
               <div class="medicine-candidates">
