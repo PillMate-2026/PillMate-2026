@@ -1,3 +1,5 @@
+const pool = require('../db/connection');
+
 const {
   searchMedicine
 } = require('../services/medicineApiService');
@@ -125,5 +127,45 @@ router.post(
     }
   }
 );
+router.post('/register', async (req, res) => {
 
+  try {
+
+    const {
+      medicineName,
+      expiryDate
+    } = req.body;
+
+console.log('약 이름:', medicineName);
+console.log('유통기한:', expiryDate);
+
+const userId = 1;
+
+await pool.query(
+  `
+  INSERT INTO MEDICINE
+  (
+    user_id,
+    name,
+    expiration_date
+  )
+  VALUES (?, ?, ?)
+  `,
+  [
+    userId,
+    medicineName,
+    expiryDate
+  ]
+);
+
+res.redirect('/dashboard');
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).send('등록 실패');
+  }
+
+});
 module.exports = router;
