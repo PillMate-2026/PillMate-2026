@@ -9,6 +9,7 @@ router.get('/', async (req, res) => {
     }
 
     const userId = req.user.user_id;
+    console.log('dashboard userId:', userId);
     const status = req.query.status || 'all';
     const sort = req.query.sort === 'created' ? 'created' : 'expiry';
     const keyword =
