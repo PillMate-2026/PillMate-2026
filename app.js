@@ -77,6 +77,10 @@ app.use(async (req, res, next) => {
 // 라우터 등록
 // ============================================================
 
+app.get('/', (req, res) => {
+  return res.redirect('/auth/login');
+});
+
 const indexRoutes = require('./routes/indexRoutes');
 app.use('/', indexRoutes);
 
