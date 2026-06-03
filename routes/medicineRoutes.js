@@ -33,7 +33,6 @@ router.get('/autocomplete', async (req, res) => {
     res.json([]);
 
   }
-
 });
 
 const storage = multer.diskStorage({
@@ -168,9 +167,8 @@ console.log(req.body);
 
 console.log('약 이름:', medicineName);
 console.log('유통기한:', expiryDate);
-
+console.log('req.user =', req.user);
 const userId = req.user.user_id;
-
 await pool.query(
   `
   INSERT INTO MEDICINE
