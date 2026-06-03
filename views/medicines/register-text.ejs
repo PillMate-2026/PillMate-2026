@@ -33,6 +33,108 @@
               class="form-input"
               value="<%= medicineName || '' %>"
             >
+            <input type="hidden" id="itemSeq" name="itemSeq">
+            <input type="hidden" id="entpName" name="entpName">
+            <input type="hidden" id="itemImage" name="itemImage">
+            <input type="hidden" id="efficacy" name="efficacy">
+            <input type="hidden" id="useMethod" name="useMethod">
+            <input type="hidden" id="precaution" name="precaution">
+            <input type="hidden" id="interaction" name="interaction">
+            <input type="hidden" id="sideEffect" name="sideEffect">
+            <div id="autocompleteList"></div>
+            <script>
+
+            document
+              .getElementById('medicineName')
+              .addEventListener('input', async (event) => {
+
+                const keyword = event.target.value;
+
+                if (keyword.length < 2) {
+
+                  document.getElementById(
+                    'autocompleteList'
+                  ).innerHTML = '';
+
+                  return;
+                }
+
+                const response =
+                  await fetch(
+                    `/medicines/autocomplete?keyword=${keyword}`
+                  );
+
+                const medicines =
+                  await response.json();
+
+                const list =
+                  document.getElementById(
+                    'autocompleteList'
+                  );
+
+                list.innerHTML = '';
+
+                medicines.forEach(item => {
+
+                  list.innerHTML += `
+                  <div
+                    class="autocomplete-item"
+                    data-name="${item.itemName}"
+                    data-itemseq="${item.itemSeq || ''}"
+                    data-entp="${item.entpName || ''}"
+                    data-image="${item.itemImage || ''}"
+                    data-efficacy="${item.efcyQesitm || ''}"
+                    data-usemethod="${item.useMethodQesitm || ''}"
+                    data-precaution="${item.atpnWarnQesitm || ''}"
+                    data-interaction="${item.intrcQesitm || ''}"
+                    data-sideeffect="${item.seQesitm || ''}"
+                  >
+                    ${item.itemName}
+                  </div>
+                `;
+
+                });
+                document
+                  .querySelectorAll('.autocomplete-item')
+                  .forEach(item => {
+
+                item.addEventListener('click', () => {
+
+                  document.getElementById('medicineName').value =
+                    item.dataset.name;
+
+                  document.getElementById('itemSeq').value =
+                    item.dataset.itemseq;
+
+                  document.getElementById('entpName').value =
+                    item.dataset.entp;
+
+                  document.getElementById('itemImage').value =
+                    item.dataset.image;
+
+                  document.getElementById('efficacy').value =
+                    item.dataset.efficacy;
+
+                  document.getElementById('useMethod').value =
+                    item.dataset.usemethod;
+
+                  document.getElementById('precaution').value =
+                    item.dataset.precaution;
+
+                  document.getElementById('interaction').value =
+                    item.dataset.interaction;
+
+                  document.getElementById('sideEffect').value =
+                    item.dataset.sideeffect;
+
+                  document.getElementById('autocompleteList').innerHTML = '';
+
+                });
+
+                  });
+
+              });
+            </script>
             <% if (medicineCandidates.length > 0) { %>
 
               <div class="medicine-candidates">
@@ -43,6 +145,14 @@
                     type="button"
                     class="candidate-item"
                     data-name="<%= item.itemName %>"
+                    data-itemseq="<%= item.itemSeq || '' %>"
+                    data-entp="<%= item.entpName || '' %>"
+                    data-image="<%= item.itemImage || '' %>"
+                    data-efficacy="<%= item.efcyQesitm || '' %>"
+                    data-usemethod="<%= item.useMethodQesitm || '' %>"
+                    data-precaution="<%= item.atpnWarnQesitm || '' %>"
+                    data-interaction="<%= item.intrcQesitm || '' %>"
+                    data-sideeffect="<%= item.seQesitm || '' %>"
                   >
                     <%= item.itemName %>
                   </button>
@@ -101,19 +211,41 @@
 <script>
 
   document
-    .querySelectorAll('.candidate-item')
-    .forEach(button => {
+  .querySelectorAll('.candidate-item')
+  .forEach(button => {
 
-      button.addEventListener('click', () => {
+    button.addEventListener('click', () => {
 
-        document.getElementById(
-          'medicineName'
-        ).value =
-          button.dataset.name;
+      document.getElementById('medicineName').value =
+        button.dataset.name;
 
-      });
+      document.getElementById('itemSeq').value =
+        button.dataset.itemseq;
+
+      document.getElementById('entpName').value =
+        button.dataset.entp;
+
+      document.getElementById('itemImage').value =
+        button.dataset.image;
+
+      document.getElementById('efficacy').value =
+        button.dataset.efficacy;
+
+      document.getElementById('useMethod').value =
+        button.dataset.usemethod;
+
+      document.getElementById('precaution').value =
+        button.dataset.precaution;
+
+      document.getElementById('interaction').value =
+        button.dataset.interaction;
+
+      document.getElementById('sideEffect').value =
+        button.dataset.sideeffect;
 
     });
+
+  });
 
 </script>
 
