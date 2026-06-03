@@ -127,6 +127,7 @@ router.post(
 
           medicineCandidates =
             result.body.items;
+          console.log(result.body.items[0]);
 
           break;
         }
@@ -149,18 +150,26 @@ router.post(
   }
 );
 router.post('/register', async (req, res) => {
-
+console.log(req.body);
   try {
 
     const {
       medicineName,
-      expiryDate
+      expiryDate,
+      itemSeq,
+      entpName,
+      itemImage,
+      efficacy,
+      useMethod,
+      precaution,
+      interaction,
+      sideEffect
     } = req.body;
 
 console.log('약 이름:', medicineName);
 console.log('유통기한:', expiryDate);
 
-const userId = 1;
+const userId = req.user.user_id;
 
 await pool.query(
   `
@@ -168,14 +177,30 @@ await pool.query(
   (
     user_id,
     name,
-    expiration_date
+    expiration_date,
+    item_seq,
+    entp_name,
+    item_image,
+    efficacy,
+    use_method,
+    precaution,
+    interaction,
+    side_effect
   )
-  VALUES (?, ?, ?)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `,
   [
     userId,
     medicineName,
-    expiryDate
+    expiryDate,
+    itemSeq,
+    entpName,
+    itemImage,
+    efficacy,
+    useMethod,
+    precaution,
+    interaction,
+    sideEffect
   ]
 );
 
