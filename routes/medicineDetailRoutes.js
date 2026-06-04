@@ -1,10 +1,10 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const db = require('../db/connection');
+const db = require("../db/connection");
 
-router.get('/api/medicine-detail/:id', async (req, res) => {
-    const [rows] = await db.query(
-        `
+router.get("/api/medicine-detail/:id", async (req, res) => {
+  const [rows] = await db.query(
+    `
         SELECT
         m.medicine_id,
         m.name,
@@ -29,53 +29,57 @@ router.get('/api/medicine-detail/:id', async (req, res) => {
     WHERE m.medicine_id = ?
     GROUP BY m.medicine_id
     `,
-    [req.params.id]
-    )
+    [req.params.id],
+  );
 
-    if (rows.length === 0) {
-      return res.status(404).json({ error: '약 정보를 찾을 수 없습니다.'});
+  if (rows.length === 0) {
+    return res.status(404).json({ error: "약 정보를 찾을 수 없습니다." });
   }
 
   res.json(rows[0]);
 });
 
-router.delete('/api/medicines/:id', async (req, res) => {
+router.delete("/api/medicines/:id", async (req, res) => {
   try {
     const medicineId = req.params.id;
+    const { version } = req.body;
 
     const [result] = await db.query(
-      'DELETE FROM MEDICINE WHERE medicine_id = ?',
-      [medicineId]
+      `
+      DELETE FROM MEDICINE
+      WHERE medicine_id = ?
+        AND version = ?
+      `,
+      [medicineId, version]
     );
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({
-        error: '약을 찾을 수 없습니다.'
+      return res.status(409).json({
+        error: "다른 사용자가 먼저 수정하거나 삭제했습니다.",
       });
     }
 
     res.json({
-      message: '삭제 성공'
+      message: "삭제 성공",
     });
-
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
-      error: '서버 오류'
+      error: "서버 오류",
     });
   }
 });
 
 //유통기한 수정
-router.patch('/api/medicine-detail/:id/expiration', async (req, res) => {
+router.patch("/api/medicine-detail/:id/expiration", async (req, res) => {
   try {
     const medicineId = req.params.id;
     const { expirationDate, version } = req.body;
 
     if (!expirationDate || version === undefined) {
       return res.status(400).json({
-        error: '유통기한과 version 값이 필요합니다.'
+        error: "유통기한과 version 값이 필요합니다.",
       });
     }
 
@@ -85,12 +89,12 @@ router.patch('/api/medicine-detail/:id/expiration', async (req, res) => {
            version = version + 1
        WHERE medicine_id = ?
          AND version = ?`,
-      [expirationDate, medicineId, version]
+      [expirationDate, medicineId, version],
     );
 
     if (result.affectedRows === 0) {
       return res.status(409).json({
-        error: '다른 사용자가 먼저 수정했습니다. 최신 정보를 다시 불러옵니다.'
+        error: "다른 사용자가 먼저 수정했습니다. 최신 정보를 다시 불러옵니다.",
       });
     }
 
@@ -120,16 +124,16 @@ router.patch('/api/medicine-detail/:id/expiration', async (req, res) => {
       WHERE m.medicine_id = ?
       GROUP BY m.medicine_id
       `,
-      [medicineId]
+      [medicineId],
     );
 
     res.json({
-      message: '유통기한이 수정되었습니다.',
-      medicine: rows[0]
+      message: "유통기한이 수정되었습니다.",
+      medicine: rows[0],
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: '유통기한 수정 중 오류가 발생했습니다.' });
+    res.status(500).json({ error: "유통기한 수정 중 오류가 발생했습니다." });
   }
 });
 
