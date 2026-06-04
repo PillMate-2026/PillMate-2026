@@ -37,6 +37,7 @@ async function runExpiryCheck({ skipDuplicateCheck = false } = {}) {
         DATEDIFF(m.expiration_date, CURDATE()) AS days_left
       FROM MEDICINE m
       WHERE DATEDIFF(m.expiration_date, CURDATE()) <= 0
+        AND m.notification_muted = 0
     `);
 
     if (medicines.length === 0) {
