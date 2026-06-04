@@ -170,11 +170,12 @@
 }
 
 .medicine-card {
-  min-height: 198px;
+  min-height: 160px;
   padding: 18px 20px;
   border: 1px solid #9cdd86;
   border-radius: 8px;
   background-color: #ffffff;
+  cursor: pointer;
 }
 
 .medicine-card.expired {
@@ -185,21 +186,20 @@
   display: grid;
   grid-template-columns: 100px minmax(0, 1fr);
   gap: 12px;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
 
 .medicine-image-placeholder {
   width: 100px;
-  height: 74px;
-  border-radius: 8px;
-  background:
-    linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
-    linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
-    linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
-  background-color: #ffffff;
-  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
-  background-size: 16px 16px;
+  height: 60px;
+  overflow: hidden;
+}
+
+.medicine-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .medicine-main-info {
