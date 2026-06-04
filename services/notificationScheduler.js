@@ -2,18 +2,14 @@ const cron = require('node-cron');
 const pool = require('../db/connection');
 const { createNotification } = require('../models/notificationModel');
 
-/**
- * 이미 오늘 같은 약에 대해 같은 종류의 알림이 생성됐는지 확인
- */
-async function alreadyNotifiedToday(userId, medicineId, keyword) {
+// 날짜 상관없이 해당 약에 대한 알림이 한 번이라도 생성된 적 있는지 확인
+async function alreadyNotified(userId, medicineId) {
   const [rows] = await pool.query(
     `SELECT 1 FROM NOTIFICATION
      WHERE user_id = ?
        AND medicine_id = ?
-       AND content LIKE ?
-       AND DATE(created_at) = CURDATE()
      LIMIT 1`,
-    [userId, medicineId, `%${keyword}%`]
+    [userId, medicineId]
   );
   return rows.length > 0;
 }
@@ -23,8 +19,7 @@ async function alreadyNotifiedToday(userId, medicineId, keyword) {
  * - 오늘 만료: "XXX이(가) 오늘 만료되었습니다."
  * - 7일 이내 만료 임박: "XXX이(가) N일 후 만료됩니다."
  */
-// skipDuplicateCheck: true이면 오늘 이미 알림이 있어도 다시 생성 (약 등록 직후 호출 시 사용)
-async function runExpiryCheck({ skipDuplicateCheck = false } = {}) {
+async function runExpiryCheck() {
   console.log('[Scheduler] 유통기한 만료 알림 체크 시작');
 
   try {
@@ -57,16 +52,13 @@ async function runExpiryCheck({ skipDuplicateCheck = false } = {}) {
         let content;
         let keyword;
 
-        keyword = '만료되었습니다';
         content = `${med.name}이(가) 오늘 만료되었습니다.`;
 
-        // 약 등록 직후 호출이 아닌 경우(매일 08:00 자동 실행)에만 중복 체크
-        if (!skipDuplicateCheck) {
-          const alreadySent = await alreadyNotifiedToday(userId, med.medicine_id, keyword);
-          if (alreadySent) {
-            skipped++;
-            continue;
-          }
+        // 이미 한 번이라도 알림이 생성된 약은 다시 생성하지 않음
+        const alreadySent = await alreadyNotified(userId, med.medicine_id);
+        if (alreadySent) {
+          skipped++;
+          continue;
         }
 
         await createNotification({
