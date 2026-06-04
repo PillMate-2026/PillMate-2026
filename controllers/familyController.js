@@ -46,6 +46,7 @@ exports.renderFamilyPage = async (req, res) => {
         inviteExpireText: null,
         inviteExpireAt: null,
         members: [],
+        error: null,
       });
     }
 
@@ -96,6 +97,7 @@ exports.renderFamilyPage = async (req, res) => {
         getKstTime(inviteCreatedAt) + 24 * 60 * 60 * 1000
       ).toISOString(),
       members,
+      error: null,
     });
   } catch (err) {
     console.error(err);
@@ -158,7 +160,14 @@ exports.joinFamily = async (req, res) => {
     );
 
     if (codes.length === 0) {
-      return res.send("유효하지 않은 초대코드입니다.");
+      return res.render("family/family-group", {
+        hasFamily: false,
+        inviteCode: null,
+        inviteExpireText: null,
+        inviteExpireAt: null,
+        members: [],
+        error: "유효하지 않은 초대코드입니다.",
+      });
     }
 
     const createdAt = codes[0].created_at;
@@ -167,7 +176,14 @@ exports.joinFamily = async (req, res) => {
       Date.now() - getKstTime(createdAt) >= 24 * 60 * 60 * 1000;
 
     if (isExpired) {
-      return res.send("만료된 초대코드입니다.");
+      return res.render("family/family-group", {
+        hasFamily: false,
+        inviteCode: null,
+        inviteExpireText: null,
+        inviteExpireAt: null,
+        members: [],
+        error: "만료된 초대코드입니다.",
+      });
     }
 
     const familyId = codes[0].family_id;
