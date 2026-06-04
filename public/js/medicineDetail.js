@@ -62,8 +62,7 @@ window.submitEditExpiration = async function () {
 
     if (response.status === 409) {
       alert(data.error);
-      closeEditExpirationModal();
-      await openMedicineDetailModal(currentMedicineId);
+      location.reload();
       return;
     }
 
