@@ -243,8 +243,8 @@ router.post("/register", async (req, res) => {
       console.error("주성분 저장 실패:", ingredientError);
     }
 
-    // 약 등록 직후 만료 임박/만료 알림 즉시 생성 (중복 체크 없이 바로 생성)
-    runExpiryCheck({ skipDuplicateCheck: true });
+    // 약 등록 직후 만료 알림 즉시 생성 (한 번도 알림이 없는 경우에만 생성됨)
+    runExpiryCheck();
 
     res.redirect("/dashboard");
   } catch (error) {
