@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
           : "";
 
     const [[user]] = await db.query(
-      "SELECT user_id, family_id, name, gender, provider, google_id, login_id FROM USER WHERE user_id = ?",
+      "SELECT user_id, family_id, name, gender, provider, google_id, login_id, email, profile_image FROM USER WHERE user_id = ?",
       [userId],
     );
 

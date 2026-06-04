@@ -5,7 +5,10 @@ exports.findOrCreateUser = async (profile) => {
     const googleId = profile.id;
     const name = profile.displayName || "Google 사용자";
     const email = profile.emails?.[0]?.value || null;
-    const profileImage = profile.photos?.[0]?.value || null;
+    const profileImage =
+      profile.photos?.[0]?.value ||
+      profile._json?.picture ||
+      null;
 
     const findUserQuery = "SELECT * FROM `USER` WHERE google_id = ?";
 
