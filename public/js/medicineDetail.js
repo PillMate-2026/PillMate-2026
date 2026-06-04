@@ -90,6 +90,12 @@ window.openDeleteConfirm = async function () {
   try {
     const response = await fetch(`/api/medicines/${currentMedicineId}`, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        version: currentMedicineVersion,
+      }),
     });
 
     const data = await response.json();
