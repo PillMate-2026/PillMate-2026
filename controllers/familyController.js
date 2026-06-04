@@ -279,11 +279,58 @@ exports.leaveFamily = async (req, res) => {
 
     const userId = req.user.user_id;
 
+    const users = await query(
+      "SELECT family_id FROM `USER` WHERE user_id = ?",
+      [userId],
+    );
+
+    const familyId = users[0]?.family_id;
+
+    if (!familyId) {
+      req.user.family_id = null;
+      return res.redirect("/family");
+    }
+
+    // 1. 현재 사용자를 가족에서 탈퇴
     await query("UPDATE `USER` SET family_id = NULL WHERE user_id = ?", [
       userId,
     ]);
 
+    await query(
+      `
+      DELETE n
+      FROM NOTIFICATION n
+      JOIN MEDICINE m ON n.medicine_id = m.medicine_id
+      WHERE n.user_id = ?
+        AND m.family_id = ?
+      `,
+      [userId, familyId]
+    );
+
     req.user.family_id = null;
+
+    // 2. 남은 가족 구성원 수 확인
+    const members = await query(
+      "SELECT COUNT(*) AS count FROM `USER` WHERE family_id = ?",
+      [familyId],
+    );
+
+    // 3. 마지막 사용자가 탈퇴한 경우 가족그룹 해체
+    if (Number(members[0].count) === 0) {
+      await query(
+        `
+        DELETE n
+        FROM NOTIFICATION n
+        JOIN MEDICINE m ON n.medicine_id = m.medicine_id
+        WHERE m.family_id = ?
+        `,
+        [familyId],
+      );
+
+      await query("DELETE FROM MEDICINE WHERE family_id = ?", [familyId]);
+      await query("DELETE FROM INVITE_CODE WHERE family_id = ?", [familyId]);
+      await query("DELETE FROM FAMILY WHERE family_id = ?", [familyId]);
+    }
 
     res.redirect("/family");
   } catch (err) {

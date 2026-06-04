@@ -1,5 +1,8 @@
 const bcrypt = require("bcrypt");
 const db = require("../config/db");
+const { promisify } = require("util");
+
+const query = promisify(db.query).bind(db);
 
 // 로그인 페이지
 exports.renderLoginPage = (req, res) => {
@@ -255,21 +258,70 @@ exports.logout = (req, res) => {
 };
 
 // 회원 탈퇴
-exports.deleteAccount = (req, res) => {
-  if (!req.user) {
-    return res.redirect("/auth/login");
-  }
-
-  const userId = req.user.user_id;
-
-  const query = "DELETE FROM `USER` WHERE user_id = ?";
-
-  db.query(query, [userId], (err) => {
-    if (err) {
-      console.log(err);
-      return res.redirect("/auth/mypage");
+exports.deleteAccount = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.redirect("/auth/login");
     }
 
+    const userId = req.user.user_id;
+
+    // 1. 현재 사용자의 가족그룹 확인
+    const users = await query(
+      "SELECT family_id FROM `USER` WHERE user_id = ?",
+      [userId],
+    );
+
+    const familyId = users[0]?.family_id;
+
+    // 2. 가족그룹에 속해 있으면 가족 탈퇴 처리
+    if (familyId) {
+      // 탈퇴자 본인의 가족약 관련 알림 삭제
+      await query(
+        `
+        DELETE n
+        FROM NOTIFICATION n
+        JOIN MEDICINE m ON n.medicine_id = m.medicine_id
+        WHERE n.user_id = ?
+          AND m.family_id = ?
+        `,
+        [userId, familyId],
+      );
+
+      // 남을 가족 구성원 수 확인
+      const members = await query(
+        `
+        SELECT COUNT(*) AS count
+        FROM \`USER\`
+        WHERE family_id = ?
+          AND user_id <> ?
+        `,
+        [familyId, userId],
+      );
+
+      // 마지막 사용자가 회원탈퇴하는 경우 가족그룹 해체
+      if (Number(members[0].count) === 0) {
+        // 가족약 관련 알림 삭제
+        await query(
+          `
+          DELETE n
+          FROM NOTIFICATION n
+          JOIN MEDICINE m ON n.medicine_id = m.medicine_id
+          WHERE m.family_id = ?
+          `,
+          [familyId],
+        );
+
+        await query("DELETE FROM MEDICINE WHERE family_id = ?", [familyId]);
+        await query("DELETE FROM INVITE_CODE WHERE family_id = ?", [familyId]);
+        await query("DELETE FROM FAMILY WHERE family_id = ?", [familyId]);
+      }
+    }
+
+    // 3. 사용자 삭제
+    await query("DELETE FROM `USER` WHERE user_id = ?",[userId]);
+
+    // 4. 로그아웃 및 세션 삭제
     req.logout((err) => {
       if (err) {
         console.log(err);
@@ -280,8 +332,11 @@ exports.deleteAccount = (req, res) => {
         res.redirect("/auth/login");
       });
     });
-  });
-};
+  } catch (err) {
+    console.error(err);
+    res.redirect("/auth/mypage");
+    }
+  };
 
 // 비밀번호 변경
 exports.changePassword = async (req, res) => {
