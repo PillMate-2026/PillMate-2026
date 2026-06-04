@@ -231,6 +231,7 @@
 .member-icon {
   width: 46px;
   height: 46px;
+  overflow: hidden;
   border-radius: 50%;
   background: #ffffff;
   display: flex;
@@ -241,7 +242,9 @@
 .member-icon img {
   width: 46px;
   height: 46px;
-  object-fit: contain;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
 }
 
 .member-card span {
