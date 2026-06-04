@@ -5,6 +5,9 @@ const {
   searchIngredients,
 } = require("../services/medicineApiService");
 
+// 약 등록 즉시 만료 알림을 생성하기 위해 스케줄러 함수 가져옴
+const { runExpiryCheck } = require("../services/notificationScheduler");
+
 const { extractTextFromImage } = require("../services/ocrService");
 
 const express = require("express");
@@ -239,6 +242,9 @@ router.post("/register", async (req, res) => {
     } catch (ingredientError) {
       console.error("주성분 저장 실패:", ingredientError);
     }
+
+    // 약 등록 직후 만료 임박/만료 알림 즉시 생성 (중복 체크 없이 바로 생성)
+    runExpiryCheck({ skipDuplicateCheck: true });
 
     res.redirect("/dashboard");
   } catch (error) {
