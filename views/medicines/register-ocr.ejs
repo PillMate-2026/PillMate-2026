@@ -20,9 +20,10 @@
     <section class="ocr-register-container">
 
     <form
-    action="/medicines/ocr"
-    method="POST"
-    enctype="multipart/form-data"
+      id="ocrForm"
+      action="/medicines/ocr"
+      method="POST"
+      enctype="multipart/form-data"
     >
 
     <div
@@ -230,6 +231,19 @@ imageInput.addEventListener('change', (event) => {
       }
     );
 });
+document
+  .getElementById('ocrForm')
+  .addEventListener('submit', (event) => {
+
+    const file =
+      document.getElementById('medicineImage').files[0];
+
+    if (!file) {
+      event.preventDefault();
+      alert('사진을 업로드해주세요.');
+    }
+
+  });
 </script>
 
 <%- include('../partials/footer') %>

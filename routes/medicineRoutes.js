@@ -78,6 +78,16 @@ router.get("/manual", (req, res) => {
 });
 
 router.post("/ocr", upload.single("medicineImage"), async (req, res) => {
+
+    if (!req.file) {
+    return res.send(`
+      <script>
+        alert('사진을 업로드해주세요.');
+        history.back();
+      </script>
+    `);
+  }
+  
   try {
     console.log(req.file);
 
@@ -152,23 +162,25 @@ router.post("/register", async (req, res) => {
       sideEffect,
       selectedMedicineName,
     } = req.body;
-
-    const saveMedicineName = selectedMedicineName || medicineName;
-
+const saveMedicineName = selectedMedicineName || medicineName;
     if (!saveMedicineName || !expiryDate || !itemSeq) {
       return res
         .status(400)
         .send("약 이름, 유통기한, 의약품 선택이 필요합니다.");
     }
+    
+const userId = req.user.user_id;
+const familyId = req.user.family_id;
 
-    const userId = req.user.user_id;
-    const familyId = req.user.family_id;
+const medicineUserId = familyId ? null : userId;
+const medicineFamilyId = familyId || null;
+console.log('약 이름:', medicineName);
+console.log('유통기한:', expiryDate);
+console.log('req.user =', req.user);
 
-    const medicineUserId = familyId ? null : userId;
-    const medicineFamilyId = familyId || null;
+const [medicineResult] = await pool.query(
+  `
 
-    const [medicineResult] = await pool.query(
-      `
   INSERT INTO MEDICINE
   (
     user_id,
