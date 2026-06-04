@@ -55,7 +55,7 @@ app.use(async (req, res, next) => {
 
   try {
     const [[user]] = await userPool.query(
-      'SELECT user_id, family_id, name, gender, age, login_id, google_id, provider, notification_enabled FROM USER WHERE user_id = ?',
+      'SELECT user_id, family_id, name, gender, age, login_id, google_id, provider,email, profile_image, notification_enabled FROM USER WHERE user_id = ?',
       [req.user.user_id]
     );
 
