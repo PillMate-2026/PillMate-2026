@@ -26,6 +26,46 @@ function getInviteExpireText(createdAt) {
   return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}동안 유효합니다`;
 }
 
+async function movePersonalMedicinesToFamily(userId, familyId) {
+  await query(
+    `
+    INSERT INTO MEDICINE
+    (
+      family_id,
+      name,
+      expiration_date,
+      item_seq,
+      entp_name,
+      item_image,
+      efficacy,
+      use_method,
+      precaution,
+      interaction,
+      side_effect
+    )
+    SELECT
+      ?,
+      name,
+      expiration_date,
+      item_seq,
+      entp_name,
+      item_image,
+      efficacy,
+      use_method,
+      precaution,
+      interaction,
+      side_effect
+    FROM MEDICINE
+    WHERE user_id = ?
+    `,
+    [familyId, userId]
+  );
+
+  await query("DELETE FROM NOTIFICATION WHERE user_id = ?", [userId]);
+
+  await query("DELETE FROM MEDICINE WHERE user_id = ?", [userId]);
+}
+
 exports.renderFamilyPage = async (req, res) => {
   try {
     if (!req.user) {
@@ -124,6 +164,8 @@ exports.createFamily = async (req, res) => {
     const result = await query("INSERT INTO FAMILY () VALUES ()");
     const familyId = result.insertId;
 
+    await movePersonalMedicinesToFamily(userId, familyId);
+
     await query(
       "UPDATE `USER` SET family_id = ? WHERE user_id = ?",
       [familyId, userId]
@@ -182,11 +224,13 @@ exports.joinFamily = async (req, res) => {
         inviteExpireText: null,
         inviteExpireAt: null,
         members: [],
-        error: "만료된 초대코드입니다.",
+        error: "유효하지 않은 초대코드입니다.",
       });
     }
 
     const familyId = codes[0].family_id;
+
+    await movePersonalMedicinesToFamily(userId, familyId);
 
     await query(
       "UPDATE `USER` SET family_id = ? WHERE user_id = ?",
