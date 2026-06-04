@@ -1,51 +1,35 @@
-.family-container {
-  width: 100%;
-  min-height: 100vh;
-  padding: 48px 56px;
+.app-main {
   background: #ffffff;
 }
 
-.family-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.family-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  font-size: 28px;
-  font-weight: 700;
-}
-
-.family-title img {
-  width: 24px;
-  height: 24px;
-}
-
-.family-header p {
-  font-size: 15px;
-  font-weight: 600;
-  margin: 6px 0 0 0;
+.family-container{
+  background: #ffffff;
+  padding: 32px 58px;
+  box-sizing: border-box;
 }
 
 .family-description {
-  margin-top: 34px;
-  font-size: 15px;
-  line-height: 1.5;
+  text-align: center;
+  margin-top: 30px;
+}
+
+.family-description h2{
+  margin: 0 0 10px;
+  font-size: 26px;
+  font-weight: 700;
 }
 
 .family-description p {
   margin: 0;
+  font-size: 18px;
+  color: #555;
 }
 
 .family-card-wrapper {
   margin-top: 90px;
   display: flex;
   justify-content: center;
-  gap: 110px;
+  gap: 130px;
 }
 
 .family-card {
@@ -53,11 +37,15 @@
   height: 360px;
   border: 2px solid #65A85A;
   border-radius: 7px;
-  box-shadow: 2px 2px 5px rgba(101, 168, 90, 0.35);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+}
+
+.family-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 2px 2px 5px rgba(101, 168, 90, 0.35);
 }
 
 .family-card h3 {
@@ -109,7 +97,7 @@
 }
 
 .invite-box {
-  margin-top: 48px;
+  margin-top: 20px;
   width: 100%;
   min-height: 88px;
   background: #65A85A;
@@ -177,14 +165,14 @@
 }
 
 .invite-time {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.95);
   margin-left: 6px;
 }
 
 .invite-main p {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   margin: 8px 0 0 0;
   color: rgba(255, 255, 255, 0.95);
@@ -255,6 +243,7 @@
   justify-content: center;
   align-items: center;
   gap: 24px;
+  background: #ffffff;
 }
 
 .leave-area::before,
