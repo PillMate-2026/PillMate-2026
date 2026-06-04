@@ -32,6 +32,9 @@
 .profile-avatar {
   width: 90px;
   height: 90px;
+  border-radius: 50%;
+  overflow: hidden;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -40,7 +43,8 @@
 .profile-avatar img {
   width: 90px;
   height: 90px;
-  object-fit: contain;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .profile-info h3 {

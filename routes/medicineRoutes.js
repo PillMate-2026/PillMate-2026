@@ -1,9 +1,18 @@
 const pool = require("../db/connection");
 
+const fs = require('fs');
+
+if (!fs.existsSync('uploads')) {
+  fs.mkdirSync('uploads');
+}
+
 const {
   searchMedicine,
   searchIngredients,
 } = require("../services/medicineApiService");
+
+// 약 등록 즉시 만료 알림을 생성하기 위해 스케줄러 함수 가져옴
+const { runExpiryCheck } = require("../services/notificationScheduler");
 
 const { extractTextFromImage } = require("../services/ocrService");
 
@@ -239,6 +248,9 @@ router.post("/register", async (req, res) => {
     } catch (ingredientError) {
       console.error("주성분 저장 실패:", ingredientError);
     }
+
+    // 약 등록 직후 만료 알림 즉시 생성 (한 번도 알림이 없는 경우에만 생성됨)
+    runExpiryCheck();
 
     res.redirect("/dashboard");
   } catch (error) {
