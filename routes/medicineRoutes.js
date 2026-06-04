@@ -184,12 +184,22 @@ console.log('약 이름:', medicineName);
 console.log('유통기한:', expiryDate);
 
 const userId = req.user.user_id;
+const familyId = req.user.family_id;
+
+let ownerUserId = req.user.user_id;
+let ownerFamilyId = null;
+
+if (familyId) {
+  ownerUserId = null;
+  ownerFamilyId = familyId;
+}
 
 await pool.query(
   `
   INSERT INTO MEDICINE
   (
     user_id,
+    family_id,
     name,
     expiration_date,
     item_seq,
@@ -201,10 +211,11 @@ await pool.query(
     interaction,
     side_effect
   )
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `,
   [
-    userId,
+    ownerUserId,
+    ownerFamilyId,
     medicineName,
     expiryDate,
     itemSeq,
@@ -217,6 +228,7 @@ await pool.query(
     sideEffect
   ]
 );
+console.log(req.user);
 
 res.redirect('/dashboard');
 
