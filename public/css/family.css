@@ -367,3 +367,51 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+.invite-input-group {
+  position: relative;
+  width: 180px;
+  margin-bottom: 30px;
+}
+
+.invite-error {
+  position: absolute;
+  top: 44px;
+  left: 0;
+
+  color: #E14B4B;
+  font-size: 11px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.family-card form {
+  position: relative;
+}
+
+.family-card .invite-input-group {
+  position: relative;
+  width: 180px;
+  height: 58px;
+  margin-bottom: 8px;
+}
+
+.family-card .invite-input-group input {
+  width: 180px;
+  height: 38px;
+  margin-bottom: 0;
+}
+
+.family-card .invite-error {
+  position: absolute;
+  top: 42px;
+  left: 0;
+  width: 220px;
+  margin: 0;
+  color: #E14B4B;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
