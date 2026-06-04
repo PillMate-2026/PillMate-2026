@@ -13,6 +13,16 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 
+function requireLogin(req, res, next) {
+
+  if (!req.user) {
+    return res.redirect('/auth/login');
+  }
+
+  next();
+
+}
+
 router.get('/autocomplete', async (req, res) => {
 
   try {
@@ -50,14 +60,18 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.get('/add', (req, res) => {
-  res.render('medicines/register-ocr', {
-    activeMenu: 'add',
-    pageTitle: '약 등록하기',
-    pageIcon: 'plus',
-    pageCss: 'medicine'
-  });
-});
+router.get(
+  '/add',
+  requireLogin,
+  (req, res) => {
+    res.render('medicines/register-ocr', {
+      activeMenu: 'add',
+      pageTitle: '약 등록하기',
+      pageIcon: 'plus',
+      pageCss: 'medicine'
+    });
+  }
+);
 
 router.get('/manual', (req, res) => {
   res.render('medicines/register-text', {

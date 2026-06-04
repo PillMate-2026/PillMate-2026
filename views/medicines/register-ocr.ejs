@@ -25,9 +25,14 @@
     enctype="multipart/form-data"
     >
 
-    <div class="upload-box">
-
-        <p class="upload-guide">
+    <div
+      id="uploadBox"
+      class="upload-box"
+    >
+        <p
+          id="uploadGuide"
+          class="upload-guide"
+        >
         '파일 선택' 버튼을 클릭하거나,
         사진 파일을 드래그하여 업로드 영역에 놓으세요.
         </p>
@@ -41,9 +46,10 @@
         >
 
         <button
-        type="button"
-        class="file-select-btn"
-        onclick="document.getElementById('medicineImage').click()"
+          id="fileSelectBtn"
+          type="button"
+          class="file-select-btn"
+          onclick="document.getElementById('medicineImage').click()"
         >
         파일 선택
         </button>
@@ -83,6 +89,66 @@
 const imageInput = document.getElementById('medicineImage');
 const previewImage = document.getElementById('previewImage');
 
+const uploadBox =
+  document.getElementById('uploadBox');
+
+uploadBox.addEventListener(
+  'dragover',
+  (event) => {
+
+    event.preventDefault();
+
+    uploadBox.classList.add(
+      'drag-over'
+    );
+
+  }
+);
+uploadBox.addEventListener(
+  'dragleave',
+  () => {
+
+    uploadBox.classList.remove(
+      'drag-over'
+    );
+
+  }
+);
+uploadBox.addEventListener(
+  'drop',
+  (event) => {
+
+    event.preventDefault();
+
+    uploadBox.classList.remove(
+      'drag-over'
+    );
+
+    const file =
+      event.dataTransfer.files[0];
+
+    if (!file) return;
+
+    imageInput.files =
+      event.dataTransfer.files;
+
+    const imageUrl =
+      URL.createObjectURL(file);
+
+    previewImage.src = imageUrl;
+    previewImage.style.display = 'block';
+
+    document
+      .getElementById('uploadGuide')
+      .style.display = 'none';
+
+    document
+      .getElementById('fileSelectBtn')
+      .style.display = 'none';
+
+  }
+);
+
 imageInput.addEventListener('change', (event) => {
   const file = event.target.files[0];
 
@@ -92,6 +158,76 @@ imageInput.addEventListener('change', (event) => {
 
   previewImage.src = imageUrl;
   previewImage.style.display = 'block';
+
+  document
+    .getElementById('uploadGuide')
+    .style.display = 'none';
+
+  document
+    .getElementById('fileSelectBtn')
+    .style.display = 'none';
+
+   const uploadBox =
+      document.getElementById('uploadBox');
+
+    uploadBox.addEventListener(
+      'dragover',
+      (event) => {
+
+        event.preventDefault();
+
+        uploadBox.classList.add(
+          'drag-over'
+        );
+
+      }
+    );
+
+    uploadBox.addEventListener(
+      'dragleave',
+      () => {
+
+        uploadBox.classList.remove(
+          'drag-over'
+        );
+
+      }
+    );
+
+    uploadBox.addEventListener(
+      'drop',
+      (event) => {
+
+        event.preventDefault();
+
+        uploadBox.classList.remove(
+          'drag-over'
+        );
+
+        const file =
+          event.dataTransfer.files[0];
+
+        if (!file) return;
+
+        imageInput.files =
+          event.dataTransfer.files;
+
+        const imageUrl =
+          URL.createObjectURL(file);
+
+        previewImage.src = imageUrl;
+        previewImage.style.display = 'block';
+
+        document
+          .getElementById('uploadGuide')
+          .style.display = 'none';
+
+        document
+          .getElementById('fileSelectBtn')
+          .style.display = 'none';
+
+      }
+    );
 });
 </script>
 
