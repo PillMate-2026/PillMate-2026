@@ -66,6 +66,12 @@ CREATE TABLE `MEDICINE_WASTE_BIN` (
 CREATE TABLE `USER` (
   `user_id` INT NOT NULL AUTO_INCREMENT,
   `family_id` INT NULL,
+  `login_id` VARCHAR(50) UNIQUE,
+  `google_id` VARCHAR(255) UNIQUE,
+  `provider` VARCHAR(20) DEFAULT 'local',
+  `email` VARCHAR(100) NULL,
+  `profile_image` VARCHAR(500) NULL,
+  `notification_enabled` BOOLEAN NOT NULL DEFAULT TRUE,
   `name` VARCHAR(20) NOT NULL,
   `password` VARCHAR(255) NOT NULL,
   `age` INT NULL,

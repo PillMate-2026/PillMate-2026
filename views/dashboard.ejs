@@ -68,7 +68,13 @@
             <% const isExpired = medicine.days_left < 0; %>
             <article class="medicine-card <%= isExpired ? 'expired' : 'valid' %>" onclick="openMedicineDetailModal(<%= medicine.medicine_id %>)">
               <div class="medicine-card-top">
-                <div class="medicine-image-placeholder"></div>
+                <div class="medicine-image-placeholder">
+                  <img 
+                    src="<%= medicine.item_image || '/images/png/logo2.png' %>" 
+                    alt="약 이미지"
+                    class="medicine-card-image"
+                  >
+                </div>
                 <div class="medicine-main-info">
                   <h2><%= medicine.name %></h2>
                   <% if (isExpired) { %>
@@ -79,7 +85,7 @@
                 </div>
               </div>
               <div class="medicine-meta">
-                <p>주성분</p>
+                <p>주성분 <%= medicine.ingredients || '정보 없음' %></p>
                 <p>유통기한 <%= medicine.expiration_date || '-' %></p>
               </div>
             </article>
