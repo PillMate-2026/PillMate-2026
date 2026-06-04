@@ -1,5 +1,11 @@
 const pool = require("../db/connection");
 
+const fs = require('fs');
+
+if (!fs.existsSync('uploads')) {
+  fs.mkdirSync('uploads');
+}
+
 const {
   searchMedicine,
   searchIngredients,
