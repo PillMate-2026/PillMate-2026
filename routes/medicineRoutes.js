@@ -178,7 +178,7 @@ console.log('약 이름:', medicineName);
 console.log('유통기한:', expiryDate);
 console.log('req.user =', req.user);
 
-await pool.query(
+const [medicineResult] = await pool.query(
   `
 
   INSERT INTO MEDICINE
