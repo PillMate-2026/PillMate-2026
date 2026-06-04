@@ -1,3 +1,99 @@
+<%- include('../partials/header', {
+  title: '약 등록하기',
+  pageCss: 'medicine'
+}) %>
+
+<div class="app-layout">
+  <%- include('../partials/sidebar', { activeMenu: 'add' }) %>
+
+  <div class="app-main">
+    <%- include('../partials/topbar', {
+      pageTitle: '약 등록하기',
+      pageDesc: '약장에 의약품을 추가합니다',
+      pageIcon: '/images/icons/plus.svg',
+      showNotification: false
+    }) %>
+
+    <main class="app-content">
+
+      <section class="text-register-container">
+
+        <form
+          class="medicine-form"
+          action="/medicines/register"
+          method="POST"
+        >
+
+          <div class="form-group">
+            <label for="medicineName">의약품 이름</label>
+            <input
+              type="text"
+              id="medicineName"
+              name="medicineName"
+              class="form-input"
+              value="<%= medicineName || '' %>"
+            >
+            <input type="hidden" id="itemSeq" name="itemSeq">
+            <input type="hidden" id="entpName" name="entpName">
+            <input type="hidden" id="itemImage" name="itemImage">
+            <input type="hidden" id="efficacy" name="efficacy">
+            <input type="hidden" id="useMethod" name="useMethod">
+            <input type="hidden" id="precaution" name="precaution">
+            <input type="hidden" id="interaction" name="interaction">
+            <input type="hidden" id="sideEffect" name="sideEffect">
+            <div id="autocompleteList"></div>
+            <script>
+
+            document
+              .getElementById('medicineName')
+              .addEventListener('input', async (event) => {
+
+                const keyword = event.target.value;
+
+                if (keyword.length < 2) {
+
+                  document.getElementById(
+                    'autocompleteList'
+                  ).innerHTML = '';
+
+                  return;
+                }
+
+                const response =
+                  await fetch(
+                    `/medicines/autocomplete?keyword=${keyword}`
+                  );
+
+                const medicines =
+                  await response.json();
+
+                const list =
+                  document.getElementById(
+                    'autocompleteList'
+                  );
+
+                list.innerHTML = '';
+
+                medicines.forEach(item => {
+
+                  list.innerHTML += `
+                    <div
+                      class="autocomplete-item"
+                      data-name="${item.itemName}"
+                      data-itemseq="${item.itemSeq || ''}"
+                      data-entp="${item.entpName || ''}"
+                      data-image="${item.itemImage || ''}"
+                      data-efficacy="${item.efcyQesitm || ''}"
+                      data-usemethod="${item.useMethodQesitm || ''}"
+                      data-precaution="${item.atpnWarnQesitm || ''}"
+                      data-interaction="${item.intrcQesitm || ''}"
+                      data-sideeffect="${item.seQesitm || ''}"
+                    >
+                      ${item.itemName}
+                    </div>
+                  `;
+
+                });
 <%- include('../partials/header', { title: '약 등록하기' , pageCss: 'medicine' }) %>
 
   <div class="app-layout">
@@ -82,6 +178,43 @@
                             .querySelectorAll('.autocomplete-item')
                             .forEach(item => {
 
+                    item.addEventListener('click', () => {
+
+                      document.getElementById('medicineName').value =
+                        item.dataset.name;
+
+                      document.getElementById('itemSeq').value =
+                        item.dataset.itemseq;
+
+                      document.getElementById('entpName').value =
+                        item.dataset.entp;
+
+                      document.getElementById('itemImage').value =
+                        item.dataset.image;
+
+                      document.getElementById('efficacy').value =
+                        item.dataset.efficacy;
+
+                      document.getElementById('useMethod').value =
+                        item.dataset.usemethod;
+
+                      document.getElementById('precaution').value =
+                        item.dataset.precaution;
+
+                      document.getElementById('interaction').value =
+                        item.dataset.interaction;
+
+                      document.getElementById('sideEffect').value =
+                        item.dataset.sideeffect;
+
+                      document.getElementById('autocompleteList').innerHTML = '';
+
+                    });
+
+                  });
+              });
+            </script>
+            <% if (medicineCandidates.length > 0) { %>
                               item.addEventListener('click', () => {
 
                                 document.getElementById('medicineName').value =
