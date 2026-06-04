@@ -177,7 +177,7 @@ const medicineFamilyId = familyId || null;
 console.log('약 이름:', medicineName);
 console.log('유통기한:', expiryDate);
 console.log('req.user =', req.user);
-const userId = req.user.user_id;
+
 await pool.query(
   `
 
