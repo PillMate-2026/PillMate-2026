@@ -121,6 +121,16 @@ exports.createFamily = async (req, res) => {
       return res.redirect("/family");
     }
 
+
+    await query(
+           "DELETE FROM NOTIFICATION WHERE user_id = ?",
+          [userId]
+        );
+
+    await query(
+            "DELETE FROM MEDICINE WHERE user_id = ?",
+          [userId]
+        );
     const result = await query("INSERT INTO FAMILY () VALUES ()");
     const familyId = result.insertId;
 
