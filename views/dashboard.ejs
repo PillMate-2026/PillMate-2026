@@ -70,7 +70,7 @@
               <div class="medicine-card-top">
                 <div class="medicine-image-placeholder">
                   <img 
-                    src="<%= medicine.item_image || '/images/png/logo2.png' %>" 
+                    src="<%= medicine.item_image && medicine.item_image !== 'null' ? medicine.item_image : '/images/png/logo2.png' %>"
                     alt="약 이미지"
                     class="medicine-card-image"
                   >
