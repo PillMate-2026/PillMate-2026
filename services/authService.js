@@ -4,6 +4,8 @@ exports.findOrCreateUser = async (profile) => {
   return new Promise((resolve, reject) => {
     const googleId = profile.id;
     const name = profile.displayName || "Google 사용자";
+    const email = profile.emails?.[0]?.value || null;
+    const profileImage = profile.photos?.[0]?.value || null;
 
     const findUserQuery = "SELECT * FROM `USER` WHERE google_id = ?";
 
@@ -13,7 +15,30 @@ exports.findOrCreateUser = async (profile) => {
       }
 
       if (results.length > 0) {
-        return resolve(results[0]);
+        const updateUserQuery = `
+          UPDATE \`USER\`
+          SET name = ?, email = ?, profile_image = ?
+          WHERE google_id = ?
+        `;
+
+        db.query(
+          updateUserQuery,
+          [name, email, profileImage, googleId],
+          (err) => {
+            if (err) {
+              return reject(err);
+            }
+
+            return resolve({
+              ...results[0],
+              name,
+              email,
+              profile_image: profileImage,
+            });
+          }
+        );
+
+        return;
       }
 
       const insertUserQuery = `
@@ -22,24 +47,32 @@ exports.findOrCreateUser = async (profile) => {
           google_id,
           provider,
           name,
+          email,
+          profile_image,
           password
         )
-        VALUES (?, 'google', ?, 'GOOGLE_LOGIN')
+        VALUES (?, 'google', ?, ?, ?, 'GOOGLE_LOGIN')
       `;
 
-      db.query(insertUserQuery, [googleId, name], (err, result) => {
-        if (err) {
-          return reject(err);
-        }
+      db.query(
+        insertUserQuery,
+        [googleId, name, email, profileImage],
+        (err, result) => {
+          if (err) {
+            return reject(err);
+          }
 
-        resolve({
-          user_id: result.insertId,
-          google_id: googleId,
-          provider: "google",
-          name,
-          password: "GOOGLE_LOGIN",
-        });
-      });
+          resolve({
+            user_id: result.insertId,
+            google_id: googleId,
+            provider: "google",
+            name,
+            email,
+            profile_image: profileImage,
+            password: "GOOGLE_LOGIN",
+          });
+        }
+      );
     });
   });
 };

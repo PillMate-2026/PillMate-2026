@@ -24,7 +24,10 @@
         %>
 
         <div class="profile-avatar">
-          <img src="<%= profileIcon %>" alt="profile">
+          <img
+            src="<%= user.profile_image || profileIcon %>"
+            alt="profile"
+          >
         </div>
 
         <div class="profile-info">
@@ -41,7 +44,7 @@
           </div>
 
           <p>
-            @<%= user.login_id || "google_user" %>
+            <%= user.email || ("@" + (user.login_id || "google_user")) %>
             ·
             <%= user.gender || "성별 미입력" %>
             ·
