@@ -23,7 +23,8 @@ async function alreadyNotifiedToday(userId, medicineId, keyword) {
  * - 오늘 만료: "XXX이(가) 오늘 만료되었습니다."
  * - 7일 이내 만료 임박: "XXX이(가) N일 후 만료됩니다."
  */
-async function runExpiryCheck() {
+// skipDuplicateCheck: true이면 오늘 이미 알림이 있어도 다시 생성 (약 등록 직후 호출 시 사용)
+async function runExpiryCheck({ skipDuplicateCheck = false } = {}) {
   console.log('[Scheduler] 유통기한 만료 알림 체크 시작');
 
   try {
@@ -63,10 +64,13 @@ async function runExpiryCheck() {
           content = `${med.name}이(가) ${daysLeft}일 후 만료됩니다.`;
         }
 
-        const alreadySent = await alreadyNotifiedToday(userId, med.medicine_id, keyword);
-        if (alreadySent) {
-          skipped++;
-          continue;
+        // 약 등록 직후 호출이 아닌 경우(매일 08:00 자동 실행)에만 중복 체크
+        if (!skipDuplicateCheck) {
+          const alreadySent = await alreadyNotifiedToday(userId, med.medicine_id, keyword);
+          if (alreadySent) {
+            skipped++;
+            continue;
+          }
         }
 
         await createNotification({
