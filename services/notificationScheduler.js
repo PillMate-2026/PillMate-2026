@@ -104,9 +104,6 @@ async function resolveTargetUsers(med) {
   return [];
 }
 
-// app.js를 건드리지 않도록 require 시점에 자동 등록
-// develop 머지 후 app.js에 통합하려면 이 블록을 제거하고
-// app.js listen 콜백 안에서 startScheduler()를 직접 호출하세요.
 cron.schedule('0 8 * * *', runExpiryCheck, {
   timezone: 'Asia/Seoul',
 });
