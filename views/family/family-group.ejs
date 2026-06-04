@@ -47,12 +47,19 @@
             </p>
 
             <form action="/family/join" method="POST">
-              <input
-                type="text"
-                name="inviteCode"
-                maxlength="6"
-                required
-              >
+              <div class="invite-input-group">
+                <input
+                  type="text"
+                  name="inviteCode"
+                  maxlength="6"
+                  required
+                >
+
+                <% if (typeof error !== "undefined" && error) { %>
+                  <p class="invite-error"><%= error %></p>
+                <% } %>
+              </div>
+
               <button type="submit">참여하기</button>
             </form>
           </div>
@@ -215,4 +222,5 @@
     modal.style.display = "none";
   };
 </script>
+
 <%- include('../partials/footer') %>
