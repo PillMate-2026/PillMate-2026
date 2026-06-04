@@ -78,16 +78,22 @@ async function runExpiryCheck() {
 }
 
 /**
- * 약의 소유자(user_id) 또는 family 구성원 전체 userId 배열 반환
+ * 약의 소유자(user_id) 또는 family 구성원 중 알림 설정이 켜진 userId 배열 반환
  */
 async function resolveTargetUsers(med) {
   if (med.user_id) {
-    return [med.user_id];
+    // 개인 약: 해당 유저의 알림 설정 확인
+    const [[user]] = await pool.query(
+      'SELECT user_id FROM USER WHERE user_id = ? AND notification_enabled = 1',
+      [med.user_id]
+    );
+    return user ? [user.user_id] : [];
   }
 
   if (med.family_id) {
+    // 가족 약: 알림 설정이 켜진 구성원에게만 알림
     const [rows] = await pool.query(
-      'SELECT user_id FROM USER WHERE family_id = ?',
+      'SELECT user_id FROM USER WHERE family_id = ? AND notification_enabled = 1',
       [med.family_id]
     );
     return rows.map((r) => r.user_id);
