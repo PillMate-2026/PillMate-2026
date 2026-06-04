@@ -38,6 +38,15 @@ const deleteNotification = async (notificationId, userId) => {
   return result.affectedRows > 0;
 };
 
+// 알림 삭제 시 해당 약의 알림을 영구적으로 끄기
+const muteMedicineNotification = async (medicineId) => {
+  const [result] = await pool.query(
+    'UPDATE MEDICINE SET notification_muted = 1 WHERE medicine_id = ?',
+    [medicineId]
+  );
+  return result.affectedRows > 0;
+};
+
 const createNotification = async ({ userId, medicineId, medicineName, content }) => {
   const sql = `
     INSERT INTO NOTIFICATION (user_id, medicine_id, medicine_name, content)
@@ -52,4 +61,5 @@ module.exports = {
   markAsRead,
   deleteNotification,
   createNotification,
+  muteMedicineNotification,
 };
