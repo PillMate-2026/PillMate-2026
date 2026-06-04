@@ -201,7 +201,6 @@
   }
 
   async function fetchUnreadBadge() {
-    // ⚠️ 팀원 참고: 별도 badge API 없이 목록 API(/notifications)로 unread 개수 계산
     try {
       const res = await fetch('/notifications', {
         credentials: 'same-origin',
