@@ -50,7 +50,9 @@ body {
 .sidebar-avatar {
   width: 76px;
   height: 76px;
-  object-fit: contain;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
 }
 
 .sidebar-username {

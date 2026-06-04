@@ -15,7 +15,7 @@
         avatarSrc = '/images/icons/profile.svg';
       }
     %>
-    <img src="<%= avatarSrc %>" alt="profile" class="sidebar-avatar">
+    <img src="<%= sidebarUser.profile_image || avatarSrc %>" alt="profile" class="sidebar-avatar">
     <span class="sidebar-username"><%= sidebarUser.name %></span>
   </a>
 
