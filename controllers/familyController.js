@@ -85,7 +85,7 @@ exports.renderFamilyPage = async (req, res) => {
     }
 
     const members = await query(
-      "SELECT user_id, name, age, gender FROM `USER` WHERE family_id = ?",
+      "SELECT user_id, name, age, gender, profile_image FROM `USER` WHERE family_id = ?",
       [familyId]
     );
 
