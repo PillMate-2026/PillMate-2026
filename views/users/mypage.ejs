@@ -19,17 +19,32 @@
           } else if (user.gender === '남성') {
             profileIcon = '/images/icons/male.svg';
           }
+
+          const isGoogleUser = user.google_id || user.provider === "google";
         %>
 
         <div class="profile-avatar">
-          <img src="<%= profileIcon %>" alt="profile">
+          <img
+            src="<%= user.profile_image || profileIcon %>"
+            alt="profile"
+          >
         </div>
 
         <div class="profile-info">
-          <h3><%= user.name %></h3>
+          <div class="profile-name-row">
+            <h3><%= user.name %></h3>
+
+            <button
+              type="button"
+              class="profile-edit-btn"
+              onclick="openProfileModal()"
+            >
+              ✏️
+            </button>
+          </div>
 
           <p>
-            @<%= user.login_id || "google_user" %>
+            <%= user.email || ("@" + (user.login_id || "google_user")) %>
             ·
             <%= user.gender || "성별 미입력" %>
             ·
@@ -66,10 +81,12 @@
       </section>
 
       <section class="menu-list">
-        <button type="button" class="menu-item" onclick="openPasswordModal()">
-          <span>비밀번호 변경</span>
-          <span>›</span>
-        </button>
+        <% if (!isGoogleUser) { %>
+          <button type="button" class="menu-item" onclick="openPasswordModal()">
+            <span>비밀번호 변경</span>
+            <span>›</span>
+          </button>
+        <% } %>
 
         <form action="/auth/notification-toggle" method="POST">
           <button type="submit" class="menu-item">
@@ -101,7 +118,7 @@
   </div>
 </div>
 
-<div id="passwordModal" class="delete-modal">
+<div id="profileModal" class="delete-modal">
   <div class="delete-modal-content password-modal-content">
     <div class="modal-logo">
       <img src="/images/icons/pill.svg?v=1" alt="PillMate">
@@ -110,20 +127,77 @@
       </div>
     </div>
 
-    <button type="button" class="delete-close-btn" onclick="closePasswordModal()">×</button>
+    <button type="button" class="delete-close-btn" onclick="closeProfileModal()">×</button>
 
-    <h3>비밀번호 변경</h3>
-    <p>새 비밀번호를 입력해주세요</p>
+    <h3>프로필 수정</h3>
+    <p>이름, 성별, 나이를 수정할 수 있습니다</p>
 
-    <form action="/auth/password" method="POST">
-      <input type="password" name="currentPassword" placeholder="현재 비밀번호" required class="modal-input">
-      <input type="password" name="newPassword" placeholder="새 비밀번호" required class="modal-input">
-      <input type="password" name="newPasswordConfirm" placeholder="새 비밀번호 확인" required class="modal-input">
+    <form action="/auth/profile" method="POST">
+      <input
+        type="text"
+        name="name"
+        value="<%= user.name %>"
+        placeholder="이름"
+        required
+        class="modal-input"
+      >
 
-      <button type="submit" class="delete-confirm-btn">변경하기</button>
+      <select name="gender" class="modal-input">
+        <option value="">성별 선택</option>
+        <option value="남성" <%= user.gender === "남성" ? "selected" : "" %>>남성</option>
+        <option value="여성" <%= user.gender === "여성" ? "selected" : "" %>>여성</option>
+      </select>
+
+      <select name="age" class="modal-input">
+        <option value="">나이(출생연도)</option>
+
+        <%
+          const currentYear = new Date().getFullYear();
+          const selectedBirthYear = user.age
+            ? currentYear - Number(user.age)
+            : null;
+        %>
+
+        <% for (let year = currentYear; year >= 1920; year--) { %>
+          <option
+            value="<%= currentYear - year %>"
+            <%= selectedBirthYear === year ? "selected" : "" %>
+          >
+            <%= year %>년
+          </option>
+        <% } %>
+      </select>
+
+      <button type="submit" class="delete-confirm-btn">저장하기</button>
     </form>
   </div>
 </div>
+
+<% if (!isGoogleUser) { %>
+  <div id="passwordModal" class="delete-modal">
+    <div class="delete-modal-content password-modal-content">
+      <div class="modal-logo">
+        <img src="/images/icons/pill.svg?v=1" alt="PillMate">
+        <div class="modal-logo-text">
+          <span class="pill-blue">Pill</span><span class="pill-green">Mate</span>
+        </div>
+      </div>
+
+      <button type="button" class="delete-close-btn" onclick="closePasswordModal()">×</button>
+
+      <h3>비밀번호 변경</h3>
+      <p>새 비밀번호를 입력해주세요</p>
+
+      <form action="/auth/password" method="POST" onsubmit="return validatePasswordChange()">
+        <input type="password" name="currentPassword" placeholder="현재 비밀번호" required class="modal-input">
+        <input type="password" name="newPassword" placeholder="새 비밀번호(영문, 숫자 포함 6~20자)" required class="modal-input">
+        <input type="password" name="newPasswordConfirm" placeholder="새 비밀번호 확인" required class="modal-input">
+
+        <button type="submit" class="delete-confirm-btn">변경하기</button>
+      </form>
+    </div>
+  </div>
+<% } %>
 
 <div id="deleteModal" class="delete-modal">
   <div class="delete-modal-content delete-account-modal-content">
@@ -146,12 +220,42 @@
 </div>
 
 <script>
+  function openProfileModal() {
+    document.getElementById("profileModal").style.display = "flex";
+  }
+
+  function closeProfileModal() {
+    document.getElementById("profileModal").style.display = "none";
+  }
+
   function openPasswordModal() {
-    document.getElementById("passwordModal").style.display = "flex";
+    const modal = document.getElementById("passwordModal");
+    if (!modal) return;
+    modal.style.display = "flex";
   }
 
   function closePasswordModal() {
-    document.getElementById("passwordModal").style.display = "none";
+    const modal = document.getElementById("passwordModal");
+    if (!modal) return;
+    modal.style.display = "none";
+  }
+
+  function validatePasswordChange() {
+    const newPassword = document.querySelector('input[name="newPassword"]').value;
+    const newPasswordConfirm = document.querySelector('input[name="newPasswordConfirm"]').value;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/;
+
+    if (!passwordRegex.test(newPassword)) {
+      alert("비밀번호는 영문과 숫자를 포함한 6~20자로 입력해주세요.");
+      return false;
+    }
+
+    if (newPassword !== newPasswordConfirm) {
+      alert("비밀번호를 다시 확인해주세요.");
+      return false;
+    }
+
+    return true;
   }
 
   function openDeleteModal() {

@@ -75,6 +75,27 @@ exports.renderMyPage = (req, res) => {
 exports.signup = async (req, res) => {
   const { login_id, password, passwordConfirm, name, birthYear, gender } = req.body;
 
+  const loginIdRegex = /^[A-Za-z0-9]{6,20}$/;
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/;
+
+  if (!loginIdRegex.test(login_id)) {
+    return res.render("users/signup-page", {
+      title: "회원가입",
+      pageCss: "signup",
+      error: "아이디는 영문 또는 숫자 6~20자로 입력해주세요.",
+      formData: { login_id, name, birthYear, gender },
+    });
+  }
+
+  if (!passwordRegex.test(password)) {
+    return res.render("users/signup-page", {
+      title: "회원가입",
+      pageCss: "signup",
+      error: "비밀번호는 영문과 숫자를 포함한 6~20자로 입력해주세요.",
+      formData: { login_id, name, birthYear, gender },
+    });
+  }
+
   if (password !== passwordConfirm) {
     return res.render("users/signup-page", {
       title: "회원가입",
@@ -110,7 +131,7 @@ exports.signup = async (req, res) => {
     db.query(
       query,
       [login_id, hashedPassword, name, age, gender || null],
-      (err) => {
+      (err, result) => {
         if (err) {
           console.log(err);
 
@@ -131,7 +152,23 @@ exports.signup = async (req, res) => {
           });
         }
 
-        res.redirect("/auth/login");
+        const newUser = {
+          user_id: result.insertId,
+          login_id,
+          name,
+          age,
+          gender: gender || null,
+          provider: "local",
+        };
+
+        req.login(newUser, (err) => {
+          if (err) {
+            console.log(err);
+            return res.redirect("/auth/login");
+          }
+
+          return res.redirect("/dashboard");
+        });
       }
     );
   } catch (err) {
@@ -198,7 +235,7 @@ exports.login = (req, res) => {
         });
       }
 
-      return res.redirect("/auth/mypage");
+      return res.redirect("/dashboard");
     });
   });
 };
@@ -252,6 +289,10 @@ exports.changePassword = async (req, res) => {
 
   if (!req.user) {
     return res.redirect("/auth/login");
+  }
+
+  if (req.user.google_id || req.user.provider === "google") {
+    return res.redirect("/auth/mypage");
   }
 
   if (newPassword !== newPasswordConfirm) {
@@ -327,4 +368,70 @@ exports.toggleNotification = (req, res) => {
     req.user.notification_enabled = newValue;
     res.redirect("/auth/mypage");
   });
+};
+
+// 프로필 수정
+exports.updateProfile = (req, res) => {
+  if (!req.user) {
+    return res.redirect("/auth/login");
+  }
+
+  const { name, gender, age } = req.body;
+  const userId = req.user.user_id;
+
+  const query = `
+    UPDATE \`USER\`
+    SET name = ?, gender = ?, age = ?
+    WHERE user_id = ?
+  `;
+
+  db.query(query, [name, gender || null, age || null, userId], (err) => {
+    if (err) {
+      console.log(err);
+      return res.redirect("/auth/mypage");
+    }
+
+    req.user.name = name;
+    req.user.gender = gender || null;
+    req.user.age = age || null;
+
+    return res.redirect("/auth/mypage");
+  });
+};
+
+exports.checkLoginId = (req, res) => {
+  const { login_id } = req.query;
+
+  if (!login_id) {
+    return res.json({
+      available: false,
+      message: "아이디를 입력해주세요.",
+    });
+  }
+
+  db.query(
+    "SELECT user_id FROM `USER` WHERE login_id = ?",
+    [login_id],
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        return res.json({
+          available: false,
+          message: "중복 확인 중 오류가 발생했습니다.",
+        });
+      }
+
+      if (results.length > 0) {
+        return res.json({
+          available: false,
+          message: "사용할 수 없는 아이디입니다.",
+        });
+      }
+
+      return res.json({
+        available: true,
+        message: "사용 가능한 아이디입니다.",
+      });
+    }
+  );
 };

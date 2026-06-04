@@ -2,9 +2,6 @@ const express = require('express');
 const router = express.Router();
 const guideController = require('../controllers/guideController');
 
-// ⚠️ authMiddleware 완성 후 주석 해제
-// const { authMiddleware } = require('../middleware/authMiddleware');
-
 /** GET /disposal-guide          → 폐기가이드 페이지 */
 router.get('/', guideController.getGuidePage);
 
