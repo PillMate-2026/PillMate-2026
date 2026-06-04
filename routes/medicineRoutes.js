@@ -78,6 +78,16 @@ router.get("/manual", (req, res) => {
 });
 
 router.post("/ocr", upload.single("medicineImage"), async (req, res) => {
+
+    if (!req.file) {
+    return res.send(`
+      <script>
+        alert('사진을 업로드해주세요.');
+        history.back();
+      </script>
+    `);
+  }
+  
   try {
     console.log(req.file);
 
