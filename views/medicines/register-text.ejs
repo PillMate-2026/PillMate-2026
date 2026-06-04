@@ -22,6 +22,7 @@
           class="medicine-form"
           action="/medicines/register"
           method="POST"
+          onsubmit="return validateMedicineForm()"
         >
 
           <div class="form-group">
@@ -41,6 +42,7 @@
             <input type="hidden" id="precaution" name="precaution">
             <input type="hidden" id="interaction" name="interaction">
             <input type="hidden" id="sideEffect" name="sideEffect">
+            <input type="hidden" id="selectedMedicineName" name="selectedMedicineName">
             <div id="autocompleteList"></div>
             <script>
 
@@ -85,7 +87,7 @@
                     data-image="${item.itemImage || ''}"
                     data-efficacy="${item.efcyQesitm || ''}"
                     data-usemethod="${item.useMethodQesitm || ''}"
-                    data-precaution="${item.atpnWarnQesitm || ''}"
+                    data-precaution="${item.atpnQesitm || ''}"
                     data-interaction="${item.intrcQesitm || ''}"
                     data-sideeffect="${item.seQesitm || ''}"
                   >
@@ -126,9 +128,15 @@
                   document.getElementById('sideEffect').value =
                     item.dataset.sideeffect;
 
+                  document.getElementById('selectedMedicineName').value =
+                    item.dataset.name;
+
                   document.getElementById('autocompleteList').innerHTML = '';
 
                 });
+              });
+            });
+          });
             </script>
             <% if (medicineCandidates.length > 0) { %>
 
@@ -145,7 +153,7 @@
                     data-image="<%= item.itemImage || '' %>"
                     data-efficacy="<%= item.efcyQesitm || '' %>"
                     data-usemethod="<%= item.useMethodQesitm || '' %>"
-                    data-precaution="<%= item.atpnWarnQesitm || '' %>"
+                    data-precaution="<%= item.atpnQesitm || '' %>"
                     data-interaction="<%= item.intrcQesitm || '' %>"
                     data-sideeffect="<%= item.seQesitm || '' %>"
                   >
@@ -238,9 +246,35 @@
       document.getElementById('sideEffect').value =
         button.dataset.sideeffect;
 
+      document.getElementById('selectedMedicineName').value =
+        button.dataset.name;
+
     });
 
   });
+
+  function validateMedicineForm() {
+    const medicineName = document.getElementById('medicineName').value.trim();
+    const expiryDate = document.getElementById('expiryDate').value;
+    const itemSeq = document.getElementById('itemSeq').value;
+
+    if (!medicineName) {
+      alert('약 이름을 입력해주세요.');
+      return false;
+    }
+
+    if (!itemSeq) {
+      alert('자동완성 목록에서 약을 선택해주세요.');
+      return false;
+    }
+
+    if (!expiryDate) {
+      alert('유통기한을 선택해주세요.');
+      return false;
+    }
+
+    return true;
+  }
 
 </script>
 
