@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db/connection");
+const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:3b-instruct";
 
 function formatDate(date) {
   if (!date) return "정보 없음";
@@ -20,6 +22,15 @@ router.get("/guide", (req, res) => {
 router.post("/chatbot/recommend", async (req, res) => {
   try {
     const { userText } = req.body;
+
+    if (!req.user) {
+      return res.status(401).json({
+        message: "로그인이 필요합니다.",
+      });
+    }
+
+    const userId = req.user.user_id;
+    const familyId = req.user.family_id;
 
     if (!userText) {
       return res.status(400).json({
@@ -120,13 +131,13 @@ router.post("/chatbot/recommend", async (req, res) => {
 
 사용자 문장: ${userText}
 `;
-    const ollamaResponse = await fetch("http://localhost:11434/api/chat", {
+    const ollamaResponse = await fetch(`${OLLAMA_URL}/api/chat`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "qwen2.5:3b-instruct",
+        model: OLLAMA_MODEL,
         messages: [
           {
             role: "system",
@@ -144,6 +155,13 @@ router.post("/chatbot/recommend", async (req, res) => {
         },
       }),
     });
+
+    if (!ollamaResponse.ok) {
+      const errorText = await ollamaResponse.text();
+      throw new Error(
+        `Ollama 요청 실패: ${ollamaResponse.status} ${errorText}`,
+      );
+    }
 
     const ollamaData = await ollamaResponse.json();
 
@@ -176,6 +194,10 @@ router.post("/chatbot/recommend", async (req, res) => {
     }
 
     // 2. 추출된 symptom로 DB 조회
+    const whereOwner = familyId ? "m.family_id = ?" : "m.user_id = ?";
+
+    const ownerId = familyId || userId;
+
     const [rows] = await db.query(
       `
       SELECT DISTINCT
@@ -188,7 +210,7 @@ router.post("/chatbot/recommend", async (req, res) => {
             ELSE false
         END AS is_expired,
         m.efficacy,
-        GROUP_CONCAT(DISTINCT i.name SEPARATOR ', ') AS ingredients
+        GROUP_CONCAT(DISTINCT all_i.name SEPARATOR ', ') AS ingredients
       FROM SYMPTOM s
       JOIN INGREDIENT_SYMPTOM ins 
         ON s.symptom_id = ins.symptom_id
@@ -198,8 +220,14 @@ router.post("/chatbot/recommend", async (req, res) => {
         ON i.ingredient_id = mi.ingredient_id
       JOIN MEDICINE m 
         ON mi.medicine_id = m.medicine_id
+
+       LEFT JOIN MEDICINE_INGREDIENT mi_all
+          ON m.medicine_id = mi_all.medicine_id
+        LEFT JOIN INGREDIENT all_i
+          ON mi_all.ingredient_id = all_i.ingredient_id
+
       WHERE s.name IN (?)
-         AND m.user_id = 1
+         AND ${whereOwner}
       GROUP BY 
         m.medicine_id,
         m.name,
@@ -208,7 +236,7 @@ router.post("/chatbot/recommend", async (req, res) => {
       ORDER BY m.expiration_date ASC
       LIMIT 5
       `,
-      [symptoms],
+      [symptoms, ownerId],
     );
 
     // 3. 답변 직접 생성

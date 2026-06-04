@@ -94,10 +94,89 @@
                   `;
 
                 });
+<%- include('../partials/header', { title: '약 등록하기' , pageCss: 'medicine' }) %>
 
-                document
-                  .querySelectorAll('.autocomplete-item')
-                  .forEach(item => {
+  <div class="app-layout">
+    <%- include('../partials/sidebar', { activeMenu: 'add' }) %>
+
+      <div class="app-main">
+        <%- include('../partials/topbar', { pageTitle: '약 등록하기' , pageDesc: '약장에 의약품을 추가합니다' ,
+          pageIcon: '/images/icons/plus.svg' , showNotification: false }) %>
+
+          <main class="app-content">
+
+            <section class="text-register-container">
+
+              <form class="medicine-form" action="/medicines/register" method="POST" onsubmit="return validateMedicineForm()">
+
+                <div class="form-group">
+                  <label for="medicineName">의약품 이름</label>
+                  <input type="text" id="medicineName" name="medicineName" class="form-input"
+                    value="<%= medicineName || '' %>">
+                  <input type="hidden" id="itemSeq" name="itemSeq">
+                  <input type="hidden" id="entpName" name="entpName">
+                  <input type="hidden" id="itemImage" name="itemImage">
+                  <input type="hidden" id="efficacy" name="efficacy">
+                  <input type="hidden" id="useMethod" name="useMethod">
+                  <input type="hidden" id="precaution" name="precaution">
+                  <input type="hidden" id="interaction" name="interaction">
+                  <input type="hidden" id="sideEffect" name="sideEffect">
+                  <input type="hidden" id="selectedMedicineName" name="selectedMedicineName">
+                  <div id="autocompleteList"></div>
+                  <script>
+
+                    document
+                      .getElementById('medicineName')
+                      .addEventListener('input', async (event) => {
+
+                        const keyword = event.target.value;
+
+                        if (keyword.length < 2) {
+
+                          document.getElementById(
+                            'autocompleteList'
+                          ).innerHTML = '';
+
+                          return;
+                        }
+
+                        const response =
+                          await fetch(
+                            `/medicines/autocomplete?keyword=${keyword}`
+                          );
+
+                        const medicines =
+                          await response.json();
+
+                        const list =
+                          document.getElementById(
+                            'autocompleteList'
+                          );
+
+                        list.innerHTML = '';
+
+                        medicines.forEach(item => {
+
+                          list.innerHTML += `
+                  <div
+                    class="autocomplete-item"
+                    data-name="${item.itemName}"
+                    data-itemseq="${item.itemSeq || ''}"
+                    data-entp="${item.entpName || ''}"
+                    data-image="${item.itemImage || ''}"
+                    data-efficacy="${item.efcyQesitm || ''}"
+                    data-usemethod="${item.useMethodQesitm || ''}"
+                    data-precaution="${item.atpnQesitm || ''}"
+                    data-interaction="${item.intrcQesitm || ''}"
+                    data-sideeffect="${item.seQesitm || ''}"
+                  >
+                    ${item.itemName}
+                  </div>
+                `;
+
+                          document
+                            .querySelectorAll('.autocomplete-item')
+                            .forEach(item => {
 
                     item.addEventListener('click', () => {
 
@@ -136,117 +215,165 @@
               });
             </script>
             <% if (medicineCandidates.length > 0) { %>
+                              item.addEventListener('click', () => {
 
-              <div class="medicine-candidates">
+                                document.getElementById('medicineName').value =
+                                  item.dataset.name;
 
-                <% medicineCandidates.forEach(item => { %>
+                                document.getElementById('itemSeq').value =
+                                  item.dataset.itemseq;
 
-                  <button
-                    type="button"
-                    class="candidate-item"
-                    data-name="<%= item.itemName %>"
-                    data-itemseq="<%= item.itemSeq || '' %>"
-                    data-entp="<%= item.entpName || '' %>"
-                    data-image="<%= item.itemImage || '' %>"
-                    data-efficacy="<%= item.efcyQesitm || '' %>"
-                    data-usemethod="<%= item.useMethodQesitm || '' %>"
-                    data-precaution="<%= item.atpnWarnQesitm || '' %>"
-                    data-interaction="<%= item.intrcQesitm || '' %>"
-                    data-sideeffect="<%= item.seQesitm || '' %>"
-                  >
-                    <%= item.itemName %>
+                                document.getElementById('entpName').value =
+                                  item.dataset.entp;
+
+                                document.getElementById('itemImage').value =
+                                  item.dataset.image;
+
+                                document.getElementById('efficacy').value =
+                                  item.dataset.efficacy;
+
+                                document.getElementById('useMethod').value =
+                                  item.dataset.usemethod;
+
+                                document.getElementById('precaution').value =
+                                  item.dataset.precaution;
+
+                                document.getElementById('interaction').value =
+                                  item.dataset.interaction;
+
+                                document.getElementById('sideEffect').value =
+                                  item.dataset.sideeffect;
+
+                                document.getElementById('selectedMedicineName').value =
+                                  item.dataset.name;
+
+                                document.getElementById('autocompleteList').innerHTML = '';
+                              });
+                            });
+                          });
+                        });
+                  </script>
+                  <% if (medicineCandidates.length> 0) { %>
+
+                    <div class="medicine-candidates">
+
+                      <% medicineCandidates.forEach(item=> { %>
+
+                        <button type="button" class="candidate-item" data-name="<%= item.itemName %>"
+                          data-itemseq="<%= item.itemSeq || '' %>" data-entp="<%= item.entpName || '' %>"
+                          data-image="<%= item.itemImage || '' %>" data-efficacy="<%= item.efcyQesitm || '' %>"
+                          data-usemethod="<%= item.useMethodQesitm || '' %>"
+                          data-precaution="<%= item.atpnQesitm || '' %>"
+                          data-interaction="<%= item.intrcQesitm || '' %>" data-sideeffect="<%= item.seQesitm || '' %>">
+                          <%= item.itemName %>
+                        </button>
+
+                        <% }) %>
+
+                    </div>
+
+                    <% } %>
+                </div>
+
+
+                <div class="form-group">
+                  <label for="expiryDate">유통기한</label>
+                  <input type="date" id="expiryDate" name="expiryDate" class="form-input">
+                </div>
+
+                <div class="autocomplete-guide">
+                  <div>ⓘ 외부 API를 통한 자동완성을 지원합니다.
+                  약 이름을 2자 이상 입력하면 후보가 표시됩니다.</div>
+                  <div style="margin-left:16px;">
+                    목록에서 선택한 의약품은 상세정보가 함께 저장됩니다.
+                  </div>
+                </div>
+
+                <div class="button-group">
+
+                  <button type="button" class="cancel-btn" onclick="history.back()">
+                    취소하기
                   </button>
 
-                <% }) %>
+                  <button type="submit" class="save-btn">
+                    약장에 등록하기
+                  </button>
 
-              </div>
+                </div>
 
-            <% } %>
-          </div>
+              </form>
 
+            </section>
 
-          <div class="form-group">
-            <label for="expiryDate">유통기한</label>
-            <input
-              type="date"
-              id="expiryDate"
-              name="expiryDate"
-              class="form-input"
-            >
-          </div>
+          </main>
 
-          <div class="autocomplete-guide">
-            ⓘ 외부 API를 통한 자동완성을 지원합니다.
-            약 이름을 2자 이상 입력하면 후보가 표시됩니다.
-          </div>
-
-          <div class="button-group">
-
-            <button
-              type="button"
-              class="cancel-btn"
-              onclick="history.back()"
-            >
-              취소하기
-            </button>
-
-            <button
-              type="submit"
-              class="save-btn"
-            >
-              약장에 등록하기
-            </button>
-
-          </div>
-
-        </form>
-
-      </section>
-
-    </main>
-
+      </div>
   </div>
-</div>
 
-<script>
+  <script>
 
-  document
-  .querySelectorAll('.candidate-item')
-  .forEach(button => {
+                    document
+                      .querySelectorAll('.candidate-item')
+                      .forEach(button => {
 
-    button.addEventListener('click', () => {
+                        button.addEventListener('click', () => {
 
-      document.getElementById('medicineName').value =
-        button.dataset.name;
+                          document.getElementById('medicineName').value =
+                            button.dataset.name;
 
-      document.getElementById('itemSeq').value =
-        button.dataset.itemseq;
+                          document.getElementById('itemSeq').value =
+                            button.dataset.itemseq;
 
-      document.getElementById('entpName').value =
-        button.dataset.entp;
+                          document.getElementById('entpName').value =
+                            button.dataset.entp;
 
-      document.getElementById('itemImage').value =
-        button.dataset.image;
+                          document.getElementById('itemImage').value =
+                            button.dataset.image;
 
-      document.getElementById('efficacy').value =
-        button.dataset.efficacy;
+                          document.getElementById('efficacy').value =
+                            button.dataset.efficacy;
 
-      document.getElementById('useMethod').value =
-        button.dataset.usemethod;
+                          document.getElementById('useMethod').value =
+                            button.dataset.usemethod;
 
-      document.getElementById('precaution').value =
-        button.dataset.precaution;
+                          document.getElementById('precaution').value =
+                            button.dataset.precaution;
 
-      document.getElementById('interaction').value =
-        button.dataset.interaction;
+                          document.getElementById('interaction').value =
+                            button.dataset.interaction;
 
-      document.getElementById('sideEffect').value =
-        button.dataset.sideeffect;
+                          document.getElementById('sideEffect').value =
+                            button.dataset.sideeffect;
 
-    });
+                          document.getElementById('selectedMedicineName').value =
+                            button.dataset.name;
+                            
+                          });
+                      });
 
-  });
+  function validateMedicineForm() {
+    const medicineName = document.getElementById('medicineName').value.trim();
+    const expiryDate = document.getElementById('expiryDate').value;
+    const itemSeq = document.getElementById('itemSeq').value;
+
+    if (!medicineName) {
+      alert('약 이름을 입력해주세요.');
+      return false;
+    }
+
+    if (!itemSeq) {
+      alert('자동완성 목록에서 약을 선택해주세요.');
+      return false;
+    }
+
+    if (!expiryDate) {
+      alert('유통기한을 선택해주세요.');
+      return false;
+    }
+
+    return true;
+  }
 
 </script>
 
-<%- include('../partials/footer') %>
+  <%- include('../partials/footer') %>

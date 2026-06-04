@@ -2,18 +2,14 @@ const cron = require('node-cron');
 const pool = require('../db/connection');
 const { createNotification } = require('../models/notificationModel');
 
-/**
- * 이미 오늘 같은 약에 대해 같은 종류의 알림이 생성됐는지 확인
- */
-async function alreadyNotifiedToday(userId, medicineId, keyword) {
+// 날짜 상관없이 해당 약에 대한 알림이 한 번이라도 생성된 적 있는지 확인
+async function alreadyNotified(userId, medicineId) {
   const [rows] = await pool.query(
     `SELECT 1 FROM NOTIFICATION
      WHERE user_id = ?
        AND medicine_id = ?
-       AND content LIKE ?
-       AND DATE(created_at) = CURDATE()
      LIMIT 1`,
-    [userId, medicineId, `%${keyword}%`]
+    [userId, medicineId]
   );
   return rows.length > 0;
 }
@@ -35,7 +31,8 @@ async function runExpiryCheck() {
         m.name,
         DATEDIFF(m.expiration_date, CURDATE()) AS days_left
       FROM MEDICINE m
-      WHERE DATEDIFF(m.expiration_date, CURDATE()) BETWEEN -1 AND 7
+      WHERE DATEDIFF(m.expiration_date, CURDATE()) <= 0
+        AND m.notification_muted = 0
     `);
 
     if (medicines.length === 0) {
@@ -55,15 +52,10 @@ async function runExpiryCheck() {
         let content;
         let keyword;
 
-        if (daysLeft <= 0) {
-          keyword = '만료되었습니다';
-          content = `${med.name}이(가) 오늘 만료되었습니다.`;
-        } else {
-          keyword = `${daysLeft}일 후 만료`;
-          content = `${med.name}이(가) ${daysLeft}일 후 만료됩니다.`;
-        }
+        content = `${med.name}이(가) 오늘 만료되었습니다.`;
 
-        const alreadySent = await alreadyNotifiedToday(userId, med.medicine_id, keyword);
+        // 이미 한 번이라도 알림이 생성된 약은 다시 생성하지 않음
+        const alreadySent = await alreadyNotified(userId, med.medicine_id);
         if (alreadySent) {
           skipped++;
           continue;
@@ -86,16 +78,22 @@ async function runExpiryCheck() {
 }
 
 /**
- * 약의 소유자(user_id) 또는 family 구성원 전체 userId 배열 반환
+ * 약의 소유자(user_id) 또는 family 구성원 중 알림 설정이 켜진 userId 배열 반환
  */
 async function resolveTargetUsers(med) {
   if (med.user_id) {
-    return [med.user_id];
+    // 개인 약: 해당 유저의 알림 설정 확인
+    const [[user]] = await pool.query(
+      'SELECT user_id FROM USER WHERE user_id = ? AND notification_enabled = 1',
+      [med.user_id]
+    );
+    return user ? [user.user_id] : [];
   }
 
   if (med.family_id) {
+    // 가족 약: 알림 설정이 켜진 구성원에게만 알림
     const [rows] = await pool.query(
-      'SELECT user_id FROM USER WHERE family_id = ?',
+      'SELECT user_id FROM USER WHERE family_id = ? AND notification_enabled = 1',
       [med.family_id]
     );
     return rows.map((r) => r.user_id);
@@ -104,9 +102,6 @@ async function resolveTargetUsers(med) {
   return [];
 }
 
-// app.js를 건드리지 않도록 require 시점에 자동 등록
-// develop 머지 후 app.js에 통합하려면 이 블록을 제거하고
-// app.js listen 콜백 안에서 startScheduler()를 직접 호출하세요.
 cron.schedule('0 8 * * *', runExpiryCheck, {
   timezone: 'Asia/Seoul',
 });

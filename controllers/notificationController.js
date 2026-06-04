@@ -1,4 +1,5 @@
 const notificationModel = require('../models/notificationModel');
+const pool = require('../db/connection');
 
 function getUserId(req) {
   if (req.user && req.user.user_id) return req.user.user_id;
@@ -72,10 +73,22 @@ const deleteNotification = async (req, res) => {
     }
 
     const userId  = getUserId(req);
+
+    // 삭제 전 medicine_id 조회 (알림 영구 끄기에 필요)
+    const [[notification]] = await pool.query(
+      'SELECT medicine_id FROM NOTIFICATION WHERE notification_id = ? AND user_id = ?',
+      [notificationId, userId]
+    );
+
     const deleted = await notificationModel.deleteNotification(notificationId, userId);
 
     if (!deleted) {
       return res.status(404).json({ ok: false, status: 404, message: '존재하지 않는 알림입니다.', data: null });
+    }
+
+    // 해당 약의 알림을 영구적으로 끔
+    if (notification?.medicine_id) {
+      await notificationModel.muteMedicineNotification(notification.medicine_id);
     }
 
     return res.status(200).json({ ok: true, status: 200, message: '알림이 삭제되었습니다.', data: null });
@@ -86,8 +99,9 @@ const deleteNotification = async (req, res) => {
 };
 
 function formatTimeAgo(dateValue) {
-  const date    = new Date(dateValue);
-  const now     = new Date();
+  // DB가 UTC로 저장되므로 KST(+9시간)로 변환해서 시간 차이 계산
+  const date    = new Date(new Date(dateValue).getTime() + 9 * 60 * 60 * 1000);
+  const now     = new Date(new Date().getTime() + 9 * 60 * 60 * 1000);
   const diffMin = Math.floor((now - date) / 60000);
   const diffH   = Math.floor(diffMin / 60);
   const diffD   = Math.floor(diffH / 24);

@@ -55,7 +55,7 @@ app.use(async (req, res, next) => {
 
   try {
     const [[user]] = await userPool.query(
-      'SELECT user_id, family_id, name, gender, age, login_id, google_id, provider, notification_enabled FROM USER WHERE user_id = ?',
+      'SELECT user_id, family_id, name, gender, age, login_id, google_id, provider,email, profile_image, notification_enabled FROM USER WHERE user_id = ?',
       [req.user.user_id]
     );
 
@@ -76,6 +76,10 @@ app.use(async (req, res, next) => {
 // ============================================================
 // 라우터 등록
 // ============================================================
+
+app.get('/', (req, res) => {
+  return res.redirect('/auth/login');
+});
 
 const indexRoutes = require('./routes/indexRoutes');
 app.use('/', indexRoutes);
