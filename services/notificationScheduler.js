@@ -36,7 +36,8 @@ async function runExpiryCheck({ skipDuplicateCheck = false } = {}) {
         m.name,
         DATEDIFF(m.expiration_date, CURDATE()) AS days_left
       FROM MEDICINE m
-      WHERE DATEDIFF(m.expiration_date, CURDATE()) BETWEEN -1 AND 7
+      WHERE DATEDIFF(m.expiration_date, CURDATE()) <= 0
+        AND m.notification_muted = 0
     `);
 
     if (medicines.length === 0) {
@@ -56,13 +57,8 @@ async function runExpiryCheck({ skipDuplicateCheck = false } = {}) {
         let content;
         let keyword;
 
-        if (daysLeft <= 0) {
-          keyword = '만료되었습니다';
-          content = `${med.name}이(가) 오늘 만료되었습니다.`;
-        } else {
-          keyword = `${daysLeft}일 후 만료`;
-          content = `${med.name}이(가) ${daysLeft}일 후 만료됩니다.`;
-        }
+        keyword = '만료되었습니다';
+        content = `${med.name}이(가) 오늘 만료되었습니다.`;
 
         // 약 등록 직후 호출이 아닌 경우(매일 08:00 자동 실행)에만 중복 체크
         if (!skipDuplicateCheck) {
