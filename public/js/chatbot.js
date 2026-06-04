@@ -64,8 +64,9 @@ async function sendChatMessage() {
 
           const effect = medicine.efficacy
             ? medicine.efficacy
-                .replace("이 약은 ", "")
-                .replace("에 사용합니다.", "")
+                .replace(/^이 약은\s*/, "")
+                .replace(/에 사용합니다\.?\s*$/u, "")
+                .trim()
             : "정보 없음";
 
           const medicineHtml = `
