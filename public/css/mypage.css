@@ -6,7 +6,7 @@
 }
 
 .mypage-title {
-  font-size: 22px;
+  font-size: 30px;
   font-weight: 700;
   margin-bottom: 28px;
 }
@@ -260,6 +260,23 @@
   color: #666666;
   cursor: pointer;
 }
+
+.menu-item form button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.toggle-btn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
 
 /* 회원탈퇴 모달 */
 .delete-modal-content h3 {
