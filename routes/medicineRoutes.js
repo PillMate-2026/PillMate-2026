@@ -162,29 +162,25 @@ router.post("/register", async (req, res) => {
       sideEffect,
       selectedMedicineName,
     } = req.body;
+const saveMedicineName = selectedMedicineName || medicineName;
+    if (!saveMedicineName || !expiryDate || !itemSeq) {
+      return res
+        .status(400)
+        .send("약 이름, 유통기한, 의약품 선택이 필요합니다.");
+    }
+    
+const userId = req.user.user_id;
+const familyId = req.user.family_id;
 
+const medicineUserId = familyId ? null : userId;
+const medicineFamilyId = familyId || null;
 console.log('약 이름:', medicineName);
 console.log('유통기한:', expiryDate);
 console.log('req.user =', req.user);
 const userId = req.user.user_id;
 await pool.query(
   `
-    const saveMedicineName = selectedMedicineName || medicineName;
 
-    if (!saveMedicineName || !expiryDate || !itemSeq) {
-      return res
-        .status(400)
-        .send("약 이름, 유통기한, 의약품 선택이 필요합니다.");
-    }
-
-    const userId = req.user.user_id;
-    const familyId = req.user.family_id;
-
-    const medicineUserId = familyId ? null : userId;
-    const medicineFamilyId = familyId || null;
-
-    const [medicineResult] = await pool.query(
-      `
   INSERT INTO MEDICINE
   (
     user_id,
