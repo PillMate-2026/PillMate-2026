@@ -1,32 +1,31 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const db = require('../db/connection');
+const db = require("../db/connection");
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     if (!req.user) {
-      return res.redirect('/auth/login');
+      return res.redirect("/auth/login");
     }
 
     const userId = req.user.user_id;
-    console.log('dashboard userId:', userId);
-    const status = req.query.status || 'all';
-    const sort = req.query.sort === 'created' ? 'created' : 'expiry';
+    const status = req.query.status || "all";
+    const sort = req.query.sort === "created" ? "created" : "expiry";
     const keyword =
-      typeof req.query.keyword === 'string'
+      typeof req.query.keyword === "string"
         ? req.query.keyword.trim()
-        : typeof req.query.search === 'string'
-        ? req.query.search.trim()
-        : '';
+        : typeof req.query.search === "string"
+          ? req.query.search.trim()
+          : "";
 
     const [[user]] = await db.query(
-      'SELECT user_id, family_id, name, gender, provider, google_id, login_id FROM USER WHERE user_id = ?',
-      [userId]
+      "SELECT user_id, family_id, name, gender, provider, google_id, login_id FROM USER WHERE user_id = ?",
+      [userId],
     );
 
     if (!user) {
       req.logout(() => {
-        res.redirect('/auth/login');
+        res.redirect("/auth/login");
       });
       return;
     }
@@ -34,15 +33,15 @@ router.get('/', async (req, res) => {
     const currentUser = user;
 
     const familyId = currentUser.family_id;
-    const scope = familyId ? 'family' : 'personal';
+    const scope = familyId ? "family" : "personal";
     const baseWhere = [];
     const baseParams = [];
 
-    if (scope === 'family') {
-      baseWhere.push('family_id = ?');
+    if (scope === "family") {
+      baseWhere.push("family_id = ?");
       baseParams.push(familyId);
     } else {
-      baseWhere.push('user_id = ?');
+      baseWhere.push("user_id = ?");
       baseParams.push(userId);
     }
 
@@ -50,40 +49,51 @@ router.get('/', async (req, res) => {
     const params = [...baseParams];
 
     if (keyword) {
-      where.push('name LIKE ?');
+      where.push("name LIKE ?");
       params.push(`%${keyword}%`);
     }
 
-    if (status === 'expired') {
-      where.push('expiration_date < CURDATE()');
-    } else if (status === 'normal') {
-      where.push('expiration_date >= CURDATE()');
+    if (status === "expired") {
+      where.push("expiration_date < CURDATE()");
+    } else if (status === "normal") {
+      where.push("expiration_date >= CURDATE()");
     }
 
     const orderBy =
-      sort === 'created'
-        ? 'created_at DESC, medicine_id DESC'
-        : 'expiration_date ASC, medicine_id DESC';
+      sort === "created"
+        ? "m.created_at DESC, m.medicine_id DESC"
+        : "m.expiration_date ASC, m.medicine_id DESC";
 
     const [medicines] = await db.query(
       `
       SELECT
-        medicine_id,
-        name,
-        DATE_FORMAT(expiration_date, '%Y-%m-%d') AS expiration_date,
-        DATEDIFF(expiration_date, CURDATE()) AS days_left,
-        DATE_FORMAT(created_at, '%Y-%m-%d') AS created_at,
-        entp_name,
-        efficacy,
-        use_method,
-        precaution,
-        interaction,
-        side_effect        
-      FROM MEDICINE
-      WHERE ${where.join(' AND ')}
+        m.medicine_id,
+        m.name,
+        DATE_FORMAT(m.expiration_date, '%Y-%m-%d') AS expiration_date,
+        DATEDIFF(m.expiration_date, CURDATE()) AS days_left,
+        DATE_FORMAT(m.created_at, '%Y-%m-%d') AS created_at,
+        m.entp_name,
+        m.item_image,
+        m.efficacy,
+        m.use_method,
+        m.precaution,
+        m.interaction,
+        m.side_effect,
+        SUBSTRING_INDEX(
+          GROUP_CONCAT(DISTINCT i.name ORDER BY mi.ingredient_id SEPARATOR ', '),
+          ', ',
+          1
+        ) AS ingredients
+      FROM MEDICINE m
+      LEFT JOIN MEDICINE_INGREDIENT mi
+        ON m.medicine_id = mi.medicine_id
+      LEFT JOIN INGREDIENT i
+        ON mi.ingredient_id = i.ingredient_id
+      WHERE ${where.map((condition) => `m.${condition}`).join(" AND ")}
+      GROUP BY m.medicine_id
       ORDER BY ${orderBy}
       `,
-      params
+      params,
     );
 
     const [statsResult] = await db.query(
@@ -93,16 +103,16 @@ router.get('/', async (req, res) => {
         SUM(CASE WHEN expiration_date >= CURDATE() THEN 1 ELSE 0 END) AS normalCount,
         SUM(CASE WHEN expiration_date < CURDATE() THEN 1 ELSE 0 END) AS expiredCount
       FROM MEDICINE
-      WHERE ${baseWhere.join(' AND ')}
+      WHERE ${baseWhere.join(" AND ")}
       `,
-      baseParams
+      baseParams,
     );
 
     const total = statsResult[0].total || 0;
     const normalCount = statsResult[0].normalCount || 0;
     const expiredCount = statsResult[0].expiredCount || 0;
 
-    res.render('dashboard', {
+    res.render("dashboard", {
       medicines,
       scope,
       status,
@@ -117,7 +127,7 @@ router.get('/', async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send('Server error');
+    res.status(500).send("Server error");
   }
 });
 
