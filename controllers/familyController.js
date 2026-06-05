@@ -27,13 +27,24 @@ function getInviteExpireText(createdAt) {
 }
 
 async function movePersonalMedicinesToFamily(userId, familyId) {
-  await query(
+  const medicines = await query(
     `
+    SELECT *
+    FROM MEDICINE
+    WHERE user_id = ?
+    `,
+    [userId],
+  );
+
+  for (const medicine of medicines) {
+    const result = await query(
+      `
     INSERT INTO MEDICINE
     (
       family_id,
       name,
       expiration_date,
+      created_at,
       item_seq,
       entp_name,
       item_image,
@@ -43,26 +54,38 @@ async function movePersonalMedicinesToFamily(userId, familyId) {
       interaction,
       side_effect
     )
-    SELECT
-      ?,
-      name,
-      expiration_date,
-      item_seq,
-      entp_name,
-      item_image,
-      efficacy,
-      use_method,
-      precaution,
-      interaction,
-      side_effect
-    FROM MEDICINE
-    WHERE user_id = ?
-    `,
-    [familyId, userId]
-  );
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+      [
+        familyId,
+        medicine.name,
+        medicine.expiration_date,
+        medicine.created_at,
+        medicine.item_seq,
+        medicine.entp_name,
+        medicine.item_image,
+        medicine.efficacy,
+        medicine.use_method,
+        medicine.precaution,
+        medicine.interaction,
+        medicine.side_effect,
+      ],
+    );
+
+    const newMedicineId = result.insertId;
+
+    await query(
+      `
+      INSERT INTO MEDICINE_INGREDIENT (medicine_id, ingredient_id)
+      SELECT ?, ingredient_id
+      FROM MEDICINE_INGREDIENT
+      WHERE medicine_id = ?
+      `,
+      [newMedicineId, medicine.medicine_id],
+    );
+  }
 
   await query("DELETE FROM NOTIFICATION WHERE user_id = ?", [userId]);
-
   await query("DELETE FROM MEDICINE WHERE user_id = ?", [userId]);
 }
 
@@ -74,7 +97,9 @@ exports.renderFamilyPage = async (req, res) => {
 
     const userId = req.user.user_id;
 
-    const users = await query("SELECT * FROM `USER` WHERE user_id = ?", [userId]);
+    const users = await query("SELECT * FROM `USER` WHERE user_id = ?", [
+      userId,
+    ]);
     const currentUser = users[0];
 
     if (!currentUser || !currentUser.family_id) {
@@ -96,7 +121,7 @@ exports.renderFamilyPage = async (req, res) => {
 
     let inviteCodes = await query(
       "SELECT * FROM INVITE_CODE WHERE family_id = ? ORDER BY created_at DESC LIMIT 1",
-      [familyId]
+      [familyId],
     );
 
     let inviteCode = inviteCodes[0]?.code;
@@ -111,14 +136,14 @@ exports.renderFamilyPage = async (req, res) => {
 
       inviteCode = generateInviteCode();
 
-      await query(
-        "INSERT INTO INVITE_CODE (code, family_id) VALUES (?, ?)",
-        [inviteCode, familyId]
-      );
+      await query("INSERT INTO INVITE_CODE (code, family_id) VALUES (?, ?)", [
+        inviteCode,
+        familyId,
+      ]);
 
       inviteCodes = await query(
         "SELECT * FROM INVITE_CODE WHERE family_id = ? ORDER BY created_at DESC LIMIT 1",
-        [familyId]
+        [familyId],
       );
 
       inviteCreatedAt = inviteCodes[0].created_at;
@@ -126,7 +151,7 @@ exports.renderFamilyPage = async (req, res) => {
 
     const members = await query(
       "SELECT user_id, name, age, gender, profile_image FROM `USER` WHERE family_id = ?",
-      [familyId]
+      [familyId],
     );
 
     res.render("family/family-group", {
@@ -134,7 +159,7 @@ exports.renderFamilyPage = async (req, res) => {
       inviteCode,
       inviteExpireText: getInviteExpireText(inviteCreatedAt),
       inviteExpireAt: new Date(
-        getKstTime(inviteCreatedAt) + 24 * 60 * 60 * 1000
+        getKstTime(inviteCreatedAt) + 24 * 60 * 60 * 1000,
       ).toISOString(),
       members,
       error: null,
@@ -153,7 +178,9 @@ exports.createFamily = async (req, res) => {
 
     const userId = req.user.user_id;
 
-    const users = await query("SELECT * FROM `USER` WHERE user_id = ?", [userId]);
+    const users = await query("SELECT * FROM `USER` WHERE user_id = ?", [
+      userId,
+    ]);
     const currentUser = users[0];
 
     if (currentUser.family_id) {
@@ -166,19 +193,19 @@ exports.createFamily = async (req, res) => {
 
     await movePersonalMedicinesToFamily(userId, familyId);
 
-    await query(
-      "UPDATE `USER` SET family_id = ? WHERE user_id = ?",
-      [familyId, userId]
-    );
+    await query("UPDATE `USER` SET family_id = ? WHERE user_id = ?", [
+      familyId,
+      userId,
+    ]);
 
     req.user.family_id = familyId;
 
     const inviteCode = generateInviteCode();
 
-    await query(
-      "INSERT INTO INVITE_CODE (code, family_id) VALUES (?, ?)",
-      [inviteCode, familyId]
-    );
+    await query("INSERT INTO INVITE_CODE (code, family_id) VALUES (?, ?)", [
+      inviteCode,
+      familyId,
+    ]);
 
     res.redirect("/family");
   } catch (err) {
@@ -196,10 +223,9 @@ exports.joinFamily = async (req, res) => {
     const userId = req.user.user_id;
     const { inviteCode } = req.body;
 
-    const codes = await query(
-      "SELECT * FROM INVITE_CODE WHERE code = ?",
-      [inviteCode]
-    );
+    const codes = await query("SELECT * FROM INVITE_CODE WHERE code = ?", [
+      inviteCode,
+    ]);
 
     if (codes.length === 0) {
       return res.render("family/family-group", {
@@ -214,8 +240,7 @@ exports.joinFamily = async (req, res) => {
 
     const createdAt = codes[0].created_at;
 
-    const isExpired =
-      Date.now() - getKstTime(createdAt) >= 24 * 60 * 60 * 1000;
+    const isExpired = Date.now() - getKstTime(createdAt) >= 24 * 60 * 60 * 1000;
 
     if (isExpired) {
       return res.render("family/family-group", {
@@ -232,10 +257,10 @@ exports.joinFamily = async (req, res) => {
 
     await movePersonalMedicinesToFamily(userId, familyId);
 
-    await query(
-      "UPDATE `USER` SET family_id = ? WHERE user_id = ?",
-      [familyId, userId]
-    );
+    await query("UPDATE `USER` SET family_id = ? WHERE user_id = ?", [
+      familyId,
+      userId,
+    ]);
 
     req.user.family_id = familyId;
 
@@ -254,12 +279,58 @@ exports.leaveFamily = async (req, res) => {
 
     const userId = req.user.user_id;
 
+    const users = await query(
+      "SELECT family_id FROM `USER` WHERE user_id = ?",
+      [userId],
+    );
+
+    const familyId = users[0]?.family_id;
+
+    if (!familyId) {
+      req.user.family_id = null;
+      return res.redirect("/family");
+    }
+
+    // 1. 현재 사용자를 가족에서 탈퇴
+    await query("UPDATE `USER` SET family_id = NULL WHERE user_id = ?", [
+      userId,
+    ]);
+
     await query(
-      "UPDATE `USER` SET family_id = NULL WHERE user_id = ?",
-      [userId]
+      `
+      DELETE n
+      FROM NOTIFICATION n
+      JOIN MEDICINE m ON n.medicine_id = m.medicine_id
+      WHERE n.user_id = ?
+        AND m.family_id = ?
+      `,
+      [userId, familyId]
     );
 
     req.user.family_id = null;
+
+    // 2. 남은 가족 구성원 수 확인
+    const members = await query(
+      "SELECT COUNT(*) AS count FROM `USER` WHERE family_id = ?",
+      [familyId],
+    );
+
+    // 3. 마지막 사용자가 탈퇴한 경우 가족그룹 해체
+    if (Number(members[0].count) === 0) {
+      await query(
+        `
+        DELETE n
+        FROM NOTIFICATION n
+        JOIN MEDICINE m ON n.medicine_id = m.medicine_id
+        WHERE m.family_id = ?
+        `,
+        [familyId],
+      );
+
+      await query("DELETE FROM MEDICINE WHERE family_id = ?", [familyId]);
+      await query("DELETE FROM INVITE_CODE WHERE family_id = ?", [familyId]);
+      await query("DELETE FROM FAMILY WHERE family_id = ?", [familyId]);
+    }
 
     res.redirect("/family");
   } catch (err) {
@@ -276,7 +347,9 @@ exports.refreshInviteCode = async (req, res) => {
 
     const userId = req.user.user_id;
 
-    const users = await query("SELECT * FROM `USER` WHERE user_id = ?", [userId]);
+    const users = await query("SELECT * FROM `USER` WHERE user_id = ?", [
+      userId,
+    ]);
     const currentUser = users[0];
 
     if (!currentUser || !currentUser.family_id) {
@@ -291,10 +364,10 @@ exports.refreshInviteCode = async (req, res) => {
 
     await query("DELETE FROM INVITE_CODE WHERE family_id = ?", [familyId]);
 
-    await query(
-      "INSERT INTO INVITE_CODE (code, family_id) VALUES (?, ?)",
-      [newCode, familyId]
-    );
+    await query("INSERT INTO INVITE_CODE (code, family_id) VALUES (?, ?)", [
+      newCode,
+      familyId,
+    ]);
 
     res.redirect("/family");
   } catch (err) {
