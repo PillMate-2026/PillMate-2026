@@ -262,7 +262,7 @@ const [medicineResult] = await pool.query(
     }
 
     // 약 등록 직후 만료 알림 즉시 생성 (한 번도 알림이 없는 경우에만 생성됨)
-    runExpiryCheck();
+    await runExpiryCheck();
 
     res.redirect("/dashboard");
   } catch (error) {
