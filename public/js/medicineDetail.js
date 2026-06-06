@@ -90,6 +90,12 @@ window.openDeleteConfirm = async function () {
   try {
     const response = await fetch(`/api/medicines/${currentMedicineId}`, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        version: currentMedicineVersion,
+      }),
     });
 
     const data = await response.json();
@@ -121,22 +127,27 @@ window.openMedicineDetailModal = async function (id) {
 
     currentMedicineVersion = medicine.version;
 
-    document.getElementById("modalMedicineImage").src =
-      medicine.item_image || "/images/png/logo2.png";
+    const image =
+      medicine.item_image &&
+      medicine.item_image.trim() !== "" &&
+      medicine.item_image !== "null"
+        ? medicine.item_image
+        : "/images/png/logo2.png";
+    document.getElementById("modalMedicineImage").src = image;
 
     document.getElementById("modalMedicineName").textContent =
       medicine.name || "-";
 
-    document.getElementById("modalIngredient").innerText =
+    document.getElementById("modalIngredient").textContent =
       medicine.ingredient || "-";
 
     document.getElementById("modalEntpName").textContent =
       medicine.entp_name || "-";
 
-    document.getElementById("modalCreatedAt").innerText =
+    document.getElementById("modalCreatedAt").textContent =
       medicine.created_at || "-";
 
-    document.getElementById("modalExpirationDate").innerText =
+    document.getElementById("modalExpirationDate").textContent =
       medicine.expiration_date || "-";
 
     const statusBadge = document.getElementById("modalStatusBadge");
@@ -148,7 +159,7 @@ window.openMedicineDetailModal = async function (id) {
       statusBadge.className = "status-badge usable";
     }
 
-    document.getElementById("modalEfficacy").innerText = cleanText(
+    document.getElementById("modalEfficacy").textContent = cleanText(
       medicine.efficacy,
     );
 
@@ -156,11 +167,11 @@ window.openMedicineDetailModal = async function (id) {
       medicine.use_method,
     );
 
-    document.getElementById("modalPrecaution").innerText = cleanText(
+    document.getElementById("modalPrecaution").textContent = cleanText(
       medicine.precaution,
     );
 
-    document.getElementById("modalInteraction").innerText = cleanText(
+    document.getElementById("modalInteraction").textContent = cleanText(
       medicine.interaction,
     );
 
