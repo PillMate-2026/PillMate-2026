@@ -16,7 +16,8 @@ async function alreadyNotified(userId, medicineId) {
 
 /**
  * 만료/만료 임박 약을 조회해서 알림 생성
- * - 유통기한 경과(다음날부터): "XXX이(가) 오늘 만료되었습니다."
+ * - 오늘 만료: "XXX이(가) 오늘 만료되었습니다."
+ * - 7일 이내 만료 임박: "XXX이(가) N일 후 만료됩니다."
  */
 async function runExpiryCheck() {
   console.log('[Scheduler] 유통기한 만료 알림 체크 시작');
@@ -30,7 +31,7 @@ async function runExpiryCheck() {
         m.name,
         DATEDIFF(m.expiration_date, CURDATE()) AS days_left
       FROM MEDICINE m
-      WHERE DATEDIFF(m.expiration_date, CURDATE()) < 0
+      WHERE DATEDIFF(m.expiration_date, CURDATE()) <= 0
         AND m.notification_muted = 0
     `);
 
