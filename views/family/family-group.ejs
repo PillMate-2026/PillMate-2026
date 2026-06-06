@@ -13,8 +13,8 @@
             pageIcon: '/images/icons/people.svg',
             showNotification: false
           }) %>
-    <main class="family-container">
 
+    <main class="family-container">
       <% if (!hasFamily) { %>
         <div class="family-description">
           <h2>아직 참여 중인 가족그룹이 없어요</h2>
@@ -91,7 +91,7 @@
           <button
             type="button"
             class="copy-btn"
-            onclick="navigator.clipboard.writeText('<%= inviteCode %>')"
+            onclick="copyInviteCode('<%= inviteCode %>')"
           >
             복사하기
           </button>
@@ -163,6 +163,55 @@
     </div>
   </div>
 <% } %>
+
+<script>
+  function copyInviteCode(code) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(code)
+        .then(function () {
+          alert("초대코드가 복사되었습니다.");
+        })
+        .catch(function () {
+          fallbackCopyInviteCode(code);
+        });
+
+      return;
+    }
+
+    fallbackCopyInviteCode(code);
+  }
+
+  function fallbackCopyInviteCode(code) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = code;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.top = "0";
+    textarea.style.left = "-9999px";
+    textarea.style.opacity = "0";
+
+    document.body.appendChild(textarea);
+
+    textarea.focus();
+    textarea.select();
+    textarea.setSelectionRange(0, textarea.value.length);
+
+    try {
+      const success = document.execCommand("copy");
+
+      if (success) {
+        alert("초대코드가 복사되었습니다.");
+      } else {
+        alert("복사에 실패했습니다. 초대코드를 직접 복사해주세요.");
+      }
+    } catch (err) {
+      alert("복사에 실패했습니다. 초대코드를 직접 복사해주세요.");
+    }
+
+    document.body.removeChild(textarea);
+  }
+</script>
 
 <% if (hasFamily && typeof inviteExpireAt !== "undefined" && inviteExpireAt) { %>
   <script>
