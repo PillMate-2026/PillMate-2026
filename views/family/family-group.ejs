@@ -224,7 +224,23 @@
       });
     }
 
-    const inviteExpireAt = new Date("<%= inviteExpireAt %>").getTime();
+    let inviteExpireAt = new Date("<%= inviteExpireAt %>").getTime();
+
+    const ONE_HOUR = 1000 * 60 * 60;
+    const MAX_INVITE_TIME = 24 * ONE_HOUR;
+    const TIMEZONE_GAP = 9 * ONE_HOUR;
+
+    /*
+      배포 서버에서 UTC/KST 차이 때문에 33시간으로 보이는 경우 보정
+      정상: 약 24시간
+      오류: 약 33시간 = 24시간 + 9시간
+    */
+    const firstDiff = inviteExpireAt - Date.now();
+
+    if (firstDiff > MAX_INVITE_TIME && firstDiff <= MAX_INVITE_TIME + TIMEZONE_GAP + ONE_HOUR) {
+      inviteExpireAt -= TIMEZONE_GAP;
+    }
+
     const timerElement = document.getElementById("inviteTimer");
 
     function updateInviteTimer() {
