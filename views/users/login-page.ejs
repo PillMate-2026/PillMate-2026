@@ -69,7 +69,7 @@
 
       <div class="divider">또는</div>
 
-      <a href="/auth/google" class="google-link">
+      <a href="<%= typeof forceGoogleLogin !== 'undefined' && forceGoogleLogin ? '/auth/google?prompt=login' : '/auth/google' %>" class="google-link">
         <button type="button" class="google-btn">
           <img
             src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"

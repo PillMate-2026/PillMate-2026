@@ -22,9 +22,17 @@ router.get("/check-id", authController.checkLoginId);
 // 구글 로그인 시작
 router.get(
   "/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-  })
+  (req, res, next) => {
+    const options = {
+      scope: ["profile", "email"],
+    };
+
+    if (req.query.prompt === "login") {
+      options.prompt = "login";
+    }
+
+    passport.authenticate("google", options)(req, res, next);
+  }
 );
 
 // 구글 로그인 콜백

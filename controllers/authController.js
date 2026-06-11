@@ -11,6 +11,7 @@ exports.renderLoginPage = (req, res) => {
     pageCss: "login",
     error: null,
     login_id: "",
+    forceGoogleLogin: req.query.googlePrompt === "login",
   });
 };
 
@@ -329,7 +330,7 @@ exports.deleteAccount = async (req, res) => {
       }
 
       req.session.destroy(() => {
-        res.redirect("/auth/login");
+        res.redirect("/auth/login?googlePrompt=login");
       });
     });
   } catch (err) {
