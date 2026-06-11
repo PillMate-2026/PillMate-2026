@@ -15,9 +15,6 @@ passport.use(
       try {
         const user = await authService.findOrCreateUser(profile);
 
-        console.log("로그인 사용자:");
-        console.log(user);
-
         return done(null, user);
       } catch (err) {
         return done(err, null);
