@@ -6,7 +6,7 @@ PillMate는 집에 보관 중인 의약품을 등록하고 유통기한을 관�
 
 ## 배포 주소
 
-http://34.50.48.84:3000
+https://pillmate2026.duckdns.org/auth/login
 
 ## 기술 스택
 
