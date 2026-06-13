@@ -99,9 +99,8 @@ const deleteNotification = async (req, res) => {
 };
 
 function formatTimeAgo(dateValue) {
-  // DB가 UTC로 저장되므로 KST(+9시간)로 변환해서 시간 차이 계산
-  const date    = new Date(new Date(dateValue).getTime() + 9 * 60 * 60 * 1000);
-  const now     = new Date(new Date().getTime() + 9 * 60 * 60 * 1000);
+  const date    = new Date(dateValue);
+  const now     = new Date();
   const diffMin = Math.floor((now - date) / 60000);
   const diffH   = Math.floor(diffMin / 60);
   const diffD   = Math.floor(diffH / 24);

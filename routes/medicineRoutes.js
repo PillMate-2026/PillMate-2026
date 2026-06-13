@@ -262,7 +262,11 @@ const [medicineResult] = await pool.query(
     }
 
     // 약 등록 직후 만료 알림 즉시 생성 (한 번도 알림이 없는 경우에만 생성됨)
-    await runExpiryCheck();
+    try {
+      await runExpiryCheck();
+    } catch (notifErr) {
+      console.error('[Medicine Register] 알림 생성 실패:', notifErr.message);
+    }
 
     res.redirect("/dashboard");
   } catch (error) {

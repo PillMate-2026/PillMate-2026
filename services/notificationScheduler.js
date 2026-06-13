@@ -72,7 +72,8 @@ async function runExpiryCheck() {
 
     console.log(`[Scheduler] 완료 — 생성: ${created}건, 중복 스킵: ${skipped}건`);
   } catch (err) {
-    console.error('[Scheduler] 알림 생성 중 오류:', err);
+    console.error('[Scheduler] 알림 생성 중 오류:', err.message);
+    throw err;
   }
 }
 
