@@ -124,6 +124,7 @@ CREATE TABLE `MEDICINE` (
   `interaction` TEXT NULL, 
   `side_effect` TEXT NULL, 
   `version` INT NOT NULL DEFAULT 0,
+  `notification_muted` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`medicine_id`),
   CONSTRAINT `fk_medicine_user`
     FOREIGN KEY (`user_id`)
