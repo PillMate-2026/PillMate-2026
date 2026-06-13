@@ -121,7 +121,18 @@ app.use((req, res) => {
 // 서버 실행
 // ============================================================
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`PILLMATE 서버 실행 중: http://localhost:${PORT}`);
+
+  try {
+    await userPool.query(`
+      ALTER TABLE MEDICINE
+      ADD COLUMN IF NOT EXISTS notification_muted BOOLEAN NOT NULL DEFAULT 0
+    `);
+    console.log('[Migration] notification_muted 컬럼 확인 완료');
+  } catch (err) {
+    console.error('[Migration] notification_muted 컬럼 추가 실패:', err.message);
+  }
+
   require('./services/notificationScheduler');
 });
